@@ -1,4 +1,8 @@
-jfxtras-labs-samples
-====================
+JFXtras-labs
+============
+_A project for experimenting with new controls and other useful JavaFX extensions_
 
-Samples for JFXtras-labs
+Building with Gradle
+--------------------
+* gradlew build
+
