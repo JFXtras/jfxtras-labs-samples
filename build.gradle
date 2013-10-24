@@ -6,7 +6,9 @@ apply plugin: 'idea'
 
 
 buildscript {
-    
+
+    artifactId="jfxtras-labs-samples"
+
     repositories {
         mavenCentral()
         maven {
@@ -31,6 +33,7 @@ repositories {
 
 dependencies {
 	compile group: 'fxsampler', name: 'fxsampler', version: '1.0.0-SNAPSHOT'
+    compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1-SNAPSHOT'
 }
 
 apply {
