@@ -3,11 +3,9 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-
+apply from: 'http://dl.bintray.com/shemnon/javafx-gradle/0.3.0/javafx.plugin'
 
 buildscript {
-
-    artifactId="jfxtras-labs-samples"
 
     repositories {
         mavenCentral()
@@ -58,6 +56,12 @@ task wrapper(type: Wrapper) {
 
 signArchives.onlyIf {
     project.hasProperty('signing.keyId')
+}
+
+javafx {
+    appID 'JFXtrasSamples'
+    appName 'JFXtras samples'
+    mainClass 'fxsampler.FXSampler'
 }
 
 uploadArchives.onlyIf {

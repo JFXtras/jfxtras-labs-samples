@@ -1,7 +1,6 @@
 package jfxtras.labs.samples;
 
 import fxsampler.SampleBase;
-import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -9,23 +8,17 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.util.StringConverter;
-import jfxtras.labs.internal.scene.control.skin.CalendarPickerControlSkin;
-import jfxtras.labs.scene.control.CalendarTextField;
-import jfxtras.labs.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import jfxtras.labs.scene.control.CalendarPicker;
-import jfxtras.labs.scene.layout.HBox;
-import sun.java2d.SurfaceData;
+import jfxtras.labs.scene.control.CalendarTextField;
+import jfxtras.labs.scene.layout.GridPane;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
-import java.util.Observable;
 
 public class CalendarPickerSample1 extends SampleBase
 {
