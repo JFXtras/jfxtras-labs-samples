@@ -22,7 +22,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class AgendaSample1 extends SampleBase
+public class AgendaSample1 extends JFXtrasSampleBase
 {
     public AgendaSample1() {
         agenda = new Agenda();

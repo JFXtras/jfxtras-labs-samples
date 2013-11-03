@@ -17,7 +17,7 @@ import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.layout.GridPane;
 
-public class ListSpinnerSample1 extends SampleBase
+public class ListSpinnerSample1 extends JFXtrasSampleBase
 {
     /**
      *

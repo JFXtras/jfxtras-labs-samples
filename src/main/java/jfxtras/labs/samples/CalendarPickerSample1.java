@@ -20,7 +20,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class CalendarPickerSample1 extends SampleBase
+public class CalendarPickerSample1 extends JFXtrasSampleBase
 {
     public CalendarPickerSample1() {
         calendarPicker = new CalendarPicker();
