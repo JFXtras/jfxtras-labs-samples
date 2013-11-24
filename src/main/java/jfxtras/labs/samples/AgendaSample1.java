@@ -244,7 +244,7 @@ public class AgendaSample1 extends JFXtrasSampleBase
 
         // week
         {
-            lGridPane.add(new Label("Week"), new GridPane.C().row(lRowIdx).col(0));
+            lGridPane.add(new Label("Week of"), new GridPane.C().row(lRowIdx).col(0));
             CalendarTextField lCalendarTextField = new CalendarTextField();
             lGridPane.add(lCalendarTextField, new GridPane.C().row(lRowIdx).col(1));
             lCalendarTextField.calendarProperty().bindBidirectional(agenda.displayedCalendar());

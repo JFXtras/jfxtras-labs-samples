@@ -30,7 +30,7 @@ repositories {
 
 
 dependencies {
-	compile group: 'fxsampler', name: 'fxsampler', version: '1.0.0-SNAPSHOT'
+	compile group: 'org.controlsfx', name: 'fxsampler', version: '1.0.2-SNAPSHOT'
     compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1-SNAPSHOT'
     runtime group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1-SNAPSHOT', classifier: 'javadoc'
 }
