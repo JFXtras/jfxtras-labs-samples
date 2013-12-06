@@ -2,6 +2,7 @@ package jfxtras.labs.samples;
 
 import fxsampler.SampleBase;
 import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -79,7 +80,7 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
         {
             Label lLabel = new Label("Cyclic");
             lLabel.setTooltip(new Tooltip("When reaching the last in the list, cycle back to the first"));
-            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0));
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             CheckBox lCheckBox = new CheckBox();
             lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
             lCheckBox.selectedProperty().bindBidirectional(simplyStringListSpinner.cyclicProperty());
@@ -88,7 +89,7 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
 
         // Arrow direction
         {
-            lGridPane.add(new Label("Arrow direction"), new GridPane.C().row(lRowIdx).col(0));
+            lGridPane.add(new Label("Arrow direction"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             ChoiceBox<ListSpinnerCaspianSkin.ArrowDirection> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList(ListSpinnerCaspianSkin.ArrowDirection.values()));
             lGridPane.add(lChoiceBox, new GridPane.C().row(lRowIdx).col(1));
             lChoiceBox.valueProperty().addListener( (observable) -> {
@@ -100,7 +101,7 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
 
         // Arrow position
         {
-            lGridPane.add(new Label("Arrow position"), new GridPane.C().row(lRowIdx).col(0));
+            lGridPane.add(new Label("Arrow position"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             ChoiceBox<ListSpinnerCaspianSkin.ArrowPosition> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList(ListSpinnerCaspianSkin.ArrowPosition.values()));
             lGridPane.add(lChoiceBox, new GridPane.C().row(lRowIdx).col(1));
             lChoiceBox.valueProperty().addListener((observable) -> {
@@ -112,7 +113,7 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
 
         // Value alignment
         {
-            lGridPane.add(new Label("Value alignment"), new GridPane.C().row(lRowIdx).col(0));
+            lGridPane.add(new Label("Value alignment"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             ChoiceBox<Pos> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList(Pos.values()));
             lGridPane.add(lChoiceBox, new GridPane.C().row(lRowIdx).col(1));
             lChoiceBox.valueProperty().addListener((observable) -> {

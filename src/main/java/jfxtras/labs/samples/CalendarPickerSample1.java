@@ -3,21 +3,27 @@ package jfxtras.labs.samples;
 import fxsampler.SampleBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import jfxtras.labs.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.layout.GridPane;
+import sun.java2d.SurfaceData;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class CalendarPickerSample1 extends JFXtrasSampleBase
@@ -64,7 +70,7 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
 
         // Mode
         {
-            lGridPane.add(new Label("Mode"), new GridPane.C().row(lRowIdx).col(0));
+            lGridPane.add(new Label("Mode"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             ChoiceBox<CalendarPicker.Mode> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList(CalendarPicker.Mode.values()));
             lGridPane.add(lChoiceBox, new GridPane.C().row(lRowIdx).col(1));
             lChoiceBox.valueProperty().bindBidirectional(calendarPicker.modeProperty());
@@ -73,7 +79,7 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
 
         // Locale
         {
-            lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0));
+            lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             ObservableList<Locale> lLocales = FXCollections.observableArrayList(Locale.getAvailableLocales());
             FXCollections.sort(lLocales,  (o1, o2) -> { return o1.toString().compareTo(o2.toString()); } );
             ComboBox<Locale> lComboBox = new ComboBox( lLocales );
@@ -99,7 +105,7 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
         {
             Label lLabel = new Label("Null allowed");
             lLabel.setTooltip(new Tooltip("Is the control allowed to hold null (or have no calendar deselected)"));
-            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0));
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             CheckBox lCheckBox = new CheckBox();
             lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
             lCheckBox.selectedProperty().bindBidirectional(calendarPicker.allowNullProperty());
@@ -110,7 +116,7 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
         {
             Label lLabel = new Label("Show time");
             lLabel.setTooltip(new Tooltip("Only in SINGLE mode"));
-            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0));
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             CheckBox lCheckBox = new CheckBox();
             lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
             lCheckBox.selectedProperty().bindBidirectional(calendarPicker.showTimeProperty());
@@ -121,7 +127,7 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
         {
             Label lLabel = new Label("Show weeknumbers");
             //lLabel.setTooltip(new Tooltip("Only in SINGLE mode"));
-            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0));
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             final CheckBox lCheckBox = new CheckBox();
             lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
             lCheckBox.selectedProperty().addListener( (observable) -> {
@@ -134,8 +140,8 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
         // calendar
         {
             Label lLabel = new Label("Value");
-            lLabel.setTooltip(new Tooltip("The currently selected value"));
-            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0));
+            lLabel.setTooltip(new Tooltip("The currently selected date (single mode)"));
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             final CalendarTextField lCalendarTextField = new CalendarTextField();
             lCalendarTextField.setDisable(true);
             lGridPane.add(lCalendarTextField, new GridPane.C().row(lRowIdx).col(1));
@@ -149,9 +155,9 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
 
         // calendars
         {
-            Label lLabel = new Label("Values");
-            lLabel.setTooltip(new Tooltip("All selected values"));
-            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0));
+            Label lLabel = new Label("Selected");
+            lLabel.setTooltip(new Tooltip("All selected dates (multiple or range mode)"));
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
             final ListView lListView = new ListView();
             lListView.setItems(calendarPicker.calendars());
             lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<java.util.Calendar>() {
@@ -169,6 +175,108 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
             lGridPane.add(lListView, new GridPane.C().row(lRowIdx).col(1));
         }
         lRowIdx++;
+
+		// highlight
+		{
+			Label lLabel = new Label("Highlighted");
+			lLabel.setTooltip(new Tooltip("All highlighted dates"));
+			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
+			final ListView<Calendar> lListView = new ListView<Calendar>();
+			lListView.setItems(calendarPicker.highlightedCalendars());
+			lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<java.util.Calendar>() {
+				@Override
+				public String toString(java.util.Calendar o) {
+					DateFormat lDateFormat = calendarPicker.getShowTime() ? SimpleDateFormat.getDateTimeInstance() : SimpleDateFormat.getDateInstance();
+					return o == null ? "" : lDateFormat.format(o.getTime());
+				}
+
+				@Override
+				public java.util.Calendar fromString(String s) {
+					return null;  //never used
+				}
+			}));
+			lGridPane.add(lListView, new GridPane.C().row(lRowIdx).col(1));
+			// remove button
+			{
+				Button lButton = new Button("remove");
+				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP));
+				lButton.onActionProperty().set( (actionEvent) -> {
+					Calendar c = lListView.getSelectionModel().getSelectedItem();
+					if (c != null) {
+						calendarPicker.highlightedCalendars().remove(c);
+					}
+				});
+			}
+
+			// text field
+			lRowIdx++;
+			final CalendarTextField lCalendarTextField = new CalendarTextField();
+			lGridPane.add(lCalendarTextField, new GridPane.C().row(lRowIdx).col(1));
+			// add button
+			{
+				Button lButton = new Button("add");
+				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2));
+				lButton.onActionProperty().set( (actionEvent) -> {
+					Calendar c = lCalendarTextField.getCalendar();
+					if (c != null) {
+						calendarPicker.highlightedCalendars().add(c);
+						lCalendarTextField.setCalendar(null);
+					}
+				});
+			}
+		}
+		lRowIdx++;
+
+		// disabled
+		{
+			Label lLabel = new Label("Disabled");
+			lLabel.setTooltip(new Tooltip("All disabled dates"));
+			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
+			final ListView<Calendar> lListView = new ListView<Calendar>();
+			lListView.setItems(calendarPicker.disabledCalendars());
+			lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<java.util.Calendar>() {
+				@Override
+				public String toString(java.util.Calendar o) {
+					DateFormat lDateFormat = calendarPicker.getShowTime() ? SimpleDateFormat.getDateTimeInstance() : SimpleDateFormat.getDateInstance();
+					return o == null ? "" : lDateFormat.format(o.getTime());
+				}
+
+				@Override
+				public java.util.Calendar fromString(String s) {
+					return null;  //never used
+				}
+			}));
+			lGridPane.add(lListView, new GridPane.C().row(lRowIdx).col(1));
+			// remove button
+			{
+				Button lButton = new Button("remove");
+				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP));
+				lButton.onActionProperty().set( (actionEvent) -> {
+					Calendar c = lListView.getSelectionModel().getSelectedItem();
+					if (c != null) {
+						calendarPicker.disabledCalendars().remove(c);
+					}
+				});
+			}
+
+			// text field
+			lRowIdx++;
+			final CalendarTextField lCalendarTextField = new CalendarTextField();
+			lGridPane.add(lCalendarTextField, new GridPane.C().row(lRowIdx).col(1));
+			// add button
+			{
+				Button lButton = new Button("add");
+				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2));
+				lButton.onActionProperty().set( (actionEvent) -> {
+					Calendar c = lCalendarTextField.getCalendar();
+					if (c != null) {
+						calendarPicker.disabledCalendars().add(c);
+						lCalendarTextField.setCalendar(null);
+					}
+				});
+			}
+		}
+		lRowIdx++;
 
         // done
         return lGridPane;
