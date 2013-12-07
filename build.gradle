@@ -88,8 +88,6 @@ task oneJar(type: OneJar) {
 // merge everything into one jar
 // https://github.com/johnrengelman/shadow
 shadow {
-    exclude 'META-INF/*.DSA'
-    exclude 'META-INF/*.RSA'
 }
 
 uploadArchives.onlyIf {
