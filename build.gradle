@@ -5,6 +5,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply from: 'http://dl.bintray.com/shemnon/javafx-gradle/0.4.0/javafx.plugin'
 apply plugin: 'gradle-one-jar'
+apply plugin: 'shadow'
 
 buildscript {
 
@@ -13,8 +14,13 @@ buildscript {
         maven {
             url "https://oss.sonatype.org/content/repositories/snapshots"
         }
-		dependencies {
+        maven {
+            name 'Gradle Shadow'
+            url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
+        }
+        dependencies {
             classpath 'com.github.rholder:gradle-one-jar:1.0.3'
+            classpath 'org.gradle.plugins:shadow:0.7.4'
 		}
     }
 }
@@ -70,12 +76,20 @@ javafx {
     javaRuntime = '<NO RUNTIME>' // for now don't bundle a VM
 }
 
+// make a compound jar containing all required jars
 task oneJar(type: OneJar) {
     mainClass = 'fxsampler.FXSampler'
     useStable = false
     manifest {
         attributes 'One-Jar-URL-Factory': 'com.simontuffs.onejar.JarClassLoader$OneJarURLFactory'
     }
+}
+
+// merge everything into one jar
+// https://github.com/johnrengelman/shadow
+shadow {
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
 }
 
 uploadArchives.onlyIf {
