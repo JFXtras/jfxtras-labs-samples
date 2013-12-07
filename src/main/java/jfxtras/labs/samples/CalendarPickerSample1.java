@@ -1,10 +1,7 @@
 package jfxtras.labs.samples;
 
-import fxsampler.SampleBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -19,7 +16,6 @@ import javafx.util.StringConverter;
 import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.layout.GridPane;
-import sun.java2d.SurfaceData;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

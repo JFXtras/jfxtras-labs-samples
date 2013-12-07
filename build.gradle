@@ -3,7 +3,8 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply from: 'http://dl.bintray.com/shemnon/javafx-gradle/0.3.0/javafx.plugin'
+apply from: 'http://dl.bintray.com/shemnon/javafx-gradle/0.4.0/javafx.plugin'
+apply plugin: 'gradle-one-jar'
 
 buildscript {
 
@@ -13,6 +14,7 @@ buildscript {
             url "https://oss.sonatype.org/content/repositories/snapshots"
         }
 		dependencies {
+            classpath 'com.github.rholder:gradle-one-jar:1.0.3'
 		}
     }
 }
@@ -30,7 +32,7 @@ repositories {
 
 
 dependencies {
-	compile group: 'org.controlsfx', name: 'fxsampler', version: '1.0.2-SNAPSHOT'
+	compile group: 'org.controlsfx', name: 'fxsampler', version: '1.0.4-SNAPSHOT'
     compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1-SNAPSHOT'
     runtime group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1-SNAPSHOT', classifier: 'javadoc'
 }
@@ -52,17 +54,28 @@ task buildTimestamped(type: Copy, dependsOn: 'build') {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.7'
+    gradleVersion = '1.8'
 }
 
 signArchives.onlyIf {
     project.hasProperty('signing.keyId')
 }
 
+// gradle assemble to build the distribution
+// http://jaxenter.com/tutorial-a-guide-to-the-gradle-javafx-plugin-46270.html
 javafx {
     appID 'JFXtrasSamples'
     appName 'JFXtras samples'
     mainClass 'fxsampler.FXSampler'
+    javaRuntime = '<NO RUNTIME>' // for now don't bundle a VM
+}
+
+task oneJar(type: OneJar) {
+    mainClass = 'fxsampler.FXSampler'
+    useStable = false
+    manifest {
+        attributes 'One-Jar-URL-Factory': 'com.simontuffs.onejar.JarClassLoader$OneJarURLFactory'
+    }
 }
 
 uploadArchives.onlyIf {

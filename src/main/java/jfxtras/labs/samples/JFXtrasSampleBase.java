@@ -11,4 +11,8 @@ abstract public class JFXtrasSampleBase extends SampleBase {
 		return "JFXtras";
 	}
 
+	/** {@inheritDoc} */
+	@Override public String getProjectVersion() {
+		return "8.0"; // TBEE read from gradle meta-inf?
+	}
 }
