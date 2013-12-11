@@ -27,8 +27,14 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+/**
+ * Demo for the {@link BigDecimalField} control. 
+ * @author Thomas Bolz
+ *
+ */
 public class BigDecimalFieldSample extends JFXtrasSampleBase {
-    /**
+
+	/**
      *
      */
     public BigDecimalFieldSample() {
@@ -116,38 +122,11 @@ public class BigDecimalFieldSample extends JFXtrasSampleBase {
                 localizedCurrency.setNumber(new BigDecimal(Math.random() * 1000));
                 disabledField.setNumber(new BigDecimal(Math.random() * 1000));
                 promptText.setNumber(null);
-//                defaultSpinner.dumpSizes();
             }
         });
         root.addRow(11, new Label(), button);
         return root;
     }
-
-    @Override
-    public Node getControlPanel() {
-        // the result
-        GridPane lGridPane = new GridPane();
-        lGridPane.setVgap(2.0);
-        lGridPane.setHgap(2.0);
-
-        // setup the grid so all the labels will not grow, but the rest will
-        ColumnConstraints lColumnConstraintsAlwaysGrow = new ColumnConstraints();
-        lColumnConstraintsAlwaysGrow.setHgrow(Priority.ALWAYS);
-        ColumnConstraints lColumnConstraintsNeverGrow = new ColumnConstraints();
-        lColumnConstraintsNeverGrow.setHgrow(Priority.NEVER);
-        lGridPane.getColumnConstraints().addAll(lColumnConstraintsNeverGrow, lColumnConstraintsAlwaysGrow);
-        int lRowIdx = 0;
-
-        // week
-        {
-            lGridPane.add(new Label("Week of"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-        }
-        lRowIdx++;
-
-        // done
-        return lGridPane;
-    }
-
 
     /**
      * @return

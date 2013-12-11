@@ -1,3 +1,4 @@
 jfxtras.labs.samples.AgendaSample1.java
 jfxtras.labs.samples.CalendarPickerSample1.java
 jfxtras.labs.samples.ListSpinnerSample1.java
+jfxtras.labs.samples.BigDecimalFieldSample.java
