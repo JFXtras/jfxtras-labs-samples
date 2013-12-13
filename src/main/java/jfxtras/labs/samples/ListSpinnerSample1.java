@@ -2,6 +2,7 @@ package jfxtras.labs.samples;
 
 import fxsampler.SampleBase;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,9 +15,11 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.layout.GridPane;
+import jfxtras.labs.util.StringConverterFactory;
 
 public class ListSpinnerSample1 extends JFXtrasSampleBase
 {
@@ -24,11 +27,22 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
      *
      */
     public ListSpinnerSample1() {
-        simplyStringListSpinner = new ListSpinner<String>("a", "b", "c");
-    }
-    final ListSpinner<String> simplyStringListSpinner;
+        simpleStringListSpinner = new ListSpinner<String>("a", "b", "c");
 
-    /**
+		final ObservableList<String> lObservableList = FXCollections.observableArrayList("a", "b", "c", "d", "e");
+		editableListSpinner = new ListSpinner<String>( lObservableList )
+				.withCyclic(true)
+				.withEditable(true)
+				.withStringConverter(StringConverterFactory.forString())
+				.withAddCallback((text) -> {
+					lObservableList.add(text);
+					return lObservableList.size() - 1; // notify spinner the value is appended at the end
+				});
+	}
+    final ListSpinner<String> simpleStringListSpinner;
+	final ListSpinner<String> editableListSpinner;
+
+	/**
      *
      * @return
      */
@@ -56,7 +70,8 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
         VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
-        root.getChildren().addAll(simplyStringListSpinner);
+        root.getChildren().addAll(simpleStringListSpinner);
+		root.getChildren().addAll(editableListSpinner);
 
         return root;
     }
@@ -83,7 +98,8 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
             lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             CheckBox lCheckBox = new CheckBox();
             lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
-            lCheckBox.selectedProperty().bindBidirectional(simplyStringListSpinner.cyclicProperty());
+            lCheckBox.selectedProperty().bindBidirectional(simpleStringListSpinner.cyclicProperty());
+			lCheckBox.selectedProperty().bindBidirectional(editableListSpinner.cyclicProperty());
         }
         lRowIdx++;
 
@@ -131,7 +147,8 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
      *
      */
     private void setStyle() {
-        simplyStringListSpinner.setStyle(arrowDirectionStyle + arrowPositionStyle + valueAlignmentStyle);
+        simpleStringListSpinner.setStyle(arrowDirectionStyle + arrowPositionStyle + valueAlignmentStyle);
+		editableListSpinner.setStyle(arrowDirectionStyle + arrowPositionStyle + valueAlignmentStyle);
     }
     private String arrowDirectionStyle = "";
     private String arrowPositionStyle = "";
