@@ -288,7 +288,7 @@ public class RadialMenuSample extends JFXtrasSampleBase {
 
     @Override
     public String getJavaDocURL() {
-        return null;
+        return "http://jfxtras.org/doc/8.0/jfxtras/labs/scene/control/radialmenu/RadialMenu.html";
     }
 
     public static void main(String[] args) {
