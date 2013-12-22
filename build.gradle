@@ -89,7 +89,14 @@ task oneJar(type: OneJar) {
 // https://github.com/johnrengelman/shadow
 shadow {
 }
-
+jar {
+    manifest {
+        attributes('Main-Class': 'fxsampler.FXSampler'
+			,"Implementation-Title": "JFXtras-samples"
+			, "Implementation-Version": 8.0
+		)
+    }
+}
 uploadArchives.onlyIf {
     project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
 }

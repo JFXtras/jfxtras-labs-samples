@@ -1,4 +1,4 @@
-package jfxtras.labs.samples;
+package jfxtras.labs.samples.calendar;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,12 +10,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
-import jfxtras.labs.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import jfxtras.labs.samples.JFXtrasSampleBase;
 import jfxtras.labs.scene.control.CalendarPicker;
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.layout.GridPane;
+import jfxtras.labs.scene.layout.VBox;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -285,7 +286,7 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
 
     @Override
     public String getJavaDocURL() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return "http://jfxtras.org/doc/8.0/" + CalendarPicker.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {
