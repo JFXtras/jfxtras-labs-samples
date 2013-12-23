@@ -258,16 +258,10 @@ public class AgendaSample1 extends JFXtrasSampleBase
 
     @Override
     public String getJavaDocURL() {
-// TODO: get the javadoc from the javadoc artifact
-//		String s = "/" + Agenda.class.getName().replace(".", File.separator) + ".html";
-//		System.out.println("!!! " + s);
-//		s = Agenda.class.getResource(s).toExternalForm();
-//		System.out.println("!!! " + s);
-//		return s;
-		return null;
-    }
+		return "http://jfxtras.org/doc/8.0/" + Agenda.class.getName().replace(".", "/") + ".html";
+	}
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
         launch(args);
     }
 

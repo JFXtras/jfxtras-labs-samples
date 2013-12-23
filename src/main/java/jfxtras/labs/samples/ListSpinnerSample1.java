@@ -1,6 +1,5 @@
 package jfxtras.labs.samples;
 
-import fxsampler.SampleBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -15,7 +14,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
 import jfxtras.labs.scene.control.ListSpinner;
 import jfxtras.labs.scene.layout.GridPane;
@@ -160,7 +158,7 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
      */
     @Override
     public String getJavaDocURL() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+		return "http://jfxtras.org/doc/8.0/" + ListSpinner.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {
