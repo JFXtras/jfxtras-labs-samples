@@ -1,6 +1,5 @@
 package jfxtras.labs.samples.magnifier;
 
-import java.io.File;
 import java.text.DecimalFormat;
 
 import javafx.beans.binding.BooleanBinding;
@@ -63,11 +62,7 @@ public class MagnifierSample extends JFXtrasSampleBase {
 
     @Override
     public String getJavaDocURL() {
-        String s = "/" + Magnifier.class.getName().replace(".", File.separator) + ".html";
-        System.out.println("!!! " + s);
-        s = Magnifier.class.getResource(s).toExternalForm();
-        System.out.println("!!! " + s);
-        return s;
+        return "http://jfxtras.org/doc/8.0/" + Magnifier.class.getName().replace(".", "/") + ".html";
     }
 
     @Override
@@ -87,8 +82,8 @@ public class MagnifierSample extends JFXtrasSampleBase {
     private Magnifier buildImageLayout() {
         final ImageView sample1 = new ImageView(new Image(
                 MagnifierSample.class.getResourceAsStream("/jfxtras/labs/samples/magnifier/tech_drawing.jpg")));
-        sample1.setFitHeight(280);
-        sample1.setFitWidth(320);
+        sample1.setFitHeight(200);
+        sample1.setFitWidth(240);
         return configureSample(sample1);
     }
 
@@ -99,12 +94,10 @@ public class MagnifierSample extends JFXtrasSampleBase {
         gp.setVgap(8);
         gp.setHgap(10);
         gp.add(info, 0, 0, 4, 1);
-        gp.addRow(1, new Label("First Name"), new Label(":"), new TextField());
-        gp.addRow(2, new Label("Last Name"), new Label(":"), new TextField());
-        gp.addRow(3, new Label("Gender"), new Label(":"), new RadioButton("Male"));
-        gp.addRow(4, new Label(""), new Label(""), new RadioButton("Female"));
-        gp.addRow(5, new Label("Subjects"), new Label(":"), new CheckBox("Maths"), new CheckBox("Social"));
-        gp.addRow(6, new Label(""), new Label(""), new CheckBox("Science"), new CheckBox("Biology"));
+        gp.addRow(1, new Label("Name"), new Label(":"), new TextField());
+        gp.addRow(2, new Label("Gender"), new Label(":"), new RadioButton("Male"));
+        gp.addRow(3, new Label(""), new Label(""), new RadioButton("Female"));
+        gp.addRow(4, new Label("Subjects"), new Label(":"), new CheckBox("Maths"), new CheckBox("Social"));
 
         HBox formButtonBox = new HBox();
         formButtonBox.setSpacing(10);
