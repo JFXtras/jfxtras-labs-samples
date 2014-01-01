@@ -14,3 +14,4 @@ jfxtras.labs.samples.layout.VBoxSample1.java
 jfxtras.labs.samples.layout.GridPaneSample1.java
 jfxtras.labs.samples.magnifier.MagnifierSample.java
 jfxtras.labs.samples.radialmenu.RadialMenuSample.java
+jfxtras.labs.samples.matrixpanel.MatrixPanelSample.java
