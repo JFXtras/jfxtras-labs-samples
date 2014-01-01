@@ -1,20 +1,13 @@
 
 // ------------- Maven Central deployment ---------------
 
-task docJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from 'build/docs/javadoc'
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
+task shadowJar(type: Jar, dependsOn: shadow) {
+//    classifier = 'shadow'
+    from 'build/libs/jfxtras-labs-samples-8.0-r1-SNAPSHOT-shadow.jar'
 }
 
 artifacts {
-    archives jar
-    archives docJar
-    archives sourcesJar
+    archives shadowJar
 }
 
 signing {
@@ -37,7 +30,7 @@ uploadArchives {
         }
 
         pom.project {
-            name         'JFXtras Labs'
+            name         'JFXtras Labs Samples'
             url          'http://jfxtras.org'
             description  'Experimental components for JavaFX 2'
             packaging    'jar'
@@ -49,9 +42,9 @@ uploadArchives {
                 }
             }
             scm {
-                url 'scm:git@github.com:jfxtras/jfxtras-labs.git'
-                connection 'scm:git@github.com:jfxtras/jfxtras-labs.git'
-                developerConnection 'scm:git@github.com:jfxtras/jfxtras-labs.git'
+                url 'scm:git@github.com:jfxtras/jfxtras-labs-samples.git'
+                connection 'scm:git@github.com:jfxtras/jfxtras-labs-samples.git'
+                developerConnection 'scm:git@github.com:jfxtras/jfxtras-labs-samples.git'
             }
             developers {
                 developer { name 'Stephen Chin' }

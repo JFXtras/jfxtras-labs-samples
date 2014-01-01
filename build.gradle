@@ -3,8 +3,8 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply from: 'http://dl.bintray.com/shemnon/javafx-gradle/0.4.0/javafx.plugin'
-apply plugin: 'gradle-one-jar'
+//apply from: 'http://dl.bintray.com/shemnon/javafx-gradle/0.4.0/javafx.plugin'
+//apply plugin: 'gradle-one-jar'
 apply plugin: 'shadow'
 
 buildscript {
@@ -19,7 +19,7 @@ buildscript {
             url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
         }
         dependencies {
-            classpath 'com.github.rholder:gradle-one-jar:1.0.3'
+//            classpath 'com.github.rholder:gradle-one-jar:1.0.3'
             classpath 'org.gradle.plugins:shadow:0.7.4'
 		}
     }
@@ -40,11 +40,6 @@ repositories {
 dependencies {
 	compile group: 'org.controlsfx', name: 'fxsampler', version: '1.0.3'
     compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1-SNAPSHOT'
-    runtime group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1-SNAPSHOT', classifier: 'javadoc'
-}
-
-apply {
-    from 'gradle/mavenCentralDeploy.gradle'
 }
 
 // license template (will be used as header in all Java source files)
@@ -67,28 +62,33 @@ signArchives.onlyIf {
     project.hasProperty('signing.keyId')
 }
 
-// gradle assemble to build the distribution
-// http://jaxenter.com/tutorial-a-guide-to-the-gradle-javafx-plugin-46270.html
-javafx {
-    appID 'JFXtrasSamples'
-    appName 'JFXtras samples'
-    mainClass 'fxsampler.FXSampler'
-    javaRuntime = '<NO RUNTIME>' // for now don't bundle a VM
+uploadArchives.onlyIf {
+    project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
 }
 
+// gradle assemble to build the distribution
+// http://jaxenter.com/tutorial-a-guide-to-the-gradle-javafx-plugin-46270.html
+//javafx {
+//    appID 'JFXtrasSamples'
+//    appName 'JFXtras samples'
+//    mainClass 'fxsampler.FXSampler'
+//    javaRuntime = '<NO RUNTIME>' // for now don't bundle a VM
+//}
+
 // make a compound jar containing all required jars
-task oneJar(type: OneJar) {
-    mainClass = 'fxsampler.FXSampler'
-    useStable = false
-    manifest {
-        attributes 'One-Jar-URL-Factory': 'com.simontuffs.onejar.JarClassLoader$OneJarURLFactory'
-    }
-}
+//task oneJar(type: OneJar) {
+//    mainClass = 'fxsampler.FXSampler'
+//    useStable = false
+//    manifest {
+//        attributes 'One-Jar-URL-Factory': 'com.simontuffs.onejar.JarClassLoader$OneJarURLFactory'
+//    }
+//}
 
 // merge everything into one jar
 // https://github.com/johnrengelman/shadow
 shadow {
 }
+
 jar {
     manifest {
         attributes('Main-Class': 'fxsampler.FXSampler'
@@ -97,8 +97,9 @@ jar {
 		)
     }
 }
-uploadArchives.onlyIf {
-    project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
+
+apply {
+    from 'gradle/mavenCentralDeploy.gradle'
 }
 
 task copyToLib(type: Copy) {
