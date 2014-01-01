@@ -1,26 +1,16 @@
 package jfxtras.labs.samples;
 
-import fxsampler.SampleBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
 import jfxtras.labs.scene.control.BigDecimalField;
 import jfxtras.labs.scene.control.BigDecimalFieldBuilder;
 import jfxtras.labs.scene.control.CalendarTextField;
-import jfxtras.labs.scene.control.ListSpinner;
-import jfxtras.labs.scene.layout.GridPane;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -28,13 +18,13 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * Demo for the {@link BigDecimalField} control. 
- * @author Thomas Bolz
+ * Demo for the {@link BigDecimalField} control.
  *
+ * @author Thomas Bolz
  */
 public class BigDecimalFieldSample extends JFXtrasSampleBase {
 
-	/**
+    /**
      *
      */
     public BigDecimalFieldSample() {
@@ -128,13 +118,11 @@ public class BigDecimalFieldSample extends JFXtrasSampleBase {
         return root;
     }
 
-    /**
-     * @return
-     */
     @Override
     public String getJavaDocURL() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "http://jfxtras.org/doc/8.0/" + BigDecimalField.class.getName().replace(".", "/") + ".html";
     }
+
 
     public static void main(String[] args) {
         launch(args);
