@@ -1,96 +1,46 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-//apply from: 'http://dl.bintray.com/shemnon/javafx-gradle/0.4.0/javafx.plugin'
-//apply plugin: 'gradle-one-jar'
-apply plugin: 'shadow'
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.8'
+}
 
 buildscript {
-
     repositories {
+        mavenLocal()
         mavenCentral()
         maven {
             url "https://oss.sonatype.org/content/repositories/snapshots"
         }
         maven {
-            name 'Gradle Shadow'
-            url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
+            name 'JCenter - for Gradle Shadow'
+            url 'http://jcenter.bintray.com/'
         }
-        dependencies {
-//            classpath 'com.github.rholder:gradle-one-jar:1.0.3'
-            classpath 'org.gradle.plugins:shadow:0.7.4'
-		}
+	}
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:0.8'
     }
 }
 
-// apply vrl license header plugin
-//if (!project.plugins.findPlugin(eu.mihosoft.vrl.vlicenseheaderutil.gradle.VLicenseHeaderPlugin)) {
-//    project.apply(plugin: eu.mihosoft.vrl.vlicenseheaderutil.gradle.VLicenseHeaderPlugin)
-//}
-
 repositories {
 	mavenLocal()
-    mavenRepo urls: "https://oss.sonatype.org/content/repositories/snapshots/"
     mavenCentral()
+	maven { 
+		url 'https://oss.sonatype.org/content/repositories/snapshots/' 
+	}
 }
 
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'shadow'
+apply plugin: 'signing'
 
 dependencies {
 	compile group: 'org.controlsfx', name: 'fxsampler', version: '1.0.3'
     compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1-SNAPSHOT'
 }
 
-// license template (will be used as header in all Java source files)
-//repairHeaders.licenseHeaderText = new File(projectDir,"license-template.txt")
-
-task buildTimestamped(type: Copy, dependsOn: 'build') {
-    from 'build/libs'
-    into 'build/libs/timestamped'
-    include '*.jar'
-    rename { String fileName ->
-        fileName.replace('SNAPSHOT', "SNAPSHOT-${new Date().format('HH-mm-dd-MM-yyyy')}")
-    }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
-}
-
-signArchives.onlyIf {
-    project.hasProperty('signing.keyId')
-}
-
-uploadArchives.onlyIf {
-    project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
-}
-
-// gradle assemble to build the distribution
-// http://jaxenter.com/tutorial-a-guide-to-the-gradle-javafx-plugin-46270.html
-//javafx {
-//    appID 'JFXtrasSamples'
-//    appName 'JFXtras samples'
-//    mainClass 'fxsampler.FXSampler'
-//    javaRuntime = '<NO RUNTIME>' // for now don't bundle a VM
-//}
-
-// make a compound jar containing all required jars
-//task oneJar(type: OneJar) {
-//    mainClass = 'fxsampler.FXSampler'
-//    useStable = false
-//    manifest {
-//        attributes 'One-Jar-URL-Factory': 'com.simontuffs.onejar.JarClassLoader$OneJarURLFactory'
-//    }
-//}
-
-// merge everything into one jar
-// https://github.com/johnrengelman/shadow
-shadow {
-}
-
+// setup the generated jar
 jar {
     manifest {
+		// setup the main-class in the jar
         attributes('Main-Class': 'fxsampler.FXSampler'
 			,"Implementation-Title": "JFXtras-samples"
 			, "Implementation-Version": 8.0
@@ -98,9 +48,32 @@ jar {
     }
 }
 
+
+// merge everything into one jar
+// https://github.com/johnrengelman/shadow
+shadow {
+}
+
+// sign all generated jars
+signing {
+    sign configurations.archives
+	sign shadow.shadowJar
+}
+
+// determine the artifacts to be uploaded
+artifacts {
+	// add the by shadow generated jar to the artifacts
+	archives shadow.shadowJar
+}
+
+// include the logic for uploading to maven
 apply {
     from 'gradle/mavenCentralDeploy.gradle'
 }
+
+
+// ========================================
+// CONVENIENCE
 
 task copyToLib(type: Copy) {
     into "_lib"

@@ -1,19 +1,6 @@
 
 // ------------- Maven Central deployment ---------------
 
-task shadowJar(type: Jar, dependsOn: shadow) {
-//    classifier = 'shadow'
-    from 'build/libs/jfxtras-labs-samples-8.0-r1-SNAPSHOT-shadow.jar'
-}
-
-artifacts {
-    archives shadowJar
-}
-
-signing {
-    sign configurations.archives
-}
-
 uploadArchives {
     if (!project.hasProperty('sonatypeUsername') || !project.hasProperty('sonatypePassword'))
           return
