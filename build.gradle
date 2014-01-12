@@ -57,7 +57,7 @@ shadow {
 // sign all generated jars
 signing {
     sign configurations.archives
-	sign shadow.shadowJar
+//	sign shadow.shadowJar
 }
 
 // determine the artifacts to be uploaded
