@@ -31,6 +31,8 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'shadow'
 apply plugin: 'signing'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 dependencies {
 	compile group: 'org.controlsfx', name: 'fxsampler', version: '1.0.3'
