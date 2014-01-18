@@ -6,3 +6,6 @@ Building with Gradle
 --------------------
 * gradlew build
 
+Requirements
+--------------------
+* for the 8.0 branch: Java 8
