@@ -42,6 +42,8 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
 
     @Override
     public Node getPanel(Stage stage) {
+		this.stage = stage;
+		
         VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
@@ -49,7 +51,8 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
 
         return root;
     }
-
+	private Stage stage;
+	
     @Override
     public Node getControlPanel() {
         // the result
@@ -123,14 +126,27 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
         // showWeeknumbers
         {
             Label lLabel = new Label("Show weeknumbers");
-            //lLabel.setTooltip(new Tooltip("Only in SINGLE mode"));
+            lLabel.setTooltip(new Tooltip("Indeterminate means that neither true or false is set."));
+			showWeeknumbersCheckBox.setAllowIndeterminate(true);
+			showWeeknumbersCheckBox.setIndeterminate(true);
             lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            final CheckBox lCheckBox = new CheckBox();
-            lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
-            lCheckBox.selectedProperty().addListener( (observable) -> {
-                calendarPicker.setStyle( lCheckBox.isSelected() ? "-fxx-show-weeknumbers:YES;" : "-fxx-show-weeknumbers:NO;");
+            lGridPane.add(showWeeknumbersCheckBox, new GridPane.C().row(lRowIdx).col(1));
+            showWeeknumbersCheckBox.selectedProperty().addListener( (observable) -> {
+                setStyle();
             });
-            lCheckBox.setSelected(true);
+            showWeeknumbersCheckBox.setSelected(true);
+        }
+        lRowIdx++;
+
+        // labelDateFormat
+        {
+            Label lLabel = new Label("Date Format");
+            lLabel.setTooltip(new Tooltip("See SimpleDateFormat, e.g. 'D' for day-of-year"));
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            lGridPane.add(labelDateFormatTextField, new GridPane.C().row(lRowIdx).col(1));
+            labelDateFormatTextField.focusedProperty().addListener( (observable) -> {
+                setStyle(); 
+            });
         }
         lRowIdx++;
 
@@ -173,115 +189,145 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
         }
         lRowIdx++;
 
-		// highlight
+        // highlight
+        {
+                Label lLabel = new Label("Highlighted");
+                lLabel.setTooltip(new Tooltip("All highlighted dates"));
+                lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
+
+                // text field
+                final CalendarTextField lCalendarTextField = new CalendarTextField();
+                lGridPane.add(lCalendarTextField, new GridPane.C().row(lRowIdx).col(1));
+                // add button
+                {
+                        Button lButton = new Button("add");
+                        lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2));
+                        lButton.onActionProperty().set( (actionEvent) -> {
+                                Calendar c = lCalendarTextField.getCalendar();
+                                if (c != null) {
+                                        calendarPicker.highlightedCalendars().add(c);
+                                        lCalendarTextField.setCalendar(null);
+                                }
+                        });
+                }
+
+                lRowIdx++;
+
+                final ListView<Calendar> lListView = new ListView<Calendar>();
+                lListView.setItems(calendarPicker.highlightedCalendars());
+                lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<java.util.Calendar>() {
+                        @Override
+                        public String toString(java.util.Calendar o) {
+                                DateFormat lDateFormat = calendarPicker.getShowTime() ? SimpleDateFormat.getDateTimeInstance() : SimpleDateFormat.getDateInstance();
+                                return o == null ? "" : lDateFormat.format(o.getTime());
+                        }
+
+                        @Override
+                        public java.util.Calendar fromString(String s) {
+                                return null;  //never used
+                        }
+                }));
+                lGridPane.add(lListView, new GridPane.C().row(lRowIdx).col(1));
+                // remove button
+                {
+                        Button lButton = new Button("remove");
+                        lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP));
+                        lButton.onActionProperty().set( (actionEvent) -> {
+                                Calendar c = lListView.getSelectionModel().getSelectedItem();
+                                if (c != null) {
+                                        calendarPicker.highlightedCalendars().remove(c);
+                                }
+                        });
+                }
+
+        }
+        lRowIdx++;
+
+        // disabled
+        {
+                Label lLabel = new Label("Disabled");
+                lLabel.setTooltip(new Tooltip("All disabled dates"));
+                lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
+
+                // text field
+                final CalendarTextField lCalendarTextField = new CalendarTextField();
+                lGridPane.add(lCalendarTextField, new GridPane.C().row(lRowIdx).col(1));
+                // add button
+                {
+                        Button lButton = new Button("add");
+                        lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2));
+                        lButton.onActionProperty().set( (actionEvent) -> {
+                                Calendar c = lCalendarTextField.getCalendar();
+                                if (c != null) {
+                                        calendarPicker.disabledCalendars().add(c);
+                                        lCalendarTextField.setCalendar(null);
+                                }
+                        });
+                }
+
+                lRowIdx++;
+
+                final ListView<Calendar> lListView = new ListView<Calendar>();
+                lListView.setItems(calendarPicker.disabledCalendars());
+                lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<java.util.Calendar>() {
+                        @Override
+                        public String toString(java.util.Calendar o) {
+                                DateFormat lDateFormat = calendarPicker.getShowTime() ? SimpleDateFormat.getDateTimeInstance() : SimpleDateFormat.getDateInstance();
+                                return o == null ? "" : lDateFormat.format(o.getTime());
+                        }
+
+                        @Override
+                        public java.util.Calendar fromString(String s) {
+                                return null;  //never used
+                        }
+                }));
+                lGridPane.add(lListView, new GridPane.C().row(lRowIdx).col(1));
+                // remove button
+                {
+                        Button lButton = new Button("remove");
+                        lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP));
+                        lButton.onActionProperty().set( (actionEvent) -> {
+                                Calendar c = lListView.getSelectionModel().getSelectedItem();
+                                if (c != null) {
+                                        calendarPicker.disabledCalendars().remove(c);
+                                }
+                        });
+                }
+        }
+        lRowIdx++;
+
+		// stylesheet
 		{
-			Label lLabel = new Label("Highlighted");
-			lLabel.setTooltip(new Tooltip("All highlighted dates"));
+			Label lLabel = new Label("Stage Stylesheet");
+			lLabel.setTooltip(new Tooltip("To test how CSS will modify the displayed nodes"));
 			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
-
-			// text field
-			final CalendarTextField lCalendarTextField = new CalendarTextField();
-			lGridPane.add(lCalendarTextField, new GridPane.C().row(lRowIdx).col(1));
-			// add button
-			{
-				Button lButton = new Button("add");
-				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2));
-				lButton.onActionProperty().set( (actionEvent) -> {
-					Calendar c = lCalendarTextField.getCalendar();
-					if (c != null) {
-						calendarPicker.highlightedCalendars().add(c);
-						lCalendarTextField.setCalendar(null);
-					}
-				});
-			}
-
-			lRowIdx++;
-
-			final ListView<Calendar> lListView = new ListView<Calendar>();
-			lListView.setItems(calendarPicker.highlightedCalendars());
-			lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<java.util.Calendar>() {
-				@Override
-				public String toString(java.util.Calendar o) {
-					DateFormat lDateFormat = calendarPicker.getShowTime() ? SimpleDateFormat.getDateTimeInstance() : SimpleDateFormat.getDateInstance();
-					return o == null ? "" : lDateFormat.format(o.getTime());
-				}
-
-				@Override
-				public java.util.Calendar fromString(String s) {
-					return null;  //never used
-				}
-			}));
-			lGridPane.add(lListView, new GridPane.C().row(lRowIdx).col(1));
-			// remove button
-			{
-				Button lButton = new Button("remove");
-				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP));
-				lButton.onActionProperty().set( (actionEvent) -> {
-					Calendar c = lListView.getSelectionModel().getSelectedItem();
-					if (c != null) {
-						calendarPicker.highlightedCalendars().remove(c);
-					}
-				});
-			}
-
+			TextArea lTextArea = createTextAreaForCSS(stage, FXCollections.observableArrayList(
+				".ListSpinner {\n\t-fxx-arrow-position:SPLIT;\n}",
+				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL;\n}"));
+			lGridPane.add(lTextArea, new GridPane.C().row(lRowIdx).col(1).vgrow(Priority.ALWAYS).minHeight(100.0));
 		}
-		lRowIdx++;
+        lRowIdx++;
 
-		// disabled
-		{
-			Label lLabel = new Label("Disabled");
-			lLabel.setTooltip(new Tooltip("All disabled dates"));
-			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
-
-			// text field
-			final CalendarTextField lCalendarTextField = new CalendarTextField();
-			lGridPane.add(lCalendarTextField, new GridPane.C().row(lRowIdx).col(1));
-			// add button
-			{
-				Button lButton = new Button("add");
-				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2));
-				lButton.onActionProperty().set( (actionEvent) -> {
-					Calendar c = lCalendarTextField.getCalendar();
-					if (c != null) {
-						calendarPicker.disabledCalendars().add(c);
-						lCalendarTextField.setCalendar(null);
-					}
-				});
-			}
-
-			lRowIdx++;
-
-			final ListView<Calendar> lListView = new ListView<Calendar>();
-			lListView.setItems(calendarPicker.disabledCalendars());
-			lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<java.util.Calendar>() {
-				@Override
-				public String toString(java.util.Calendar o) {
-					DateFormat lDateFormat = calendarPicker.getShowTime() ? SimpleDateFormat.getDateTimeInstance() : SimpleDateFormat.getDateInstance();
-					return o == null ? "" : lDateFormat.format(o.getTime());
-				}
-
-				@Override
-				public java.util.Calendar fromString(String s) {
-					return null;  //never used
-				}
-			}));
-			lGridPane.add(lListView, new GridPane.C().row(lRowIdx).col(1));
-			// remove button
-			{
-				Button lButton = new Button("remove");
-				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP));
-				lButton.onActionProperty().set( (actionEvent) -> {
-					Calendar c = lListView.getSelectionModel().getSelectedItem();
-					if (c != null) {
-						calendarPicker.disabledCalendars().remove(c);
-					}
-				});
-			}
-		}
-		lRowIdx++;
-
-        // done
+		// done
+        setStyle();
         return lGridPane;
+    }
+    final CheckBox showWeeknumbersCheckBox = new CheckBox();
+    final TextField labelDateFormatTextField = new TextField("d");
+
+	/**
+	 * Make sure all styleable things are merged into a single string and applied
+	 */
+    private void setStyle() {
+        String lStyle = "";
+		if (showWeeknumbersCheckBox.isIndeterminate() == false) {
+			lStyle += "-fxx-show-weeknumbers:" + ( showWeeknumbersCheckBox.isSelected() ? "YES" : "NO") + ";";
+		}
+        if (labelDateFormatTextField.getText().length() > 0) {
+            lStyle += "-fxx-label-dateformat:\"" + labelDateFormatTextField.getText() + "\";";
+            //lStyle += "-fxx-label-dateformat:\"d'\n('D')'\";";
+        }
+        calendarPicker.setStyle(lStyle);
     }
 
     @Override

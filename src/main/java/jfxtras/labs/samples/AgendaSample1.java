@@ -1,26 +1,16 @@
 package jfxtras.labs.samples;
 
-import fxsampler.SampleBase;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import javafx.util.StringConverter;
 import jfxtras.labs.scene.control.Agenda;
 import jfxtras.labs.scene.control.CalendarTextField;
 import jfxtras.labs.scene.layout.GridPane;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class AgendaSample1 extends JFXtrasSampleBase

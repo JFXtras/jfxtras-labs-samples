@@ -5,6 +5,7 @@ jfxtras.labs.samples.calendar.CalendarPickerSample1.java
 jfxtras.labs.samples.calendar.CalendarTextFieldSample1.java
 jfxtras.labs.samples.calendar.CalendarTimePickerSample1.java
 jfxtras.labs.samples.calendar.CalendarTimeTextFieldSample1.java
+jfxtras.labs.samples.datetime.LocalDatePickerSample1.java
 jfxtras.labs.samples.datetime.LocalDateTimePickerSample1.java
 jfxtras.labs.samples.datetime.LocalDateTimeTextFieldSample1.java
 jfxtras.labs.samples.datetime.LocalTimePickerSample1.java
