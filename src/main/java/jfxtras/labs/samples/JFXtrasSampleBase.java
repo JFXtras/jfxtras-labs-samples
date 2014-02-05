@@ -4,12 +4,14 @@ import fxsampler.SampleBase;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.MouseButton;
+import javafx.scene.layout.Priority;
+import jfxtras.labs.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import jfxtras.labs.util.NodeUtil;
@@ -37,6 +39,9 @@ abstract public class JFXtrasSampleBase extends SampleBase {
 	 */
 	protected TextArea createTextAreaForCSS(Stage stage) {
 		try {
+			// clear any existing
+			stage.getScene().getStylesheets().clear();
+			
 			// the CSS file
 			File lFile = File.createTempFile(this.getClass().getSimpleName(), ".css");
 			lFile.deleteOnExit();
@@ -73,12 +78,12 @@ abstract public class JFXtrasSampleBase extends SampleBase {
 	protected TextArea createTextAreaForCSS(Stage stage, ObservableList<String> examples) {
 		// create textfield
 		final TextArea lTextArea = createTextAreaForCSS(stage);
-		lTextArea.setTooltip(new Tooltip(examples.size() + " examples are available under the MIDDLE mousebutton"));
+		lTextArea.setTooltip(new Tooltip(examples.size() + " example(s) available under double click"));
 		
 		// bind a popup
 		lTextArea.setOnMouseClicked( (evt) -> {
 			// only if the right mouse button is pressed
-			if (evt.getButton() != MouseButton.MIDDLE) {
+			if (evt.getClickCount() < 2) {
 				return;
 			}
 			
@@ -88,19 +93,46 @@ abstract public class JFXtrasSampleBase extends SampleBase {
 			lPopup.setAutoHide(true);
 			lPopup.setHideOnEscape(true);
 
+			// container
+			VBox lVBox = new VBox();
+			
 			// the list to show
 			final ListView<String> lListView = new ListView<>(examples);			
-			lListView.getSelectionModel().selectedItemProperty().addListener( (observable) -> {
-				lTextArea.setText( lListView.getSelectionModel().getSelectedItem() );
+			lListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+			lListView.setTooltip(new Tooltip("Double click or multiselect and use apply"));
+			lListView.setOnMouseClicked( (eventHandler) -> {
+				if (eventHandler.getClickCount() >= 2) {
+					applyTextAreaAsCSS(lListView, lTextArea);
+					lPopup.hide(); // TODO: does this introduce a memory leak?
+				}
+			});
+			lVBox.add(lListView, new VBox.C().vgrow(Priority.ALWAYS));
+			
+			// button
+			Button lApplyButton = new Button("Apply");
+			lVBox.add(lApplyButton, new VBox.C().vgrow(Priority.ALWAYS));
+			lApplyButton.setOnAction( (eventHandler) -> {
+				applyTextAreaAsCSS(lListView, lTextArea);
 				lPopup.hide(); // TODO: does this introduce a memory leak?
 			});
-			lPopup.getContent().add(lListView);
 			
 			// show
+			lPopup.getContent().add(lVBox);
 			lPopup.show(lTextArea, NodeUtil.screenX(lTextArea), NodeUtil.screenY(lTextArea));
 		});
 		
 		// done
 		return lTextArea;
+	}
+	
+	private void applyTextAreaAsCSS(ListView<String> listView, TextArea textArea) {
+		String lStyleSheet = "";
+		for (String s : listView.getSelectionModel().getSelectedItems()) {
+			if (lStyleSheet.length() > 0) {
+				lStyleSheet += "\n";
+			}
+			lStyleSheet += s;
+		}
+		textArea.setText( textArea.getText() + (textArea.getText().length() == 0 ? "" : "\n") + lStyleSheet );
 	}
 }

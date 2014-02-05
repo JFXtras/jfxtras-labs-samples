@@ -20,8 +20,11 @@ import jfxtras.labs.scene.layout.VBox;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
+import jfxtras.labs.internal.scene.control.skin.CalendarPickerControlSkin;
+import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
 
 public class CalendarPickerSample1 extends JFXtrasSampleBase
 {
@@ -120,33 +123,6 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
             CheckBox lCheckBox = new CheckBox();
             lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
             lCheckBox.selectedProperty().bindBidirectional(calendarPicker.showTimeProperty());
-        }
-        lRowIdx++;
-
-        // showWeeknumbers
-        {
-            Label lLabel = new Label("Show weeknumbers");
-            lLabel.setTooltip(new Tooltip("Indeterminate means that neither true or false is set."));
-			showWeeknumbersCheckBox.setAllowIndeterminate(true);
-			showWeeknumbersCheckBox.setIndeterminate(true);
-            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            lGridPane.add(showWeeknumbersCheckBox, new GridPane.C().row(lRowIdx).col(1));
-            showWeeknumbersCheckBox.selectedProperty().addListener( (observable) -> {
-                setStyle();
-            });
-            showWeeknumbersCheckBox.setSelected(true);
-        }
-        lRowIdx++;
-
-        // labelDateFormat
-        {
-            Label lLabel = new Label("Date Format");
-            lLabel.setTooltip(new Tooltip("See SimpleDateFormat, e.g. 'D' for day-of-year"));
-            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            lGridPane.add(labelDateFormatTextField, new GridPane.C().row(lRowIdx).col(1));
-            labelDateFormatTextField.focusedProperty().addListener( (observable) -> {
-                setStyle(); 
-            });
         }
         lRowIdx++;
 
@@ -297,38 +273,23 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
         lRowIdx++;
 
 		// stylesheet
-		{
+		{		
 			Label lLabel = new Label("Stage Stylesheet");
 			lLabel.setTooltip(new Tooltip("To test how CSS will modify the displayed nodes"));
 			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
 			TextArea lTextArea = createTextAreaForCSS(stage, FXCollections.observableArrayList(
-				".ListSpinner {\n\t-fxx-arrow-position:SPLIT;\n}",
-				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL;\n}"));
+				".CalendarPicker {\n\t-fxx-show-weeknumbers:NO; /* " +  Arrays.toString(CalendarPickerControlSkin.ShowWeeknumbers.values()) + " */\n}",
+				".CalendarPicker {\n\t-fxx-label-dateformat:\"D\"; /* See SimpleDateFormat, e.g. 'D' for day-of-year */\n}",				
+				".ListSpinner {\n\t-fxx-arrow-position:SPLIT; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowPosition.values()) + " */ \n}",
+				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowDirection.values()) + " */ \n}"));
 			lGridPane.add(lTextArea, new GridPane.C().row(lRowIdx).col(1).vgrow(Priority.ALWAYS).minHeight(100.0));
 		}
         lRowIdx++;
 
 		// done
-        setStyle();
         return lGridPane;
     }
-    final CheckBox showWeeknumbersCheckBox = new CheckBox();
     final TextField labelDateFormatTextField = new TextField("d");
-
-	/**
-	 * Make sure all styleable things are merged into a single string and applied
-	 */
-    private void setStyle() {
-        String lStyle = "";
-		if (showWeeknumbersCheckBox.isIndeterminate() == false) {
-			lStyle += "-fxx-show-weeknumbers:" + ( showWeeknumbersCheckBox.isSelected() ? "YES" : "NO") + ";";
-		}
-        if (labelDateFormatTextField.getText().length() > 0) {
-            lStyle += "-fxx-label-dateformat:\"" + labelDateFormatTextField.getText() + "\";";
-            //lStyle += "-fxx-label-dateformat:\"d'\n('D')'\";";
-        }
-        calendarPicker.setStyle(lStyle);
-    }
 
     @Override
     public String getJavaDocURL() {

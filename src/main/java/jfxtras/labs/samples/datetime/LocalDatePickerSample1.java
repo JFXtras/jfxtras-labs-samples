@@ -2,6 +2,7 @@ package jfxtras.labs.samples.datetime;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Locale;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,6 +16,8 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import jfxtras.labs.internal.scene.control.skin.CalendarPickerControlSkin;
+import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
 import jfxtras.labs.samples.JFXtrasSampleBase;
 import jfxtras.labs.scene.layout.GridPane;
 import jfxtras.labs.scene.layout.VBox;
@@ -40,13 +43,16 @@ public class LocalDatePickerSample1 extends JFXtrasSampleBase
 
     @Override
     public Node getPanel(Stage stage) {
-        VBox root = new VBox(20);
+		this.stage = stage;
+
+		VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
         root.getChildren().addAll(localDatePicker);
 
         return root;
     }
+	private Stage stage;
 
     @Override
     public Node getControlPanel() {
@@ -109,19 +115,6 @@ lRowIdx++;
             CheckBox lCheckBox = new CheckBox();
             lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
             lCheckBox.selectedProperty().bindBidirectional(localDatePicker.allowNullProperty());
-        }
-        lRowIdx++;
-
-        // showWeeknumbers
-        {
-            Label lLabel = new Label("Show weeknumbers");
-            //lLabel.setTooltip(new Tooltip("Only in SINGLE mode"));
-            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            lGridPane.add(showWeeknumbersCheckBox, new GridPane.C().row(lRowIdx).col(1));
-            showWeeknumbersCheckBox.setSelected(true);
-            showWeeknumbersCheckBox.selectedProperty().addListener( (observable) -> {
-				setStyle();
-            });
         }
         lRowIdx++;
 
@@ -270,15 +263,23 @@ lRowIdx++;
 //		}
 //		lRowIdx++;
 
+		// stylesheet
+		{		
+			Label lLabel = new Label("Stage Stylesheet");
+			lLabel.setTooltip(new Tooltip("To test how CSS will modify the displayed nodes"));
+			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
+			TextArea lTextArea = createTextAreaForCSS(stage, FXCollections.observableArrayList(
+				".LocalDatePicker {\n\t-fxx-show-weeknumbers:NO; /* " +  Arrays.toString(CalendarPickerControlSkin.ShowWeeknumbers.values()) + " */\n}",
+				".ListSpinner {\n\t-fxx-arrow-position:SPLIT; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowPosition.values()) + " */ \n}",
+				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowDirection.values()) + " */ \n}"));
+			lGridPane.add(lTextArea, new GridPane.C().row(lRowIdx).col(1).vgrow(Priority.ALWAYS).minHeight(100.0));
+		}
+        lRowIdx++;
+
         // done
-		setStyle();
         return lGridPane;
     }
-    private CheckBox showWeeknumbersCheckBox = new CheckBox();
 
-	private void setStyle() {
-        localDatePicker.setStyle( showWeeknumbersCheckBox.isSelected() ? "-fxx-show-weeknumbers:YES;" : "-fxx-show-weeknumbers:NO;");
-	}
     @Override
     public String getJavaDocURL() {
 		return "http://jfxtras.org/doc/8.0/" + LocalDatePicker.class.getName().replace(".", "/") + ".html";
