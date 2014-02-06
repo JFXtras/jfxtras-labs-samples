@@ -23,6 +23,9 @@ import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import jfxtras.labs.internal.scene.control.skin.CalendarPickerControlSkin;
+import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
 
 public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
 {
@@ -43,6 +46,8 @@ public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
 
     @Override
     public Node getPanel(Stage stage) {
+		this.stage = stage;
+
         VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
@@ -50,6 +55,7 @@ public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
 
         return root;
     }
+	private Stage stage;
 
     @Override
     public Node getControlPanel() {
@@ -65,15 +71,6 @@ public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
         lColumnConstraintsNeverGrow.setHgrow(Priority.NEVER);
         lGridPane.getColumnConstraints().addAll(lColumnConstraintsNeverGrow, lColumnConstraintsAlwaysGrow);
         int lRowIdx = 0;
-
-        // Mode
-        {
-            lGridPane.add(new Label("Mode"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            ChoiceBox<LocalDateTimePicker.Mode> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList(LocalDateTimePicker.Mode.values()));
-            lGridPane.add(lChoiceBox, new GridPane.C().row(lRowIdx).col(1));
-            lChoiceBox.valueProperty().bindBidirectional(localDateTimePicker.modeProperty());
-        }
-        lRowIdx++;
 
         // Locale
         {
@@ -110,31 +107,6 @@ public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
         }
         lRowIdx++;
 
-        // showTime
-        {
-            Label lLabel = new Label("Show time");
-            lLabel.setTooltip(new Tooltip("Only in SINGLE mode"));
-            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            CheckBox lCheckBox = new CheckBox();
-            lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
-            lCheckBox.selectedProperty().bindBidirectional(localDateTimePicker.showTimeProperty());
-        }
-        lRowIdx++;
-
-        // showWeeknumbers
-        {
-            Label lLabel = new Label("Show weeknumbers");
-            //lLabel.setTooltip(new Tooltip("Only in SINGLE mode"));
-            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            final CheckBox lCheckBox = new CheckBox();
-            lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
-            lCheckBox.selectedProperty().addListener( (observable) -> {
-                localDateTimePicker.setStyle( lCheckBox.isSelected() ? "-fxx-show-weeknumbers:YES;" : "-fxx-show-weeknumbers:NO;");
-            });
-            lCheckBox.setSelected(true);
-        }
-        lRowIdx++;
-
         // DateTime
         {
             Label lLabel = new Label("Value");
@@ -144,34 +116,7 @@ public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
             lDateTimeTextField.setDisable(true);
             lGridPane.add(lDateTimeTextField, new GridPane.C().row(lRowIdx).col(1));
             lDateTimeTextField.localDateTimeProperty().bindBidirectional(localDateTimePicker.localDateTimeProperty());
-            localDateTimePicker.showTimeProperty().addListener( (observable) -> {
-                lDateTimeTextField.setDateFormat( localDateTimePicker.getShowTime() ? SimpleDateFormat.getDateTimeInstance() : SimpleDateFormat.getDateInstance() );
-            });
-            lDateTimeTextField.setDateFormat( localDateTimePicker.getShowTime() ? SimpleDateFormat.getDateTimeInstance() : SimpleDateFormat.getDateInstance() );
-        }
-        lRowIdx++;
-
-        // calendars
-        {
-            Label lLabel = new Label("Selected");
-            lLabel.setTooltip(new Tooltip("All selected dates (multiple or range mode)"));
-            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
-            final ListView lListView = new ListView();
-
-            lListView.setItems(localDateTimePicker.localDateTimes());
-            lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<LocalDateTime>() {
-                @Override
-                public String toString(LocalDateTime o) {
-					DateTimeFormatter lDateTimeFormatter = localDateTimePicker.getShowTime() ? DateTimeFormatter.ISO_DATE_TIME : DateTimeFormatter.ISO_DATE;
-                    return o == null ? "" : lDateTimeFormatter.format(o);
-                }
-
-                @Override
-                public LocalDateTime fromString(String s) {
-                    return null;  //never used
-                }
-            }));
-            lGridPane.add(lListView, new GridPane.C().row(lRowIdx).col(1));
+            lDateTimeTextField.setDateFormat( SimpleDateFormat.getDateTimeInstance() );
         }
         lRowIdx++;
 
@@ -187,7 +132,7 @@ public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
 			// add button
 			{
 				Button lButton = new Button("add");
-				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2));
+				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP).hgrow(Priority.ALWAYS));
 				lButton.onActionProperty().set( (actionEvent) -> {
 					LocalDateTime c = lLocalDateTimeTextField.getLocalDateTime();
 					if (c != null) {
@@ -204,8 +149,7 @@ public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
 			lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<LocalDateTime>() {
 				@Override
 				public String toString(LocalDateTime o) {
-					DateTimeFormatter lDateTimeFormatter = localDateTimePicker.getShowTime() ? DateTimeFormatter.ISO_DATE_TIME : DateTimeFormatter.ISO_DATE;
-					return o == null ? "" : lDateTimeFormatter.format(o);
+					return o == null ? "" : DateTimeFormatter.ISO_DATE_TIME.format(o);
 				}
 
 				@Override
@@ -217,7 +161,7 @@ public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
 			// remove button
 			{
 				Button lButton = new Button("remove");
-				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP));
+				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP).hgrow(Priority.ALWAYS));
 				lButton.onActionProperty().set( (actionEvent) -> {
 					LocalDateTime c = lListView.getSelectionModel().getSelectedItem();
 					if (c != null) {
@@ -240,7 +184,7 @@ public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
 			// add button
 			{
 				Button lButton = new Button("add");
-				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2));
+				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP).hgrow(Priority.ALWAYS));
 				lButton.onActionProperty().set( (actionEvent) -> {
 					LocalDateTime c = lLocalDateTimeTextField.getLocalDateTime();
 					if (c != null) {
@@ -257,8 +201,7 @@ public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
 			lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<LocalDateTime>() {
 				@Override
 				public String toString(LocalDateTime o) {
-					DateTimeFormatter lDateTimeFormatter = localDateTimePicker.getShowTime() ? DateTimeFormatter.ISO_DATE_TIME : DateTimeFormatter.ISO_DATE;
-					return o == null ? "" : lDateTimeFormatter.format(o);
+					return o == null ? "" : DateTimeFormatter.ISO_DATE_TIME.format(o);
 				}
 
 				@Override
@@ -270,7 +213,7 @@ public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
 			// remove button
 			{
 				Button lButton = new Button("remove");
-				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP));
+				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP).hgrow(Priority.ALWAYS));
 				lButton.onActionProperty().set( (actionEvent) -> {
 					LocalDateTime c = lListView.getSelectionModel().getSelectedItem();
 					if (c != null) {
@@ -280,6 +223,19 @@ public class LocalDateTimePickerSample1 extends JFXtrasSampleBase
 			}
 		}
 		lRowIdx++;
+
+		// stylesheet
+		{		
+			Label lLabel = new Label("Stage Stylesheet");
+			lLabel.setTooltip(new Tooltip("To test how CSS will modify the displayed nodes"));
+			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
+			TextArea lTextArea = createTextAreaForCSS(stage, FXCollections.observableArrayList(
+				".LocalDateTimePicker {\n\t-fxx-show-weeknumbers:NO; /* " +  Arrays.toString(CalendarPickerControlSkin.ShowWeeknumbers.values()) + " */\n}",
+				".ListSpinner {\n\t-fxx-arrow-position:SPLIT; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowPosition.values()) + " */ \n}",
+				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowDirection.values()) + " */ \n}"));
+			lGridPane.add(lTextArea, new GridPane.C().row(lRowIdx).col(1).vgrow(Priority.ALWAYS).minHeight(100.0));
+		}
+        lRowIdx++;
 
         // done
         return lGridPane;

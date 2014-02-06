@@ -12,19 +12,19 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import jfxtras.labs.samples.JFXtrasSampleBase;
-import jfxtras.labs.scene.control.LocalDateTimeTextField;
+import jfxtras.labs.scene.control.LocalDateTextField;
 import jfxtras.labs.scene.layout.GridPane;
 import jfxtras.labs.scene.layout.VBox;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class LocalDateTimeTextFieldSample1 extends JFXtrasSampleBase
+public class LocalDateTextFieldSample1 extends JFXtrasSampleBase
 {
-    public LocalDateTimeTextFieldSample1() {
-        localeDateTimeTextField = new LocalDateTimeTextField();
+    public LocalDateTextFieldSample1() {
+        localeDateTextField = new LocalDateTextField();
     }
-    final LocalDateTimeTextField localeDateTimeTextField;
+    final LocalDateTextField localeDateTextField;
 
     @Override
     public String getSampleName() {
@@ -33,7 +33,7 @@ public class LocalDateTimeTextFieldSample1 extends JFXtrasSampleBase
 
     @Override
     public String getSampleDescription() {
-        return "Basic LocalDateTimeTextField usage";
+        return "Basic LocalDateTextField usage";
     }
 
     @Override
@@ -41,7 +41,7 @@ public class LocalDateTimeTextFieldSample1 extends JFXtrasSampleBase
         VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
-        root.getChildren().addAll(localeDateTimeTextField);
+        root.getChildren().addAll(localeDateTextField);
 
         return root;
     }
@@ -104,12 +104,12 @@ public class LocalDateTimeTextFieldSample1 extends JFXtrasSampleBase
 		if (lLocale == null) {
 			lLocale = Locale.getDefault();
 		}
-		localeDateTimeTextField.dateFormatProperty().set( SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.LONG, SimpleDateFormat.LONG, lLocale) );
+		localeDateTextField.dateFormatProperty().set( SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG, lLocale) );
 	}
 
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + LocalDateTimeTextField.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/" + LocalDateTextField.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {
