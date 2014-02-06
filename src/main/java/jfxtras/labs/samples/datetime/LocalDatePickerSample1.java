@@ -133,7 +133,7 @@ public class LocalDatePickerSample1 extends JFXtrasSampleBase
             lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
             final ListView lListView = new ListView();
 
-            lListView.setItems(localDatePicker.localDateTimes());
+            lListView.setItems(localDatePicker.localDates());
             lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<LocalDate>() {
                 @Override
                 public String toString(LocalDate o) {
