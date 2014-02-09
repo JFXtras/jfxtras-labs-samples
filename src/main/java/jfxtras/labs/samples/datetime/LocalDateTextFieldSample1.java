@@ -16,15 +16,24 @@ import jfxtras.labs.scene.control.LocalDateTextField;
 import jfxtras.labs.scene.layout.GridPane;
 import jfxtras.labs.scene.layout.VBox;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Locale;
+import javafx.geometry.VPos;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.util.Callback;
+import jfxtras.labs.internal.scene.control.skin.CalendarPickerControlSkin;
+import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
+import org.controlsfx.dialog.Dialogs;
 
 public class LocalDateTextFieldSample1 extends JFXtrasSampleBase
 {
     public LocalDateTextFieldSample1() {
-        localeDateTextField = new LocalDateTextField();
+        localDateTextField = new LocalDateTextField();
     }
-    final LocalDateTextField localeDateTextField;
+    final LocalDateTextField localDateTextField;
 
     @Override
     public String getSampleName() {
@@ -38,13 +47,25 @@ public class LocalDateTextFieldSample1 extends JFXtrasSampleBase
 
     @Override
     public Node getPanel(Stage stage) {
+		this.stage = stage;
+		
         VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
-        root.getChildren().addAll(localeDateTextField);
+        root.getChildren().addAll(localDateTextField);
 
-        return root;
+		localDateTextField.parseErrorCallbackProperty().set( (Callback<Throwable, Void>) (Throwable p) -> {
+			Dialogs.create()
+				.owner( stage )
+				.title("Parse error")
+				.message( p.getLocalizedMessage() )
+				.showError();
+			return null;
+		});
+
+		return root;
     }
+	private Stage stage;
 
     @Override
     public Node getControlPanel() {
@@ -94,17 +115,59 @@ public class LocalDateTextFieldSample1 extends JFXtrasSampleBase
         }
         lRowIdx++;
 
+        // date time format
+        {
+            Label lLabel = new Label("Date formatter");
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            dateTimeFormatterTextField.setTooltip(new Tooltip("A DateTimeFormatter used to render and parse the text"));
+            lGridPane.add(dateTimeFormatterTextField, new GridPane.C().row(lRowIdx).col(1));
+            dateTimeFormatterTextField.focusedProperty().addListener( (observable) -> {
+				setDateFormat();
+			});
+        }
+        lRowIdx++;
+
+        // DateTimeFormatters
+        {
+			lRowIdx = addObservableListManagementControlsToGridPane("Parse only formatters", "Alternate DateTimeFormatters patterns only for parsing the typed text", lGridPane, lRowIdx, localDateTextField.dateTimeFormattersProperty(), (String s) -> {
+				Locale lLocale = localeComboBox.valueProperty().get();
+				if (lLocale == null) {
+					lLocale = Locale.getDefault();
+				}
+				return DateTimeFormatter.ofPattern(s).withLocale(lLocale);
+			});
+        }
+
+		// stylesheet
+		{		
+			Label lLabel = new Label("Stage Stylesheet");
+			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
+			TextArea lTextArea = createTextAreaForCSS(stage, FXCollections.observableArrayList(
+				".LocalDateTextField {\n\t-fxx-show-weeknumbers:NO; /* " +  Arrays.toString(CalendarPickerControlSkin.ShowWeeknumbers.values()) + " */\n}",
+				".ListSpinner {\n\t-fxx-arrow-position:SPLIT; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowPosition.values()) + " */ \n}",
+				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowDirection.values()) + " */ \n}"));
+			lGridPane.add(lTextArea, new GridPane.C().row(lRowIdx).col(1).vgrow(Priority.ALWAYS).minHeight(100.0));
+		}
+        lRowIdx++;
+
         // done
+		setDateFormat();
         return lGridPane;
     }
+    private TextField dateTimeFormatterTextField = new TextField();
  	private ComboBox<Locale> localeComboBox;
 
-	private void setDateFormat() {
+	private Locale determineLocale() {
 		Locale lLocale = localeComboBox.valueProperty().get();
 		if (lLocale == null) {
 			lLocale = Locale.getDefault();
 		}
-		localeDateTextField.dateFormatProperty().set( SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG, lLocale) );
+		return lLocale;
+	}
+	
+	private void setDateFormat() {
+		// if a format is specified, use that, else clear
+		localDateTextField.setDateTimeFormatter( dateTimeFormatterTextField.getText().length() == 0 ? null : DateTimeFormatter.ofPattern(dateTimeFormatterTextField.getText(), determineLocale()) );
 	}
 
     @Override

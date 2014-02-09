@@ -149,107 +149,35 @@ public class LocalDatePickerSample1 extends JFXtrasSampleBase
         }
         lRowIdx++;
 
-		// highlight
+        // highlight
 		{
-			Label lLabel = new Label("Highlighted");
-			lLabel.setTooltip(new Tooltip("All highlighted dates"));
-			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
-
-			// text field
-			final LocalDateTextField lLocalDateTextField = new LocalDateTextField();
-			lGridPane.add(lLocalDateTextField, new GridPane.C().row(lRowIdx).col(1));
-			// add button
-			{
-				Button lButton = new Button("add");
-				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP).hgrow(Priority.ALWAYS));
-				lButton.onActionProperty().set( (actionEvent) -> {
-					LocalDate c = lLocalDateTextField.getLocalDate();
-					if (c != null) {
-						localDatePicker.highlightedLocalDates().add(c);
-						lLocalDateTextField.setLocalDate(null);
-					}
-				});
-			}
-			lRowIdx++;
-
-			final ListView<LocalDate> lListView = new ListView<>();
-			lListView.setItems(localDatePicker.highlightedLocalDates());
-			lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<LocalDate>() {
-				@Override
-				public String toString(LocalDate o) {
-					return o == null ? "" : DateTimeFormatter.ISO_DATE.format(o);
+			lRowIdx = addObservableListManagementControlsToGridPane("Highlighted", "All highlighted dates", lGridPane, lRowIdx, localDatePicker.highlightedLocalDates(), new LocalDateTextField()
+				, (Control c) -> {
+					LocalDateTextField lLocalDateTextField = (LocalDateTextField)c;
+					LocalDate lLocalDate = lLocalDateTextField.getLocalDate();
+					lLocalDateTextField.setLocalDate(null);
+					return lLocalDate;
 				}
-
-				@Override
-				public LocalDate fromString(String s) {
-					return null;  //never used
+				, (LocalDate t) -> {
+					return t == null ? "" : DateTimeFormatter.ISO_DATE.format(t);
 				}
-			}));
-			lGridPane.add(lListView, new GridPane.C().row(lRowIdx).col(1));
-			// remove button
-			{
-				Button lButton = new Button("remove");
-				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP).hgrow(Priority.ALWAYS));
-				lButton.onActionProperty().set( (actionEvent) -> {
-					LocalDate c = lListView.getSelectionModel().getSelectedItem();
-					if (c != null) {
-						localDatePicker.highlightedLocalDates().remove(c);
-					}
-				});
-			}
+			);
 		}
-		lRowIdx++;
 
-		// disabled
+        // disabled
 		{
-			Label lLabel = new Label("Disabled");
-			lLabel.setTooltip(new Tooltip("All disabled dates"));
-			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
-
-			// text field
-			final LocalDateTextField lLocalDateTextField = new LocalDateTextField();
-			lGridPane.add(lLocalDateTextField, new GridPane.C().row(lRowIdx).col(1));
-			// add button
-			{
-				Button lButton = new Button("add");
-				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP).hgrow(Priority.ALWAYS));
-				lButton.onActionProperty().set( (actionEvent) -> {
-					LocalDate c = lLocalDateTextField.getLocalDate();
-					if (c != null) {
-						localDatePicker.disabledLocalDates().add(c);
-						lLocalDateTextField.setLocalDate(null);
-					}
-				});
-			}
-			lRowIdx++;
-
-			final ListView<LocalDate> lListView = new ListView<LocalDate>();
-			lListView.setItems(localDatePicker.disabledLocalDates());
-			lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<LocalDate>() {
-				@Override
-				public String toString(LocalDate o) {
-					return o == null ? "" : DateTimeFormatter.ISO_DATE.format(o);
+			lRowIdx = addObservableListManagementControlsToGridPane("Disabled", "All disabled dates", lGridPane, lRowIdx, localDatePicker.disabledLocalDates(), new LocalDateTextField()
+				, (Control c) -> {
+					LocalDateTextField lLocalDateTextField = (LocalDateTextField)c;
+					LocalDate lLocalDate = lLocalDateTextField.getLocalDate();
+					lLocalDateTextField.setLocalDate(null);
+					return lLocalDate;
 				}
-
-				@Override
-				public LocalDate fromString(String s) {
-					return null;  //never used
+				, (LocalDate t) -> {
+					return t == null ? "" : DateTimeFormatter.ISO_DATE.format(t);
 				}
-			}));
-			lGridPane.add(lListView, new GridPane.C().row(lRowIdx).col(1));
-			// remove button
-			{
-				Button lButton = new Button("remove");
-				lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(2).valignment(VPos.TOP).hgrow(Priority.ALWAYS));
-				lButton.onActionProperty().set( (actionEvent) -> {
-					LocalDate c = lListView.getSelectionModel().getSelectedItem();
-					if (c != null) {
-						localDatePicker.disabledLocalDates().remove(c);
-					}
-				});
-			}
+			);
 		}
-		lRowIdx++;
 
 		// stylesheet
 		{		

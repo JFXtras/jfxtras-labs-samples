@@ -36,6 +36,7 @@ apply plugin: 'idea'
 
 dependencies {
 	compile group: 'org.controlsfx', name: 'fxsampler', version: '1.0.3'
+	compile group: 'org.controlsfx', name: 'controlsfx', version: '8.0.4'
     compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r1-SNAPSHOT'
 }
 

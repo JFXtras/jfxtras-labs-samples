@@ -92,9 +92,9 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
         // cyclic
         {
             Label lLabel = new Label("Cyclic");
-            lLabel.setTooltip(new Tooltip("When reaching the last in the list, cycle back to the first"));
             lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             CheckBox lCheckBox = new CheckBox();
+            lCheckBox.setTooltip(new Tooltip("When reaching the last in the list, cycle back to the first"));
             lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
             lCheckBox.selectedProperty().bindBidirectional(simpleStringListSpinner.cyclicProperty());
 			lCheckBox.selectedProperty().bindBidirectional(editableListSpinner.cyclicProperty());
