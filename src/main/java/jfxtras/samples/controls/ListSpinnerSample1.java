@@ -1,4 +1,4 @@
-package jfxtras.labs.samples;
+package jfxtras.samples.controls;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,10 +14,11 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
-import jfxtras.labs.scene.control.ListSpinner;
-import jfxtras.labs.scene.layout.GridPane;
+import jfxtras.internal.scene.control.skin.ListSpinnerSkin;
 import jfxtras.labs.util.StringConverterFactory;
+import jfxtras.samples.JFXtrasSampleBase;
+import jfxtras.scene.control.ListSpinner;
+import jfxtras.scene.layout.GridPane;
 
 public class ListSpinnerSample1 extends JFXtrasSampleBase
 {
@@ -104,7 +105,7 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
         // Arrow direction
         {
             lGridPane.add(new Label("Arrow direction"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            ChoiceBox<ListSpinnerCaspianSkin.ArrowDirection> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList(ListSpinnerCaspianSkin.ArrowDirection.values()));
+            ChoiceBox<ListSpinnerSkin.ArrowDirection> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList(ListSpinnerSkin.ArrowDirection.values()));
             lGridPane.add(lChoiceBox, new GridPane.C().row(lRowIdx).col(1));
             lChoiceBox.valueProperty().addListener( (observable) -> {
                 arrowDirectionStyle = "-fxx-arrow-direction:" + lChoiceBox.getValue() +";";
@@ -116,7 +117,7 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
         // Arrow position
         {
             lGridPane.add(new Label("Arrow position"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            ChoiceBox<ListSpinnerCaspianSkin.ArrowPosition> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList(ListSpinnerCaspianSkin.ArrowPosition.values()));
+            ChoiceBox<ListSpinnerSkin.ArrowPosition> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList(ListSpinnerSkin.ArrowPosition.values()));
             lGridPane.add(lChoiceBox, new GridPane.C().row(lRowIdx).col(1));
             lChoiceBox.valueProperty().addListener((observable) -> {
                 arrowPositionStyle = "-fxx-arrow-position:" + lChoiceBox.getValue() + ";";

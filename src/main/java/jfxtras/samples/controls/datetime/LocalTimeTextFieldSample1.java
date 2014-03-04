@@ -1,4 +1,7 @@
-package jfxtras.labs.samples.datetime;
+package jfxtras.samples.controls.datetime;
+
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,23 +10,21 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import jfxtras.labs.samples.JFXtrasSampleBase;
-import jfxtras.labs.scene.control.LocalTimeTextField;
-import jfxtras.labs.scene.layout.GridPane;
-import jfxtras.labs.scene.layout.VBox;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import jfxtras.samples.JFXtrasSampleBase;
+import jfxtras.scene.control.LocalTimeTextField;
+import jfxtras.scene.layout.GridPane;
+import jfxtras.scene.layout.VBox;
 
 public class LocalTimeTextFieldSample1 extends JFXtrasSampleBase
 {
     public LocalTimeTextFieldSample1() {
         localTimeTextField = new LocalTimeTextField();
-		localTimeTextField.showLabelsProperty().set(false);
     }
     final LocalTimeTextField localTimeTextField;
 
@@ -39,6 +40,8 @@ public class LocalTimeTextFieldSample1 extends JFXtrasSampleBase
 
     @Override
     public Node getPanel(Stage stage) {
+		this.stage = stage;
+
         VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
@@ -46,6 +49,7 @@ public class LocalTimeTextFieldSample1 extends JFXtrasSampleBase
 
         return root;
     }
+	private Stage stage;
 
     @Override
     public Node getControlPanel() {
@@ -64,7 +68,7 @@ public class LocalTimeTextFieldSample1 extends JFXtrasSampleBase
 
         // Locale
         {
-//            lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             final ObservableList<Locale> lLocales = FXCollections.observableArrayList(Locale.getAvailableLocales());
             FXCollections.sort(lLocales,  (o1, o2) -> { return o1.toString().compareTo(o2.toString()); } );
             localeComboBox = new ComboBox( lLocales );
@@ -87,23 +91,37 @@ public class LocalTimeTextFieldSample1 extends JFXtrasSampleBase
 				}
 			});
             localeComboBox.setEditable(true);
-//            lGridPane.add(localeComboBox, new GridPane.C().row(lRowIdx).col(1));
+            lGridPane.add(localeComboBox, new GridPane.C().row(lRowIdx).col(1));
 			// once the date format has been set manually, changing the local has no longer any effect, so binding the property is useless
 			localeComboBox.valueProperty().addListener( (observable) -> {
-				setDateFormat();
+				localTimeTextField.setLocale(determineLocale());
 			});
         }
         lRowIdx++;
 
-//        // nullAllowed
-//        {
-//            Label lLabel = new Label("Null allowed");
-//            lLabel.setTooltip(new Tooltip("Is the control allowed to hold null (or have no locale deselected)"));
-//            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-//            CheckBox lCheckBox = new CheckBox();
-//            lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
-//            lCheckBox.selectedProperty().bindBidirectional(localTimeTextField.allowNullProperty());
-//        }
+        // date time format
+        {
+            Label lLabel = new Label("Date formatter");
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            TextField lDateTimeFormatterTextField = new TextField();
+            lDateTimeFormatterTextField.setTooltip(new Tooltip("A DateTimeFormatter used to render and parse the text"));
+            lGridPane.add(lDateTimeFormatterTextField, new GridPane.C().row(lRowIdx).col(1));
+            lDateTimeFormatterTextField.focusedProperty().addListener( (observable) -> {
+            	localTimeTextField.setDateTimeFormatter( lDateTimeFormatterTextField.getText().length() == 0 ? null : DateTimeFormatter.ofPattern(lDateTimeFormatterTextField.getText()).withLocale(determineLocale()) );
+			});
+        }
+        lRowIdx++;
+
+//        // stylesheet
+//		{		
+//			Label lLabel = new Label("Stage Stylesheet");
+//			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
+//			TextArea lTextArea = createTextAreaForCSS(stage, FXCollections.observableArrayList(
+//				".LocalTimeTextField {\n\t-fxx-show-ticklabels:YES; /* " +  Arrays.toString(CalendarTimePickerSkin.ShowTickLabels.values()) + " */\n}",
+//				".LocalTimeTextField {\n\t-fxx-label-dateformat:\"hh:mm a\"; /* See SimpleDateFormat, e.g. 'HH' for 24 hours per day */\n}") 
+//			);
+//			lGridPane.add(lTextArea, new GridPane.C().row(lRowIdx).col(1).vgrow(Priority.ALWAYS).minHeight(100.0));
+//		}
 //        lRowIdx++;
 
         // done
@@ -111,14 +129,15 @@ public class LocalTimeTextFieldSample1 extends JFXtrasSampleBase
     }
  	private ComboBox<Locale> localeComboBox;
 
-	private void setDateFormat() {
+
+	private Locale determineLocale() {
 		Locale lLocale = localeComboBox.valueProperty().get();
 		if (lLocale == null) {
 			lLocale = Locale.getDefault();
 		}
-		localTimeTextField.dateFormatProperty().set( SimpleDateFormat.getTimeInstance(SimpleDateFormat.LONG, lLocale) );
+		return lLocale;
 	}
-
+	
     @Override
     public String getJavaDocURL() {
 		return "http://jfxtras.org/doc/8.0/" + LocalTimeTextField.class.getName().replace(".", "/") + ".html";

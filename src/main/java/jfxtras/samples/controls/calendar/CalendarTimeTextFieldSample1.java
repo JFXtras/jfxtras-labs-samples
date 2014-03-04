@@ -1,32 +1,35 @@
-package jfxtras.labs.samples.calendar;
+package jfxtras.samples.controls.calendar;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Locale;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import jfxtras.labs.samples.JFXtrasSampleBase;
-import jfxtras.labs.scene.control.CalendarTimeTextField;
-import jfxtras.labs.scene.layout.GridPane;
-import jfxtras.labs.scene.layout.VBox;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import jfxtras.internal.scene.control.skin.CalendarTimePickerSkin;
+import jfxtras.samples.JFXtrasSampleBase;
+import jfxtras.scene.control.CalendarTimeTextField;
+import jfxtras.scene.layout.GridPane;
+import jfxtras.scene.layout.VBox;
 
 public class CalendarTimeTextFieldSample1 extends JFXtrasSampleBase
 {
     public CalendarTimeTextFieldSample1() {
         calendarTimeTextField = new CalendarTimeTextField();
-		calendarTimeTextField.showLabelsProperty().set(false);
-		// TODO: make show labels work
-		// TODO: make locale AM/PM work
     }
     final CalendarTimeTextField calendarTimeTextField;
 
@@ -42,6 +45,8 @@ public class CalendarTimeTextFieldSample1 extends JFXtrasSampleBase
 
     @Override
     public Node getPanel(Stage stage) {
+		this.stage = stage;
+
         VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
@@ -49,7 +54,8 @@ public class CalendarTimeTextFieldSample1 extends JFXtrasSampleBase
 
         return root;
     }
-
+	private Stage stage;
+	
     @Override
     public Node getControlPanel() {
         // the result
@@ -67,7 +73,7 @@ public class CalendarTimeTextFieldSample1 extends JFXtrasSampleBase
 
         // Locale
         {
-//            lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             final ObservableList<Locale> lLocales = FXCollections.observableArrayList(Locale.getAvailableLocales());
             FXCollections.sort(lLocales,  (o1, o2) -> { return o1.toString().compareTo(o2.toString()); } );
             localeComboBox = new ComboBox( lLocales );
@@ -90,23 +96,38 @@ public class CalendarTimeTextFieldSample1 extends JFXtrasSampleBase
 				}
 			});
             localeComboBox.setEditable(true);
-//            lGridPane.add(localeComboBox, new GridPane.C().row(lRowIdx).col(1));
+            lGridPane.add(localeComboBox, new GridPane.C().row(lRowIdx).col(1));
 			// once the date format has been set manually, changing the local has no longer any effect, so binding the property is useless
 			localeComboBox.valueProperty().addListener( (observable) -> {
-				setDateFormat();
+				calendarTimeTextField.setLocale(determineLocale());
 			});
         }
         lRowIdx++;
 
-//        // nullAllowed
-//        {
-//            Label lLabel = new Label("Null allowed");
-//            lLabel.setTooltip(new Tooltip("Is the control allowed to hold null (or have no calendar deselected)"));
-//            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-//            CheckBox lCheckBox = new CheckBox();
-//            lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
-//            lCheckBox.selectedProperty().bindBidirectional(calendarTimeTextField.allowNullProperty());
-//        }
+        // date format
+        {
+            Label lLabel = new Label("Date format");
+            TextField lDateFormatTextField = new TextField();
+            lDateFormatTextField.setTooltip(new Tooltip("A SimpleDateFormat used to render and parse the text"));
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            lGridPane.add(lDateFormatTextField, new GridPane.C().row(lRowIdx).col(1));
+            lDateFormatTextField.focusedProperty().addListener( (observable) -> {
+        		DateFormat lDateFormat = (lDateFormatTextField.getText().length() == 0 ? null : new SimpleDateFormat(lDateFormatTextField.getText(), determineLocale()) );
+        		calendarTimeTextField.dateFormatProperty().set( lDateFormat );
+			});
+        }
+        lRowIdx++;
+
+//		// stylesheet
+//		{		
+//			Label lLabel = new Label("Stage Stylesheet");
+//			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
+//			TextArea lTextArea = createTextAreaForCSS(stage, FXCollections.observableArrayList(
+//				".CalendarTimePicker {\n\t-fxx-show-ticklabels:NO; /* " +  Arrays.toString(CalendarTimePickerSkin.ShowTickLabels.values()) + " */\n}",
+//				".CalendarTimePicker {\n\t-fxx-label-dateformat:\"hh:mm a\"; /* See SimpleDateFormat, e.g. 'HH' for 24 hours per day */\n}") 
+//			);
+//			lGridPane.add(lTextArea, new GridPane.C().row(lRowIdx).col(1).vgrow(Priority.ALWAYS).minHeight(100.0));
+//		}
 //        lRowIdx++;
 
         // done
@@ -114,14 +135,15 @@ public class CalendarTimeTextFieldSample1 extends JFXtrasSampleBase
     }
  	private ComboBox<Locale> localeComboBox;
 
-	private void setDateFormat() {
+
+	private Locale determineLocale() {
 		Locale lLocale = localeComboBox.valueProperty().get();
 		if (lLocale == null) {
 			lLocale = Locale.getDefault();
 		}
-		calendarTimeTextField.dateFormatProperty().set( SimpleDateFormat.getTimeInstance(SimpleDateFormat.LONG, lLocale) );
+		return lLocale;
 	}
-
+	
     @Override
     public String getJavaDocURL() {
 		return "http://jfxtras.org/doc/8.0/" + CalendarTimeTextField.class.getName().replace(".", "/") + ".html";

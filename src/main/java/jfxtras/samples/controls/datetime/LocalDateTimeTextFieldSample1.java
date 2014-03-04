@@ -1,31 +1,33 @@
-package jfxtras.labs.samples.datetime;
+package jfxtras.samples.controls.datetime;
+
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Locale;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.Priority;
-import javafx.stage.Stage;
-import javafx.util.StringConverter;
-import jfxtras.labs.samples.JFXtrasSampleBase;
-import jfxtras.labs.scene.control.LocalDateTimeTextField;
-import jfxtras.labs.scene.layout.GridPane;
-import jfxtras.labs.scene.layout.VBox;
-
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Locale;
-import javafx.geometry.VPos;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.Priority;
+import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.internal.scene.control.skin.CalendarPickerControlSkin;
-import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
+import javafx.util.StringConverter;
+import jfxtras.internal.scene.control.skin.CalendarPickerControlSkin;
+import jfxtras.internal.scene.control.skin.ListSpinnerSkin;
+import jfxtras.labs.samples.JFXtrasLabsSampleBase;
+import jfxtras.samples.JFXtrasSampleBase;
+import jfxtras.scene.control.LocalDateTimeTextField;
+import jfxtras.scene.layout.GridPane;
+import jfxtras.scene.layout.VBox;
+
 import org.controlsfx.dialog.Dialogs;
 
 public class LocalDateTimeTextFieldSample1 extends JFXtrasSampleBase
@@ -110,7 +112,7 @@ public class LocalDateTimeTextFieldSample1 extends JFXtrasSampleBase
             lGridPane.add(localeComboBox, new GridPane.C().row(lRowIdx).col(1));
 			// once the date format has been set manually, changing the local has no longer any effect, so binding the property is useless
 			localeComboBox.valueProperty().addListener( (observable) -> {
-				setDateFormat();
+				localDateTimeTextField.setLocale(determineLocale());
 			});
         }
         lRowIdx++;
@@ -119,10 +121,11 @@ public class LocalDateTimeTextFieldSample1 extends JFXtrasSampleBase
         {
             Label lLabel = new Label("DateTime formatter");
             lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            dateTimeFormatterTextField.setTooltip(new Tooltip("A DateTimeFormatter used to render and parse the text"));
-            lGridPane.add(dateTimeFormatterTextField, new GridPane.C().row(lRowIdx).col(1));
-            dateTimeFormatterTextField.focusedProperty().addListener( (observable) -> {
-				setDateFormat();
+            TextField lDateTimeFormatterTextField = new TextField();
+            lDateTimeFormatterTextField.setTooltip(new Tooltip("A DateTimeFormatter used to render and parse the text"));
+            lGridPane.add(lDateTimeFormatterTextField, new GridPane.C().row(lRowIdx).col(1));
+            lDateTimeFormatterTextField.focusedProperty().addListener( (observable) -> {
+            	localDateTimeTextField.setDateTimeFormatter( lDateTimeFormatterTextField.getText().length() == 0 ? null : DateTimeFormatter.ofPattern(lDateTimeFormatterTextField.getText()).withLocale(determineLocale()) );
 			});
         }
         lRowIdx++;
@@ -143,9 +146,9 @@ public class LocalDateTimeTextFieldSample1 extends JFXtrasSampleBase
 			Label lLabel = new Label("Stage Stylesheet");
 			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
 			TextArea lTextArea = createTextAreaForCSS(stage, FXCollections.observableArrayList(
-				".LocalDateTimeTextField {\n\t-fxx-show-weeknumbers:NO; /* " +  Arrays.toString(CalendarPickerControlSkin.ShowWeeknumbers.values()) + " */\n}",
-				".ListSpinner {\n\t-fxx-arrow-position:SPLIT; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowPosition.values()) + " */ \n}",
-				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowDirection.values()) + " */ \n}"));
+				".LocalDateTimePicker {\n\t-fxx-show-weeknumbers:NO; /* " +  Arrays.toString(CalendarPickerControlSkin.ShowWeeknumbers.values()) + " */\n}",
+				".ListSpinner {\n\t-fxx-arrow-position:SPLIT; /* " + Arrays.toString(ListSpinnerSkin.ArrowPosition.values()) + " */ \n}",
+				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL; /* " + Arrays.toString(ListSpinnerSkin.ArrowDirection.values()) + " */ \n}"));
 			lGridPane.add(lTextArea, new GridPane.C().row(lRowIdx).col(1).vgrow(Priority.ALWAYS).minHeight(100.0));
 		}
         lRowIdx++;
@@ -153,7 +156,6 @@ public class LocalDateTimeTextFieldSample1 extends JFXtrasSampleBase
         // done
         return lGridPane;
     }
-    private TextField dateTimeFormatterTextField = new TextField();
  	private ComboBox<Locale> localeComboBox;
 
 	private Locale determineLocale() {
@@ -164,11 +166,6 @@ public class LocalDateTimeTextFieldSample1 extends JFXtrasSampleBase
 		return lLocale;
 	}
 	
-	private void setDateFormat() {
-		// if a format is specified, use that, else clear
-		localDateTimeTextField.setDateTimeFormatter( dateTimeFormatterTextField.getText().length() == 0 ? null : DateTimeFormatter.ofPattern(dateTimeFormatterTextField.getText(), determineLocale()) );
-	}
-
     @Override
     public String getJavaDocURL() {
 		return "http://jfxtras.org/doc/8.0/" + LocalDateTimeTextField.class.getName().replace(".", "/") + ".html";

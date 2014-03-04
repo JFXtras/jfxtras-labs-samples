@@ -1,20 +1,24 @@
-package jfxtras.labs.samples.layout;
+package jfxtras.samples.layout;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import jfxtras.labs.samples.JFXtrasSampleBase;
-import jfxtras.labs.scene.layout.GridPane;
-import jfxtras.labs.scene.layout.VBox;
-
-import java.util.HashMap;
-import java.util.Map;
+import jfxtras.labs.samples.JFXtrasLabsSampleBase;
+import jfxtras.samples.JFXtrasSampleBase;
+import jfxtras.scene.layout.GridPane;
 
 public class GridPaneSample1 extends JFXtrasSampleBase
 {

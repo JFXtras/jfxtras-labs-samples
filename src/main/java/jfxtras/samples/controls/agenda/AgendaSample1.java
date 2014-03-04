@@ -1,19 +1,24 @@
-package jfxtras.labs.samples;
+package jfxtras.samples.controls.agenda;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javafx.geometry.HPos;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.scene.control.Agenda;
-import jfxtras.labs.scene.control.CalendarTextField;
-import jfxtras.labs.scene.layout.GridPane;
+import jfxtras.labs.samples.JFXtrasLabsSampleBase;
+import jfxtras.scene.control.CalendarTextField;
+import jfxtras.scene.control.agenda.Agenda;
+import jfxtras.scene.layout.GridPane;
 
-import java.util.*;
-
-public class AgendaSample1 extends JFXtrasSampleBase
+public class AgendaSample1 extends JFXtrasLabsSampleBase
 {
     public AgendaSample1() {
         agenda = new Agenda();

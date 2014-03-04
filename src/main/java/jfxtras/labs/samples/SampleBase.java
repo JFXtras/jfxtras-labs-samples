@@ -1,11 +1,11 @@
 package jfxtras.labs.samples;
 
-import fxsampler.SampleBase;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.WeakHashMap;
+
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
@@ -19,28 +19,23 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.Priority;
-import jfxtras.labs.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import jfxtras.labs.scene.layout.GridPane;
-import jfxtras.labs.util.NodeUtil;
+import jfxtras.scene.layout.GridPane;
+import jfxtras.scene.layout.VBox;
 
 /**
  */
-abstract public class JFXtrasSampleBase extends SampleBase {
-
-	/** {@inheritDoc} */
-	@Override public String getProjectName() {
-		return "JFXtras";
+abstract public class SampleBase extends fxsampler.SampleBase {
+	
+	@Override
+	public String getSampleSourceURL() {
+		String s = "https://github.com/JFXtras/jfxtras-labs-samples/blob/8.0/src/main/java/" + this.getClass().getName().replace(".", "/") + ".java";
+		System.out.println(s);
+		return s;
 	}
 
-	/** {@inheritDoc} */
-	@Override public String getProjectVersion() {
-		return "8.0"; // TBEE read from gradle meta-inf?
-	}
-	
-	
 	/**
 	 * Create a TextArea that automatically saves its contents as a CSS files and adds that to the stage.
 	 * 
@@ -103,7 +98,7 @@ abstract public class JFXtrasSampleBase extends SampleBase {
 
 				// show
 				lPopup.getContent().add(lVBox);
-				lPopup.show(lTextArea, NodeUtil.screenX(lTextArea), NodeUtil.screenY(lTextArea));
+				lPopup.show(lTextArea, jfxtras.util.NodeUtil.screenX(lTextArea), jfxtras.util.NodeUtil.screenY(lTextArea));
 			});
 
 			// done

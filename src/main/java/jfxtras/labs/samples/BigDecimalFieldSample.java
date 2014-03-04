@@ -1,28 +1,32 @@
 package jfxtras.labs.samples;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBoxBuilder;
+import javafx.scene.control.Label;
+import javafx.scene.control.LabelBuilder;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.BigDecimalField;
 import jfxtras.labs.scene.control.BigDecimalFieldBuilder;
-import jfxtras.labs.scene.control.CalendarTextField;
-
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
+import jfxtras.scene.control.CalendarTextField;
 
 /**
  * Demo for the {@link BigDecimalField} control.
  *
  * @author Thomas Bolz
  */
-public class BigDecimalFieldSample extends JFXtrasSampleBase {
+public class BigDecimalFieldSample extends JFXtrasLabsSampleBase {
 
     /**
      *

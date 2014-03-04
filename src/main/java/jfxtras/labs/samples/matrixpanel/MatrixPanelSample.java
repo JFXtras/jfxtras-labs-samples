@@ -29,19 +29,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import jfxtras.labs.samples.JFXtrasSampleBase;
+import jfxtras.labs.samples.JFXtrasLabsSampleBase;
 import jfxtras.labs.scene.control.gauge.Content;
 import jfxtras.labs.scene.control.gauge.ContentBuilder;
 import jfxtras.labs.scene.control.gauge.MatrixPanel;
 import jfxtras.labs.scene.control.gauge.MatrixPanelBuilder;
-import jfxtras.labs.scene.layout.GridPane;
+import jfxtras.scene.layout.GridPane;
 
 /**
  *
  * @author José Pereda Llamas
  * Created on 26-dic-2013 - 15:02:33
  */
-public class MatrixPanelSample extends JFXtrasSampleBase {
+public class MatrixPanelSample extends JFXtrasLabsSampleBase {
 
     private final Content content1= ContentBuilder.create()
                     .color(Content.MatrixColor.RGB)

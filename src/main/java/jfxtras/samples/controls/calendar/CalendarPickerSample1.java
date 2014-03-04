@@ -1,4 +1,10 @@
-package jfxtras.labs.samples.calendar;
+package jfxtras.samples.controls.calendar;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Locale;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -6,25 +12,27 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import jfxtras.labs.samples.JFXtrasSampleBase;
-import jfxtras.labs.scene.control.CalendarPicker;
-import jfxtras.labs.scene.control.CalendarTextField;
-import jfxtras.labs.scene.layout.GridPane;
-import jfxtras.labs.scene.layout.VBox;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Locale;
-import jfxtras.labs.internal.scene.control.skin.CalendarPickerControlSkin;
-import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
+import jfxtras.internal.scene.control.skin.CalendarPickerControlSkin;
+import jfxtras.internal.scene.control.skin.ListSpinnerSkin;
+import jfxtras.samples.JFXtrasSampleBase;
+import jfxtras.scene.control.CalendarPicker;
+import jfxtras.scene.control.CalendarTextField;
+import jfxtras.scene.layout.GridPane;
+import jfxtras.scene.layout.VBox;
 
 public class CalendarPickerSample1 extends JFXtrasSampleBase
 {
@@ -204,8 +212,9 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
 			TextArea lTextArea = createTextAreaForCSS(stage, FXCollections.observableArrayList(
 				".CalendarPicker {\n\t-fxx-show-weeknumbers:NO; /* " +  Arrays.toString(CalendarPickerControlSkin.ShowWeeknumbers.values()) + " */\n}",
 				".CalendarPicker {\n\t-fxx-label-dateformat:\"D\"; /* See SimpleDateFormat, e.g. 'D' for day-of-year */\n}",				
-				".ListSpinner {\n\t-fxx-arrow-position:SPLIT; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowPosition.values()) + " */ \n}",
-				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowDirection.values()) + " */ \n}"));
+				".ListSpinner {\n\t-fxx-arrow-position:SPLIT; /* " + Arrays.toString(ListSpinnerSkin.ArrowPosition.values()) + " */ \n}",
+				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL; /* " + Arrays.toString(ListSpinnerSkin.ArrowDirection.values()) + " */ \n}")
+			);
 			lGridPane.add(lTextArea, new GridPane.C().row(lRowIdx).col(1).vgrow(Priority.ALWAYS).minHeight(100.0));
 		}
         lRowIdx++;

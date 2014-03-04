@@ -1,4 +1,4 @@
-package jfxtras.labs.samples;
+package jfxtras.samples;
 
 import fxsampler.FXSamplerProject;
 
@@ -12,6 +12,6 @@ public class JFXtrasSamplesProject implements FXSamplerProject {
 
 	@Override
 	public String getSampleBasePackage() {
-		return "jfxtras.labs.samples";
+		return "jfxtras.samples";
 	}
 }

@@ -29,7 +29,7 @@ import javafx.scene.paint.LinearGradientBuilder;
 import javafx.scene.paint.StopBuilder;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import jfxtras.labs.samples.JFXtrasSampleBase;
+import jfxtras.labs.samples.JFXtrasLabsSampleBase;
 import jfxtras.labs.scene.control.radialmenu.RadialContainerMenuItem;
 import jfxtras.labs.scene.control.radialmenu.RadialMenu;
 import jfxtras.labs.scene.control.radialmenu.RadialMenuItem;
@@ -38,7 +38,7 @@ import jfxtras.labs.scene.control.radialmenu.RadialMenuItem;
  *
  * @author MrLoNee
  */
-public class RadialMenuSample extends JFXtrasSampleBase {
+public class RadialMenuSample extends JFXtrasLabsSampleBase {
 
     protected RadialMenu radialMenu;
     protected Label actionPerformedLabel = new Label();

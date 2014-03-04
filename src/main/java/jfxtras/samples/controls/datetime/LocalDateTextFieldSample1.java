@@ -1,36 +1,40 @@
-package jfxtras.labs.samples.calendar;
+package jfxtras.samples.controls.datetime;
 
-import java.text.DateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Locale;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
-import jfxtras.labs.samples.JFXtrasSampleBase;
-import jfxtras.labs.scene.control.CalendarTextField;
-import jfxtras.labs.scene.layout.GridPane;
-import jfxtras.labs.scene.layout.VBox;
-
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Locale;
-import javafx.geometry.VPos;
 import javafx.util.Callback;
-import jfxtras.labs.internal.scene.control.skin.CalendarPickerControlSkin;
-import jfxtras.labs.internal.scene.control.skin.ListSpinnerCaspianSkin;
+import javafx.util.StringConverter;
+import jfxtras.internal.scene.control.skin.CalendarPickerControlSkin;
+import jfxtras.internal.scene.control.skin.ListSpinnerSkin;
+import jfxtras.samples.JFXtrasSampleBase;
+import jfxtras.scene.control.LocalDateTextField;
+import jfxtras.scene.layout.GridPane;
+import jfxtras.scene.layout.VBox;
+
 import org.controlsfx.dialog.Dialogs;
 
-public class CalendarTextFieldSample1 extends JFXtrasSampleBase
+public class LocalDateTextFieldSample1 extends JFXtrasSampleBase
 {
-    public CalendarTextFieldSample1() {
-        calendarTextField = new CalendarTextField();
+    public LocalDateTextFieldSample1() {
+        localDateTextField = new LocalDateTextField();
     }
-    final CalendarTextField calendarTextField;
+    final LocalDateTextField localDateTextField;
 
     @Override
     public String getSampleName() {
@@ -39,7 +43,7 @@ public class CalendarTextFieldSample1 extends JFXtrasSampleBase
 
     @Override
     public String getSampleDescription() {
-        return "Basic CalendarTextField usage";
+        return "Basic LocalDateTextField usage";
     }
 
     @Override
@@ -49,9 +53,9 @@ public class CalendarTextFieldSample1 extends JFXtrasSampleBase
         VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
-        root.getChildren().addAll(calendarTextField);
+        root.getChildren().addAll(localDateTextField);
 
-		calendarTextField.parseErrorCallbackProperty().set( (Callback<Throwable, Void>) (Throwable p) -> {
+		localDateTextField.parseErrorCallbackProperty().set( (Callback<Throwable, Void>) (Throwable p) -> {
 			Dialogs.create()
 				.owner( stage )
 				.title("Parse error")
@@ -60,7 +64,7 @@ public class CalendarTextFieldSample1 extends JFXtrasSampleBase
 			return null;
 		});
 
-        return root;
+		return root;
     }
 	private Stage stage;
 
@@ -107,26 +111,29 @@ public class CalendarTextFieldSample1 extends JFXtrasSampleBase
             lGridPane.add(localeComboBox, new GridPane.C().row(lRowIdx).col(1));
 			// once the date format has been set manually, changing the local has no longer any effect, so binding the property is useless
 			localeComboBox.valueProperty().addListener( (observable) -> {
-				setDateFormat();
+				localDateTextField.setLocale(determineLocale());
 			});
         }
         lRowIdx++;
 
-        // date format
+        // date time format
         {
-            Label lLabel = new Label("Date format");
-            lLabel.setTooltip(new Tooltip("A SimpleDateFormat used to render and parse the text, also use this to show the time (hh:mm)"));
+            Label lLabel = new Label("Date formatter");
             lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            lGridPane.add(dateFormatTextField, new GridPane.C().row(lRowIdx).col(1));
-            dateFormatTextField.focusedProperty().addListener( (observable) -> {
-				setDateFormat();
+            TextField lDateTimeFormatterTextField = new TextField();
+            lDateTimeFormatterTextField.setTooltip(new Tooltip("A DateTimeFormatter used to render and parse the text"));
+            lGridPane.add(lDateTimeFormatterTextField, new GridPane.C().row(lRowIdx).col(1));
+            lDateTimeFormatterTextField.focusedProperty().addListener( (observable) -> {
+            	localDateTextField.setDateTimeFormatter( lDateTimeFormatterTextField.getText().length() == 0 ? null : DateTimeFormatter.ofPattern(lDateTimeFormatterTextField.getText()).withLocale(determineLocale()) );
 			});
         }
         lRowIdx++;
 
-        // DateFormats
+        // DateTimeFormatters
         {
-			lRowIdx = addObservableListManagementControlsToGridPane("Parse only formats", "Alternate SimpleDateFormat patterns only for parsing the typed text", lGridPane, lRowIdx, calendarTextField.dateFormatsProperty(), (String s) -> new SimpleDateFormat(s));
+			lRowIdx = addObservableListManagementControlsToGridPane("Parse only formatters", "Alternate DateTimeFormatters patterns only for parsing the typed text", lGridPane, lRowIdx, localDateTextField.dateTimeFormattersProperty(), (String s) -> {
+				return DateTimeFormatter.ofPattern(s).withLocale(determineLocale());
+			});
         }
 
 		// stylesheet
@@ -134,19 +141,16 @@ public class CalendarTextFieldSample1 extends JFXtrasSampleBase
 			Label lLabel = new Label("Stage Stylesheet");
 			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
 			TextArea lTextArea = createTextAreaForCSS(stage, FXCollections.observableArrayList(
-				".CalendarPicker {\n\t-fxx-show-weeknumbers:NO; /* " +  Arrays.toString(CalendarPickerControlSkin.ShowWeeknumbers.values()) + " */\n}",
-				".CalendarPicker {\n\t-fxx-label-dateformat:\"D\"; /* See SimpleDateFormat, e.g. 'D' for day-of-year */\n}",				
-				".ListSpinner {\n\t-fxx-arrow-position:SPLIT; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowPosition.values()) + " */ \n}",
-				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL; /* " + Arrays.toString(ListSpinnerCaspianSkin.ArrowDirection.values()) + " */ \n}"));
+				".LocalDatePicker {\n\t-fxx-show-weeknumbers:NO; /* " +  Arrays.toString(CalendarPickerControlSkin.ShowWeeknumbers.values()) + " */\n}",
+				".ListSpinner {\n\t-fxx-arrow-position:SPLIT; /* " + Arrays.toString(ListSpinnerSkin.ArrowPosition.values()) + " */ \n}",
+				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL; /* " + Arrays.toString(ListSpinnerSkin.ArrowDirection.values()) + " */ \n}"));
 			lGridPane.add(lTextArea, new GridPane.C().row(lRowIdx).col(1).vgrow(Priority.ALWAYS).minHeight(100.0));
 		}
         lRowIdx++;
 
         // done
-		setDateFormat();
         return lGridPane;
     }
-    private TextField dateFormatTextField = new TextField();
  	private ComboBox<Locale> localeComboBox;
 
 	private Locale determineLocale() {
@@ -157,15 +161,9 @@ public class CalendarTextFieldSample1 extends JFXtrasSampleBase
 		return lLocale;
 	}
 	
-	private void setDateFormat() {
-		// if a format is specified, use that, else clear
-		DateFormat lDateFormat = (dateFormatTextField.getText().length() == 0 ? null : new SimpleDateFormat(dateFormatTextField.getText(), determineLocale()) );
-		calendarTextField.dateFormatProperty().set( lDateFormat );
-	}
-
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + CalendarTextField.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/" + LocalDateTextField.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

@@ -25,7 +25,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import jfxtras.labs.samples.JFXtrasSampleBase;
+import jfxtras.labs.samples.JFXtrasLabsSampleBase;
 import jfxtras.labs.scene.control.Magnifier;
 
 /**
@@ -33,7 +33,7 @@ import jfxtras.labs.scene.control.Magnifier;
  *
  * @author SaiPradeepDandem
  */
-public class MagnifierSample extends JFXtrasSampleBase {
+public class MagnifierSample extends JFXtrasLabsSampleBase {
 
     private DoubleProperty radius = new SimpleDoubleProperty();
     private DoubleProperty frameWidth = new SimpleDoubleProperty();

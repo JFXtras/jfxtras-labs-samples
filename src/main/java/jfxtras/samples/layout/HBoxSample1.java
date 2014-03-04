@@ -1,4 +1,7 @@
-package jfxtras.labs.samples.layout;
+package jfxtras.samples.layout;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -7,34 +10,31 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-import jfxtras.labs.samples.JFXtrasSampleBase;
-import jfxtras.labs.scene.layout.GridPane;
-import jfxtras.labs.scene.layout.VBox;
+import jfxtras.labs.samples.JFXtrasLabsSampleBase;
+import jfxtras.samples.JFXtrasSampleBase;
+import jfxtras.scene.layout.GridPane;
+import jfxtras.scene.layout.HBox;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class VBoxSample1 extends JFXtrasSampleBase
+public class HBoxSample1 extends JFXtrasSampleBase
 {
     /**
      *
      */
-    public VBoxSample1() {
-		vbox = new VBox(5.0);
-		vbox.add(new Button("grow CLICK ME"), new VBox.C().vgrow(Priority.ALWAYS));
-		setupDescriptorOnLastButton("Button b = new Button(\"text\");\nvbox.getChildren().add(b);\nVBox.setHgrow(b, Priority.ALWAYS);", "vbox.add(new Button(\"text\"), new VBox.C()\n\t.vgrow(Priority.ALWAYS));");
-		vbox.add(new Button("margin 5 grow CLICK ME"), new VBox.C().margin(new Insets(5.0)).vgrow(Priority.ALWAYS));
-		setupDescriptorOnLastButton("Button b = new Button(\"text\");\nvbox.getChildren().add(b);\nVBox.setMargin(new Insets(5.0));\nVBox.setHgrow(b, Priority.ALWAYS);", "vbox.add(new Button(\"text\"), new VBox.C()\n\t.margin(new Insets(5.0))\n\t.vgrow(Priority.ALWAYS));");
-		vbox.add(new Button("grow maxwidth 200 CLICK ME"), new VBox.C().vgrow(Priority.ALWAYS).maxWidth(200.0));
-		setupDescriptorOnLastButton("Button b = new Button(\"text\");\nb.setMaxWidth(200.0);\nvbox.getChildren().add(b);\nVBox.setHgrow(b, Priority.ALWAYS);", "vbox.add(new Button(\"text\"), new VBox.C()\n\t.maxWidth(200.0)\n\t.vgrow(Priority.ALWAYS));");
-		vbox.setMaxWidth(250);
-		vbox.setStyle("-fx-border-color: black;");
+    public HBoxSample1() {
+		hbox = new HBox(5.0);
+		hbox.add(new Button("grow\nCLICK ME"), new HBox.C().hgrow(Priority.ALWAYS));
+		setupDescriptorOnLastButton("Button b = new Button(\"text\");\nhbox.getChildren().add(b);\nHBox.setHgrow(b, Priority.ALWAYS);", "hbox.add(new Button(\"text\"), new HBox.C()\n\t.hgrow(Priority.ALWAYS));");
+		hbox.add(new Button("margin 5 grow\nCLICK ME"), new HBox.C().margin(new Insets(5.0)).hgrow(Priority.ALWAYS));
+		setupDescriptorOnLastButton("Button b = new Button(\"text\");\nhbox.getChildren().add(b);\nHBox.setMargin(b, new Insets(5.0));\nHBox.setHgrow(b1, Priority.ALWAYS);", "hbox.add(new Button(\"text\"), new HBox.C()\n\t.margin(new Insets(5.0))\n\t.hgrow(Priority.ALWAYS));");
+		hbox.add(new Button("grow maxheight 50\nCLICK ME"), new HBox.C().hgrow(Priority.ALWAYS).maxHeight(50.0));
+		setupDescriptorOnLastButton("Button b = new Button(\"text\");\nb.setMaxHeight(50.0);\nhbox.getChildren().add(b);\nHBox.setHgrow(b1, Priority.ALWAYS);", "hbox.add(new Button(\"text\"), new HBox.C()\n\t.maxHeight(50.0)\n\t.hgrow(Priority.ALWAYS));");
+		hbox.setMaxHeight(100);
+		hbox.setStyle("-fx-border-color: black;");
 	}
-	final VBox vbox;
+	final HBox hbox;
 	final Map<Button, Descriptor> descriptorMap = new HashMap<>();
 
 	class Descriptor {
@@ -47,11 +47,11 @@ public class VBoxSample1 extends JFXtrasSampleBase
 	}
 
 	private void setupDescriptorOnLastButton(String oldStyle, String newStyle) {
-		final Button lButton = (Button)vbox.getChildren().get(vbox.getChildren().size() - 1);
+		final Button lButton = (Button)hbox.getChildren().get(hbox.getChildren().size() - 1);
 		descriptorMap.put(lButton, new Descriptor(oldStyle, newStyle));
 		lButton.onMouseClickedProperty().set((actionEvent) -> {
 			oldTextArea.textProperty().set( descriptorMap.get(lButton).oldStyle );
-			newTextArea.textProperty().set(descriptorMap.get(lButton).newStyle);
+			newTextArea.textProperty().set( descriptorMap.get(lButton).newStyle );
 		});
 	}
 
@@ -80,10 +80,7 @@ public class VBoxSample1 extends JFXtrasSampleBase
      */
     @Override
     public Node getPanel(Stage stage) {
-		BorderPane lBorderPane = new BorderPane();
-		lBorderPane.setCenter(vbox);
-		lBorderPane.setPadding(new Insets(10));
-		return lBorderPane;
+		return hbox;
     }
 
     @Override
@@ -128,7 +125,7 @@ public class VBoxSample1 extends JFXtrasSampleBase
      */
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + VBox.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/" + HBox.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {
