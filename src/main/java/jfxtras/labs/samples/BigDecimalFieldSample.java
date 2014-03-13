@@ -124,7 +124,7 @@ public class BigDecimalFieldSample extends JFXtrasLabsSampleBase {
 
     @Override
     public String getJavaDocURL() {
-        return "http://jfxtras.org/doc/8.0/" + BigDecimalField.class.getName().replace(".", "/") + ".html";
+        return "http://jfxtras.org/doc/8.0labs/" + BigDecimalField.class.getName().replace(".", "/") + ".html";
     }
 
 

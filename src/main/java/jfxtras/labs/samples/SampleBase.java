@@ -31,8 +31,8 @@ abstract public class SampleBase extends fxsampler.SampleBase {
 	
 	@Override
 	public String getSampleSourceURL() {
-		String s = "https://github.com/JFXtras/jfxtras-labs-samples/blob/8.0/src/main/java/" + this.getClass().getName().replace(".", "/") + ".java";
-		System.out.println(s);
+		String s = "https://raw.github.com/JFXtras/jfxtras-labs-samples/8.0/src/main/java/" + this.getClass().getName().replace(".", "/") + ".java";
+		//System.out.println(s);
 		return s;
 	}
 

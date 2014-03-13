@@ -62,7 +62,7 @@ public class MagnifierSample extends JFXtrasLabsSampleBase {
 
     @Override
     public String getJavaDocURL() {
-        return "http://jfxtras.org/doc/8.0/" + Magnifier.class.getName().replace(".", "/") + ".html";
+        return "http://jfxtras.org/doc/8.0labs/" + Magnifier.class.getName().replace(".", "/") + ".html";
     }
 
     @Override

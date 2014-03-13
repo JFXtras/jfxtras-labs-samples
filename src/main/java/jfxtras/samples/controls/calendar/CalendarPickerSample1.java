@@ -82,7 +82,7 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
         // Mode
         {
             lGridPane.add(new Label("Mode"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            ChoiceBox<CalendarPicker.Mode> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList(CalendarPicker.Mode.values()));
+            ChoiceBox<CalendarPicker.Mode> lChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(CalendarPicker.Mode.values()));
             lGridPane.add(lChoiceBox, new GridPane.C().row(lRowIdx).col(1));
             lChoiceBox.valueProperty().bindBidirectional(calendarPicker.modeProperty());
         }
@@ -93,7 +93,7 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
             lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             ObservableList<Locale> lLocales = FXCollections.observableArrayList(Locale.getAvailableLocales());
             FXCollections.sort(lLocales,  (o1, o2) -> { return o1.toString().compareTo(o2.toString()); } );
-            ComboBox<Locale> lComboBox = new ComboBox( lLocales );
+            ComboBox<Locale> lComboBox = new ComboBox<>( lLocales );
             lComboBox.converterProperty().set(new StringConverter<Locale>() {
                 @Override
                 public String toString(Locale locale) {
@@ -154,7 +154,7 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
         {
             Label lLabel = new Label("Selected");
             lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
-            final ListView lListView = new ListView();
+            final ListView<java.util.Calendar> lListView = new ListView<>();
             lListView.setTooltip(new Tooltip("All selected dates (multiple or range mode)"));
             lListView.setItems(calendarPicker.calendars());
             lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<java.util.Calendar>() {
@@ -212,6 +212,7 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
 			TextArea lTextArea = createTextAreaForCSS(stage, FXCollections.observableArrayList(
 				".CalendarPicker {\n\t-fxx-show-weeknumbers:NO; /* " +  Arrays.toString(CalendarPickerControlSkin.ShowWeeknumbers.values()) + " */\n}",
 				".CalendarPicker {\n\t-fxx-label-dateformat:\"D\"; /* See SimpleDateFormat, e.g. 'D' for day-of-year */\n}",				
+				".CalendarTimePicker {\n\t-fxx-label-dateformat:\"HH:mm:ss\"; /* See SimpleDateFormat, e.g. 'HH' for 24 hour day */\n}",				
 				".ListSpinner {\n\t-fxx-arrow-position:SPLIT; /* " + Arrays.toString(ListSpinnerSkin.ArrowPosition.values()) + " */ \n}",
 				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL; /* " + Arrays.toString(ListSpinnerSkin.ArrowDirection.values()) + " */ \n}")
 			);

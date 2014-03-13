@@ -2,25 +2,21 @@ package jfxtras.samples.controls.calendar;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Locale;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import jfxtras.internal.scene.control.skin.CalendarTimePickerSkin;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.control.CalendarTimeTextField;
 import jfxtras.scene.layout.GridPane;
@@ -45,8 +41,6 @@ public class CalendarTimeTextFieldSample1 extends JFXtrasSampleBase
 
     @Override
     public Node getPanel(Stage stage) {
-		this.stage = stage;
-
         VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
@@ -54,7 +48,6 @@ public class CalendarTimeTextFieldSample1 extends JFXtrasSampleBase
 
         return root;
     }
-	private Stage stage;
 	
     @Override
     public Node getControlPanel() {
@@ -76,7 +69,7 @@ public class CalendarTimeTextFieldSample1 extends JFXtrasSampleBase
             lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             final ObservableList<Locale> lLocales = FXCollections.observableArrayList(Locale.getAvailableLocales());
             FXCollections.sort(lLocales,  (o1, o2) -> { return o1.toString().compareTo(o2.toString()); } );
-            localeComboBox = new ComboBox( lLocales );
+            localeComboBox = new ComboBox<>( lLocales );
             localeComboBox.converterProperty().set(new StringConverter<Locale>() {
 				@Override
 				public String toString(Locale locale) {

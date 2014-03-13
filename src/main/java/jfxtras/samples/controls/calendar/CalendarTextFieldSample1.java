@@ -89,7 +89,7 @@ public class CalendarTextFieldSample1 extends JFXtrasSampleBase
             lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             final ObservableList<Locale> lLocales = FXCollections.observableArrayList(Locale.getAvailableLocales());
             FXCollections.sort(lLocales,  (o1, o2) -> { return o1.toString().compareTo(o2.toString()); } );
-            localeComboBox = new ComboBox( lLocales );
+            localeComboBox = new ComboBox<>( lLocales );
             localeComboBox.converterProperty().set(new StringConverter<Locale>() {
 				@Override
 				public String toString(Locale locale) {

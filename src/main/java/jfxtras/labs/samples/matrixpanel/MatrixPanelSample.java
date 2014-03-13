@@ -907,7 +907,7 @@ public class MatrixPanelSample extends JFXtrasLabsSampleBase {
      */
     @Override
     public String getJavaDocURL() {
-        return "http://jfxtras.org/doc/8.0/" + MatrixPanel.class.getName().replace(".", "/") + ".html";
+        return "http://jfxtras.org/doc/8.0labs/" + MatrixPanel.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

@@ -1,20 +1,22 @@
 package jfxtras.samples.controls.datetime;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import jfxtras.internal.scene.control.skin.CalendarTimePickerSkin;
-import jfxtras.labs.samples.JFXtrasLabsSampleBase;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.control.LocalTimePicker;
 import jfxtras.scene.layout.GridPane;
@@ -66,6 +68,29 @@ public class LocalTimePickerSample1 extends JFXtrasSampleBase
         lGridPane.getColumnConstraints().addAll(lColumnConstraintsNeverGrow, lColumnConstraintsAlwaysGrow);
         int lRowIdx = 0;
 
+        // Locale
+        {
+            lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            ObservableList<Locale> lLocales = FXCollections.observableArrayList(Locale.getAvailableLocales());
+            FXCollections.sort(lLocales,  (o1, o2) -> { return o1.toString().compareTo(o2.toString()); } );
+            ComboBox<Locale> lComboBox = new ComboBox<>( lLocales );
+            lComboBox.converterProperty().set(new StringConverter<Locale>() {
+                @Override
+                public String toString(Locale locale) {
+                    return locale == null ? "-"  : locale.toString();
+                }
+
+                @Override
+                public Locale fromString(String s) {
+                    if ("-".equals(s)) return null;
+                    return new Locale(s);
+                }
+            });
+            lComboBox.setEditable(true);
+            lGridPane.add(lComboBox, new GridPane.C().row(lRowIdx).col(1));
+            lComboBox.valueProperty().bindBidirectional(localTimePicker.localeProperty());
+        }
+        lRowIdx++;
 		// stylesheet
 		{		
 			Label lLabel = new Label("Stage Stylesheet");
