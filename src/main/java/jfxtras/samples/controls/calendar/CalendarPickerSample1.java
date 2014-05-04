@@ -227,7 +227,7 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
 
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + CalendarPicker.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-controls/" + CalendarPicker.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

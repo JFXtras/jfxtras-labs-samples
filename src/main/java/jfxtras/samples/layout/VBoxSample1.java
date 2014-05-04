@@ -129,7 +129,7 @@ public class VBoxSample1 extends JFXtrasSampleBase
      */
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + VBox.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-common/" + VBox.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

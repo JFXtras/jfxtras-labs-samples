@@ -253,7 +253,7 @@ public class AgendaSample1 extends JFXtrasLabsSampleBase
 
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + Agenda.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-agenda/" + Agenda.class.getName().replace(".", "/") + ".html";
 	}
 
 	public static void main(String[] args) {

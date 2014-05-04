@@ -139,7 +139,7 @@ public class CalendarTimeTextFieldSample1 extends JFXtrasSampleBase
 	
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + CalendarTimeTextField.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-controls/" + CalendarTimeTextField.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

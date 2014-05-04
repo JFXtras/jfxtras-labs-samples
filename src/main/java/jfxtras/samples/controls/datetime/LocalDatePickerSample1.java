@@ -26,7 +26,6 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import jfxtras.internal.scene.control.skin.CalendarPickerControlSkin;
 import jfxtras.internal.scene.control.skin.ListSpinnerSkin;
-import jfxtras.labs.samples.JFXtrasLabsSampleBase;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.control.LocalDatePicker;
 import jfxtras.scene.control.LocalDateTextField;
@@ -206,7 +205,7 @@ public class LocalDatePickerSample1 extends JFXtrasSampleBase
 
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + LocalDatePicker.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-controls/" + LocalDatePicker.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

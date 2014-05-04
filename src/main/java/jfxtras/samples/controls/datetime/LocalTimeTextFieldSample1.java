@@ -140,7 +140,7 @@ public class LocalTimeTextFieldSample1 extends JFXtrasSampleBase
 	
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + LocalTimeTextField.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-controls/" + LocalTimeTextField.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

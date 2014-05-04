@@ -110,7 +110,7 @@ public class CalendarTimePickerSample1 extends JFXtrasSampleBase
 
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + CalendarTimePicker.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-controls/" + CalendarTimePicker.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

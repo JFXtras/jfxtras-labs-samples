@@ -183,7 +183,7 @@ public class GridPaneSample1 extends JFXtrasSampleBase
      */
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + GridPane.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-common/" + GridPane.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

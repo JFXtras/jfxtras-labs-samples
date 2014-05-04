@@ -159,7 +159,7 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
      */
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + ListSpinner.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-controls/" + ListSpinner.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

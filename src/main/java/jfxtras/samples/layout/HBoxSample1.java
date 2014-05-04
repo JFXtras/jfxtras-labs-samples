@@ -125,7 +125,7 @@ public class HBoxSample1 extends JFXtrasSampleBase
      */
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + HBox.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-common/" + HBox.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

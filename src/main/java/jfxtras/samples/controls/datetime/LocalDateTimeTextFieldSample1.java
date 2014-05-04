@@ -22,7 +22,6 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import jfxtras.internal.scene.control.skin.CalendarPickerControlSkin;
 import jfxtras.internal.scene.control.skin.ListSpinnerSkin;
-import jfxtras.labs.samples.JFXtrasLabsSampleBase;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.layout.GridPane;
@@ -168,7 +167,7 @@ public class LocalDateTimeTextFieldSample1 extends JFXtrasSampleBase
 	
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/" + LocalDateTimeTextField.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-controls/" + LocalDateTimeTextField.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {
