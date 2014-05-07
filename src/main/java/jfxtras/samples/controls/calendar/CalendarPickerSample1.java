@@ -32,6 +32,7 @@ import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.control.CalendarPicker;
 import jfxtras.scene.control.CalendarTextField;
 import jfxtras.scene.layout.GridPane;
+import jfxtras.scene.layout.HBox;
 import jfxtras.scene.layout.VBox;
 
 public class CalendarPickerSample1 extends JFXtrasSampleBase
@@ -205,6 +206,32 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
 			);
 		}
 
+        // calendarRangeCallback
+        {
+            Label lLabel = new Label("Range callback");
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            HBox lHBox = new HBox();
+            lGridPane.add(lHBox, new GridPane.C().row(lRowIdx).col(1));
+            final CheckBox lCheckBox = new CheckBox();
+            lHBox.add(lCheckBox);
+            lCheckBox.setTooltip(new Tooltip("Register a callback and show what the range change data is"));
+            final TextField lTextField = new TextField();
+            lHBox.add(lTextField, new HBox.C().hgrow(Priority.ALWAYS));
+            lCheckBox.selectedProperty().addListener( (invalidationEvent) -> {
+            	if (lCheckBox.selectedProperty().get()) {
+            		calendarPicker.setCalendarRangeCallback( (range) -> {
+            			lTextField.setText(format(range.getStartCalendar()) + " - " + format(range.getEndCalendar()));
+						return null;
+					});
+            	}
+            	else {
+            		calendarPicker.setCalendarRangeCallback(null);
+        			lTextField.setText("");
+            	}
+            });
+        }
+        lRowIdx++;
+
 		// stylesheet
 		{		
 			Label lLabel = new Label("Stage Stylesheet");
@@ -224,6 +251,14 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
         return lGridPane;
     }
     final TextField labelDateFormatTextField = new TextField("d");
+    
+    private String format(Calendar c) {
+    	if (c == null) {
+    		return "";
+    	}
+    	return simpleDateFormatYYYMMDD_HHMMSS.format(c.getTime());
+    }
+    final SimpleDateFormat simpleDateFormatYYYMMDD_HHMMSS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public String getJavaDocURL() {

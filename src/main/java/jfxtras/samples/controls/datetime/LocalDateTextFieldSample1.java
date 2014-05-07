@@ -1,5 +1,6 @@
 package jfxtras.samples.controls.datetime;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Locale;
@@ -10,7 +11,9 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -25,6 +28,7 @@ import jfxtras.internal.scene.control.skin.ListSpinnerSkin;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.control.LocalDateTextField;
 import jfxtras.scene.layout.GridPane;
+import jfxtras.scene.layout.HBox;
 import jfxtras.scene.layout.VBox;
 
 import org.controlsfx.dialog.Dialogs;
@@ -136,6 +140,62 @@ public class LocalDateTextFieldSample1 extends JFXtrasSampleBase
 			});
         }
 
+        // highlight
+		{
+			lRowIdx = addObservableListManagementControlsToGridPane("Highlighted", "All highlighted dates", lGridPane, lRowIdx, localDateTextField.highlightedLocalDates(), new LocalDateTextField()
+				, (Control c) -> {
+					LocalDateTextField lLocalDateTextField = (LocalDateTextField)c;
+					LocalDate lLocalDate = lLocalDateTextField.getLocalDate();
+					lLocalDateTextField.setLocalDate(null);
+					return lLocalDate;
+				}
+				, (LocalDate t) -> {
+					return t == null ? "" : DateTimeFormatter.ISO_DATE.format(t);
+				}
+			);
+		}
+
+        // disabled
+		{
+			lRowIdx = addObservableListManagementControlsToGridPane("Disabled", "All disabled dates", lGridPane, lRowIdx, localDateTextField.disabledLocalDates(), new LocalDateTextField()
+				, (Control c) -> {
+					LocalDateTextField lLocalDateTextField = (LocalDateTextField)c;
+					LocalDate lLocalDate = lLocalDateTextField.getLocalDate();
+					lLocalDateTextField.setLocalDate(null);
+					return lLocalDate;
+				}
+				, (LocalDate t) -> {
+					return t == null ? "" : DateTimeFormatter.ISO_DATE.format(t);
+				}
+			);
+		}
+
+        // localDateRangeCallback
+        {
+            Label lLabel = new Label("Range callback");
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            HBox lHBox = new HBox();
+            lGridPane.add(lHBox, new GridPane.C().row(lRowIdx).col(1));
+            final CheckBox lCheckBox = new CheckBox();
+            lHBox.add(lCheckBox);
+            lCheckBox.setTooltip(new Tooltip("Register a callback and show what the range change data is"));
+            final TextField lTextField = new TextField();
+            lHBox.add(lTextField, new HBox.C().hgrow(Priority.ALWAYS));
+            lCheckBox.selectedProperty().addListener( (invalidationEvent) -> {
+            	if (lCheckBox.selectedProperty().get()) {
+            		localDateTextField.setLocalDateRangeCallback( (range) -> {
+            			lTextField.setText(range.getStartLocalDate() + " - " + range.getEndLocalDate());
+						return null;
+					});
+            	}
+            	else {
+            		localDateTextField.setLocalDateRangeCallback(null);
+        			lTextField.setText("");
+            	}
+            });
+        }
+        lRowIdx++;
+        
 		// stylesheet
 		{		
 			Label lLabel = new Label("Stage Stylesheet");
