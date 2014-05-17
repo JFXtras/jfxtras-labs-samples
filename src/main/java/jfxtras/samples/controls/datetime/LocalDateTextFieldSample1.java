@@ -87,6 +87,17 @@ public class LocalDateTextFieldSample1 extends JFXtrasSampleBase
         lGridPane.getColumnConstraints().addAll(lColumnConstraintsNeverGrow, lColumnConstraintsAlwaysGrow);
         int lRowIdx = 0;
 
+        // allowNull
+        {
+            Label lLabel = new Label("Null allowed");
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            CheckBox lCheckBox = new CheckBox();
+            lCheckBox.setTooltip(new Tooltip("Is the control allowed to hold null (or have no calendar deselected)"));
+            lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
+            lCheckBox.selectedProperty().bindBidirectional(localDateTextField.allowNullProperty());
+        }
+        lRowIdx++;
+
         // Locale
         {
             lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));

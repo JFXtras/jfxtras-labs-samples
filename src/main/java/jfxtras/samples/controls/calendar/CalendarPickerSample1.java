@@ -113,7 +113,7 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
         }
         lRowIdx++;
 
-        // nullAllowed
+        // allowNull
         {
             Label lLabel = new Label("Null allowed");
             lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));

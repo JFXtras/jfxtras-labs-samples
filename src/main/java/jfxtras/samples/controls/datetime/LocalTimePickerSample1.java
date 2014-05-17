@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
@@ -19,6 +20,7 @@ import javafx.util.StringConverter;
 import jfxtras.internal.scene.control.skin.CalendarTimePickerSkin;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.control.LocalTimePicker;
+import jfxtras.scene.control.LocalTimeTextField;
 import jfxtras.scene.layout.GridPane;
 import jfxtras.scene.layout.VBox;
 
@@ -91,6 +93,19 @@ public class LocalTimePickerSample1 extends JFXtrasSampleBase
             lComboBox.valueProperty().bindBidirectional(localTimePicker.localeProperty());
         }
         lRowIdx++;
+
+        // Time
+        {
+            Label lLabel = new Label("Value");
+            lLabel.setTooltip(new Tooltip("The currently selected time"));
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            final LocalTimeTextField lLocalTimeTextField = new LocalTimeTextField();
+            lLocalTimeTextField.setDisable(true);
+            lGridPane.add(lLocalTimeTextField, new GridPane.C().row(lRowIdx).col(1));
+            lLocalTimeTextField.localTimeProperty().bindBidirectional(localTimePicker.localTimeProperty());
+        }
+        lRowIdx++;
+        
 		// stylesheet
 		{		
 			Label lLabel = new Label("Stage Stylesheet");

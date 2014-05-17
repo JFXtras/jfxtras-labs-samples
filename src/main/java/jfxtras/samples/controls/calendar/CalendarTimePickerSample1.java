@@ -1,5 +1,6 @@
 package jfxtras.samples.controls.calendar;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -12,12 +13,14 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import jfxtras.internal.scene.control.skin.CalendarTimePickerSkin;
 import jfxtras.samples.JFXtrasSampleBase;
+import jfxtras.scene.control.CalendarTextField;
 import jfxtras.scene.control.CalendarTimePicker;
 import jfxtras.scene.layout.GridPane;
 import jfxtras.scene.layout.VBox;
@@ -66,6 +69,20 @@ public class CalendarTimePickerSample1 extends JFXtrasSampleBase
         lColumnConstraintsNeverGrow.setHgrow(Priority.NEVER);
         lGridPane.getColumnConstraints().addAll(lColumnConstraintsNeverGrow, lColumnConstraintsAlwaysGrow);
         int lRowIdx = 0;
+
+
+        // calendar
+        {
+            Label lLabel = new Label("Value");
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            final CalendarTextField lCalendarTextField = new CalendarTextField();
+            lCalendarTextField.setTooltip(new Tooltip("The currently selected time (single mode)"));
+            lCalendarTextField.setDisable(true);
+            lGridPane.add(lCalendarTextField, new GridPane.C().row(lRowIdx).col(1));
+            lCalendarTextField.calendarProperty().bindBidirectional(calendarTimePicker.calendarProperty());
+            lCalendarTextField.setDateFormat( SimpleDateFormat.getTimeInstance() );
+        }
+        lRowIdx++;
 
         // Locale
         {
