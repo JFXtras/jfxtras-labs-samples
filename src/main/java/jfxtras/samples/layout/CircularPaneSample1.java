@@ -1,16 +1,19 @@
 package jfxtras.samples.layout;
 
-import com.sun.prism.impl.shape.ShapeUtil;
+import java.math.BigDecimal;
 
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
@@ -18,18 +21,33 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import jfxtras.labs.scene.control.BigDecimalField;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.samples.JFXtrasSampleBase;
+import jfxtras.scene.control.ListSpinner;
+import jfxtras.scene.control.ListSpinnerIntegerList;
 import jfxtras.scene.layout.GridPane;
+import jfxtras.scene.layout.HBox;
 import jfxtras.scene.layout.VBox;
+
 
 public class CircularPaneSample1 extends JFXtrasSampleBase
 {
     public CircularPaneSample1() {
     	circularPane = new CircularPane();
-    	for (int i = 0; i < 12; i++) {
+    	for (int i = 0; i < 1; i++) {
     		circularPane.add(new Rectangle(30, 30));
     	}
+
+    	// on animate, also animate in again
+    	circularPane.setOnAnimateOutFinished( (eventHandler) -> {
+    		circularPane.setVisible(false);
+        	Platform.runLater(() -> {
+        		sleep(1000);
+        		circularPane.setVisible(true);
+        		circularPane.animateIn();
+        	});
+    	});
     }
     final CircularPane circularPane;
 
@@ -84,12 +102,22 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
         }
         lRowIdx++;
         
-        // Mode
+        // Shape
         {
             lGridPane.add(new Label("Shape"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             lGridPane.add(shapeChoiceBox, new GridPane.C().row(lRowIdx).col(1));
             shapeChoiceBox.getSelectionModel().select(0);
             shapeChoiceBox.getSelectionModel().selectedItemProperty().addListener((invalidationEvent) -> {
+            	reconstructPane();
+            });
+        }
+        lRowIdx++;
+
+        // number of shopes
+        {
+            lGridPane.add(new Label("Number of shapes"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            lGridPane.add(amountBigDecimalField, new GridPane.C().row(lRowIdx).col(1));
+            amountBigDecimalField.numberProperty().addListener( (observableValue) -> {
             	reconstructPane();
             });
         }
@@ -103,119 +131,80 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
             lCheckBox.setTooltip(new Tooltip("Enable the optimized rendering for when all children are circular (or smaller)"));
             lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
             circularPane.childrenAreCircularProperty().bind(lCheckBox.selectedProperty());
-            lCheckBox.selectedProperty().addListener( (invalidationEvent) -> {
-            	System.out.println("invalidated");
+        }
+        lRowIdx++;
+
+        // Animation
+        {
+            lGridPane.add(new Label("Animation"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            animationChoiceBox.getSelectionModel().select(0);
+            
+            // run the animation
+            Button lButton = new Button("Animate");
+            lButton.setOnAction( (eventHandler) -> {
+            	if (Animations.OverTheArc.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
+            		circularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
+            	}
+            	else if (Animations.FromOrigin.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
+            		circularPane.setAnimationInterpolation(CircularPane::animateFromTheOrigin);
+            	}
+               	circularPane.animateOut();
             });
-            lCheckBox.selectedProperty().addListener( (e, o, n) -> {
-            	System.out.println("changed " + o + " -> " + n);
-            });
-            circularPane.childrenAreCircularProperty().addListener( (invalidationEvent) -> {
-            	System.out.println("invalidated cp");
-            });
-            circularPane.childrenAreCircularProperty().addListener( (e, o, n) -> {
-            	System.out.println("changed cp " + o + " -> " + n);
+            lGridPane.add(new HBox(3).add(animationChoiceBox).add(lButton), new GridPane.C().row(lRowIdx).col(1));
+        }
+        lRowIdx++;
+
+        // Gap
+        {
+            Label lLabel = new Label("Gap");
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            BigDecimalField lBigDecimalField = new BigDecimalField(BigDecimal.valueOf(0));
+            lBigDecimalField.setTooltip(new Tooltip("Gap between nodes"));
+            lGridPane.add(lBigDecimalField, new GridPane.C().row(lRowIdx).col(1));
+            lBigDecimalField.numberProperty().addListener( (observableValue) -> {
+            	circularPane.setGap(lBigDecimalField.getNumber().doubleValue());
             });
         }
         lRowIdx++;
-        
-//        // Locale
-//        {
-//            lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-//            ObservableList<Locale> lLocales = FXCollections.observableArrayList(Locale.getAvailableLocales());
-//            FXCollections.sort(lLocales,  (o1, o2) -> { return o1.toString().compareTo(o2.toString()); } );
-//            ComboBox<Locale> lComboBox = new ComboBox<>( lLocales );
-//            lComboBox.converterProperty().set(new StringConverter<Locale>() {
-//                @Override
-//                public String toString(Locale locale) {
-//                    return locale == null ? "-"  : locale.toString();
-//                }
-//
-//                @Override
-//                public Locale fromString(String s) {
-//                    if ("-".equals(s)) return null;
-//                    return new Locale(s);
-//                }
-//            });
-//            lComboBox.setEditable(true);
-//            lGridPane.add(lComboBox, new GridPane.C().row(lRowIdx).col(1));
-//            lComboBox.valueProperty().bindBidirectional(calendarPicker.localeProperty());
-//        }
-//        lRowIdx++;
-//
-//        // nullAllowed
-//        {
-//            Label lLabel = new Label("Null allowed");
-//            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-//            CheckBox lCheckBox = new CheckBox();
-//            lCheckBox.setTooltip(new Tooltip("Is the control allowed to hold null (or have no calendar deselected)"));
-//            lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
-//            lCheckBox.selectedProperty().bindBidirectional(calendarPicker.allowNullProperty());
-//        }
-//        lRowIdx++;
-//
-//        // calendar
-//        {
-//            Label lLabel = new Label("Value");
-//            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-//            final CalendarTextField lCalendarTextField = new CalendarTextField();
-//            lCalendarTextField.setTooltip(new Tooltip("The currently selected date (single mode)"));
-//            lCalendarTextField.setDisable(true);
-//            lGridPane.add(lCalendarTextField, new GridPane.C().row(lRowIdx).col(1));
-//            lCalendarTextField.calendarProperty().bindBidirectional(calendarPicker.calendarProperty());
-//            calendarPicker.showTimeProperty().addListener( (observable) -> {
-//                lCalendarTextField.setDateFormat( calendarPicker.getShowTime() ? SimpleDateFormat.getDateTimeInstance() : SimpleDateFormat.getDateInstance() );
-//            });
-//            lCalendarTextField.setDateFormat( calendarPicker.getShowTime() ? SimpleDateFormat.getDateTimeInstance() : SimpleDateFormat.getDateInstance() );
-//        }
-//        lRowIdx++;
-//
-//        // calendars
-//        {
-//            Label lLabel = new Label("Selected");
-//            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
-//            final ListView<java.util.Calendar> lListView = new ListView<>();
-//            lListView.setTooltip(new Tooltip("All selected dates (multiple or range mode)"));
-//            lListView.setItems(calendarPicker.calendars());
-//            lListView.setCellFactory(TextFieldListCell.forListView(new StringConverter<java.util.Calendar>() {
-//                @Override
-//                public String toString(java.util.Calendar o) {
-//                    DateFormat lDateFormat = calendarPicker.getShowTime() ? SimpleDateFormat.getDateTimeInstance() : SimpleDateFormat.getDateInstance();
-//                    return o == null ? "" : lDateFormat.format(o.getTime());
-//                }
-//
-//                @Override
-//                public java.util.Calendar fromString(String s) {
-//                    return null;  //never used
-//                }
-//            }));
-//            lGridPane.add(lListView, new GridPane.C().row(lRowIdx).col(1));
-//        }
-//        lRowIdx++;
-//
-//		// stylesheet
-//		{		
-//			Label lLabel = new Label("Stage Stylesheet");
-//			lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT).valignment(VPos.TOP));
-//			TextArea lTextArea = createTextAreaForCSS(stage, FXCollections.observableArrayList(
-//				".CalendarPicker {\n\t-fxx-show-weeknumbers:NO; /* " +  Arrays.toString(CalendarPickerControlSkin.ShowWeeknumbers.values()) + " */\n}",
-//				".CalendarPicker {\n\t-fxx-label-dateformat:\"D\"; /* See SimpleDateFormat, e.g. 'D' for day-of-year */\n}",				
-//				".CalendarTimePicker {\n\t-fxx-label-dateformat:\"HH:mm:ss\"; /* See SimpleDateFormat, e.g. 'HH' for 24 hour day */\n}",				
-//				".ListSpinner {\n\t-fxx-arrow-position:SPLIT; /* " + Arrays.toString(ListSpinnerSkin.ArrowPosition.values()) + " */ \n}",
-//				".ListSpinner {\n\t-fxx-arrow-direction:VERTICAL; /* " + Arrays.toString(ListSpinnerSkin.ArrowDirection.values()) + " */ \n}")
-//			);
-//			lGridPane.add(lTextArea, new GridPane.C().row(lRowIdx).col(1).vgrow(Priority.ALWAYS).minHeight(100.0));
-//		}
-//        lRowIdx++;
+
+        // Start angle
+        {
+            Label lLabel = new Label("Start angle");
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            BigDecimalField lBigDecimalField = new BigDecimalField(BigDecimal.valueOf(0));
+            lBigDecimalField.setTooltip(new Tooltip("Start angle for first node (in degrees)"));
+            lGridPane.add(lBigDecimalField, new GridPane.C().row(lRowIdx).col(1));
+            lBigDecimalField.numberProperty().addListener( (observableValue) -> {
+            	circularPane.setStartAngle(lBigDecimalField.getNumber().doubleValue());
+            });
+        }
+        lRowIdx++;
+
+        // Arc
+        {
+            Label lLabel = new Label("Arc");
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            BigDecimalField lBigDecimalField = new BigDecimalField(BigDecimal.valueOf(360));
+            lBigDecimalField.setTooltip(new Tooltip("Render on a partial arc (in degrees)"));
+            lGridPane.add(lBigDecimalField, new GridPane.C().row(lRowIdx).col(1));
+            lBigDecimalField.numberProperty().addListener( (observableValue) -> {
+            	circularPane.setArc(lBigDecimalField.getNumber().doubleValue());
+            });
+        }
+        lRowIdx++;
 
 		// done
     	reconstructPane();
         return lGridPane;
     }
     private ChoiceBox<String> shapeChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(Rectangle.class.getSimpleName(), Circle.class.getSimpleName()));
-    
+    private BigDecimalField amountBigDecimalField = new BigDecimalField(BigDecimal.valueOf(12));
+    enum Animations {OverTheArc, FromOrigin};
+    private ChoiceBox<String> animationChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(Animations.OverTheArc.toString(), Animations.FromOrigin.toString()));
+     
     private void reconstructPane() {
     	circularPane.getChildren().clear();
-    	for (int i = 0; i < 12; i++) {
+    	for (int i = 0; i < amountBigDecimalField.getNumber().intValue(); i++) {
     		String lShapeName = shapeChoiceBox.getSelectionModel().getSelectedItem();    		
     		if (Circle.class.getSimpleName().equals(lShapeName)) {
         		circularPane.add(new Circle(20));
@@ -224,6 +213,15 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
     			circularPane.add(new Rectangle(30, 30));
     		}
     	}
+    }
+    
+    private void sleep(int ms) {
+    	try {
+			Thread.sleep(ms);
+		} 
+    	catch (InterruptedException e) {
+			e.printStackTrace();
+		}
     }
 
     @Override
