@@ -162,7 +162,7 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
             lBigDecimalField.setTooltip(new Tooltip("Gap between nodes"));
             lGridPane.add(lBigDecimalField, new GridPane.C().row(lRowIdx).col(1));
             lBigDecimalField.numberProperty().addListener( (observableValue) -> {
-            	circularPane.setGap( lBigDecimalField.getNumber().doubleValue() < 0 ? null : lBigDecimalField.getNumber().doubleValue());
+            	circularPane.setGap(lBigDecimalField.getNumber().doubleValue());
             });
         }
         lRowIdx++;
