@@ -162,7 +162,7 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
             lBigDecimalField.setTooltip(new Tooltip("Gap between nodes"));
             lGridPane.add(lBigDecimalField, new GridPane.C().row(lRowIdx).col(1));
             lBigDecimalField.numberProperty().addListener( (observableValue) -> {
-            	circularPane.setGap(lBigDecimalField.getNumber().doubleValue());
+            	circularPane.setGap( lBigDecimalField.getNumber().doubleValue() < 0 ? null : lBigDecimalField.getNumber().doubleValue());
             });
         }
         lRowIdx++;
@@ -190,6 +190,17 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
             lBigDecimalField.numberProperty().addListener( (observableValue) -> {
             	circularPane.setArc(lBigDecimalField.getNumber().doubleValue());
             });
+        }
+        lRowIdx++;
+
+        // Clip excess whitespace
+        {
+            Label lLabel = new Label("Clip excess whitespace");
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            CheckBox lCheckBox = new CheckBox();
+            lCheckBox.setTooltip(new Tooltip("If rendered in an arc, clip away anyt excess whitespace"));
+            lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
+            circularPane.clipAwayExcessWhitespaceProperty().bind(lCheckBox.selectedProperty());
         }
         lRowIdx++;
 
