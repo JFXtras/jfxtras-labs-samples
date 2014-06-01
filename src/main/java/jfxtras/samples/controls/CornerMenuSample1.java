@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.CornerMenu;
 import jfxtras.samples.JFXtrasSampleBase;
@@ -68,10 +69,10 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
      */
     @Override
     public Node getPanel(Stage stage) {
-    	createCircularPane();
-        return pane;
+    	lStackPane.getChildren().add(new Label("Some stuff that is visible on the pane"));
+    	return lStackPane;
     }
-    private Pane pane = new Pane();
+    StackPane lStackPane = new StackPane();
 
     @Override
     public Node getControlPanel() {
@@ -94,9 +95,10 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
             lOrientationChoiceBox.getSelectionModel().select(CornerMenu.Orientation.TOP_LEFT);
             lGridPane.add(lOrientationChoiceBox, new GridPane.C().row(lRowIdx).col(1));
             lOrientationChoiceBox.valueProperty().addListener( (observable) -> {
-            	createCircularPane();
+            	createCornerMenu();
             });
         }
+    	createCornerMenu();
         lRowIdx++;
 
         // done
@@ -104,26 +106,29 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
     }
     private ChoiceBox<CornerMenu.Orientation> lOrientationChoiceBox =  new ChoiceBox<CornerMenu.Orientation>(FXCollections.observableArrayList(CornerMenu.Orientation.values()));;
     
-    private void createCircularPane() {
-    	pane.getChildren().clear();
+    private void createCornerMenu() {
+    	// uninstall the current cornerMenu
+    	if (cornerMenu != null) {
+    		cornerMenu.install(null);
+    	}
     	
+    	// create a new one
     	cornerMenu = new CornerMenu();
+    	//cornerMenu.setStyle("-fx-border-color: red;");
     	cornerMenu.setOrientation(lOrientationChoiceBox.getValue());
+    	cornerMenu.install(lStackPane);
 		if (CornerMenu.Orientation.TOP_LEFT.equals(lOrientationChoiceBox.getValue())) {
+	    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
 		}
 		else if (CornerMenu.Orientation.TOP_RIGHT.equals(lOrientationChoiceBox.getValue())) {
-			cornerMenu.layoutXProperty().bind( pane.widthProperty().subtract(cornerMenu.widthProperty()));
+	    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem);
 		}
 		else if (CornerMenu.Orientation.BOTTOM_RIGHT.equals(lOrientationChoiceBox.getValue())) {
-			cornerMenu.layoutXProperty().bind( pane.widthProperty().subtract(cornerMenu.widthProperty()));
-	    	cornerMenu.layoutYProperty().bind( pane.heightProperty().subtract(cornerMenu.heightProperty()));
+	    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem);
 		}
 		else if (CornerMenu.Orientation.BOTTOM_LEFT.equals(lOrientationChoiceBox.getValue())) {
-	    	cornerMenu.layoutYProperty().bind( pane.heightProperty().subtract(cornerMenu.heightProperty()));
+	    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem);
 		}
-    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
-
-    	pane.getChildren().add(cornerMenu);
     }
     private CornerMenu cornerMenu;
     
