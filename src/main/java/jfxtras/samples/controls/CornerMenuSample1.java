@@ -1,11 +1,18 @@
 package jfxtras.samples.controls;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.scene.Node;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.CornerMenu;
 import jfxtras.samples.JFXtrasSampleBase;
@@ -20,17 +27,12 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
      *
      */
     public CornerMenuSample1() {
-    	MenuItem lFacebookMenuItem = registerAction(new MenuItem("Facebook", new ImageView(new Image(this.getClass().getResourceAsStream("social_facebook_button_blue.png")))));
-    	MenuItem lGoogleMenuItem = registerAction(new MenuItem("Google", new ImageView(new Image(this.getClass().getResourceAsStream("social_google_button_blue.png")))));
-    	MenuItem lSkypeMenuItem = registerAction(new MenuItem("Skype", new ImageView(new Image(this.getClass().getResourceAsStream("social_skype_button_blue.png")))));
-    	MenuItem lTwitterMenuItem = registerAction(new MenuItem("Twitter", new ImageView(new Image(this.getClass().getResourceAsStream("social_twitter_button_blue.png")))));
-    	MenuItem lWindowsMenuItem = registerAction(new MenuItem("Windows", new ImageView(new Image(this.getClass().getResourceAsStream("social_windows_button.png")))));
-        
-    	cornerMenu = new CornerMenu();
-    	cornerMenu.setOrientation(CornerMenu.Orientation.BOTTOM_RIGHT);
-    	cornerMenu.getItems().addAll(lFacebookMenuItem, lGoogleMenuItem, lSkypeMenuItem, lTwitterMenuItem, lWindowsMenuItem);
 	}
-    final CornerMenu cornerMenu;
+	final private MenuItem facebookMenuItem = registerAction(new MenuItem("Facebook", new ImageView(new Image(this.getClass().getResourceAsStream("social_facebook_button_blue.png")))));
+	final private MenuItem googleMenuItem = registerAction(new MenuItem("Google", new ImageView(new Image(this.getClass().getResourceAsStream("social_google_button_blue.png")))));
+	final private MenuItem skypeMenuItem = registerAction(new MenuItem("Skype", new ImageView(new Image(this.getClass().getResourceAsStream("social_skype_button_blue.png")))));
+	final private MenuItem twitterMenuItem = registerAction(new MenuItem("Twitter", new ImageView(new Image(this.getClass().getResourceAsStream("social_twitter_button_blue.png")))));
+	final private MenuItem windowsMenuItem = registerAction(new MenuItem("Windows", new ImageView(new Image(this.getClass().getResourceAsStream("social_windows_button.png")))));
 
     private MenuItem registerAction(MenuItem menuItem) {
     	menuItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -56,7 +58,7 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
      */
     @Override
     public String getSampleDescription() {
-        return "Basic CornerMenu usage";
+        return "Basic CornerMenu usage; CornerMenu uses CircularPane to render a menu that can be placed in the corner of a screen.";
     }
 
     /**
@@ -66,13 +68,10 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
      */
     @Override
     public Node getPanel(Stage stage) {
-    	GridPane lGridPane = new GridPane();
-    	lGridPane.setStyle("-fx-border-color: green;");
-    	
-    	lGridPane.add(cornerMenu, new GridPane.C().col(0).row(0));
-    	
-        return lGridPane;
+    	createCircularPane();
+        return pane;
     }
+    private Pane pane = new Pane();
 
     @Override
     public Node getControlPanel() {
@@ -81,30 +80,53 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
         lGridPane.setVgap(2.0);
         lGridPane.setHgap(2.0);
 
-//        // setup the grid so all the labels will not grow, but the rest will
-//        ColumnConstraints lColumnConstraintsAlwaysGrow = new ColumnConstraints();
-//        lColumnConstraintsAlwaysGrow.setHgrow(Priority.ALWAYS);
-//        ColumnConstraints lColumnConstraintsNeverGrow = new ColumnConstraints();
-//        lColumnConstraintsNeverGrow.setHgrow(Priority.NEVER);
-//        lGridPane.getColumnConstraints().addAll(lColumnConstraintsNeverGrow, lColumnConstraintsAlwaysGrow);
-//        int lRowIdx = 0;
-//
-//        // cyclic
-//        {
-//            Label lLabel = new Label("Cyclic");
-//            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-//            CheckBox lCheckBox = new CheckBox();
-//            lCheckBox.setTooltip(new Tooltip("When reaching the last in the list, cycle back to the first"));
-//            lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
-//            lCheckBox.selectedProperty().bindBidirectional(simpleStringListSpinner.cyclicProperty());
-//			lCheckBox.selectedProperty().bindBidirectional(editableListSpinner.cyclicProperty());
-//        }
-//        lRowIdx++;
+        // setup the grid so all the labels will not grow, but the rest will
+        ColumnConstraints lColumnConstraintsAlwaysGrow = new ColumnConstraints();
+        lColumnConstraintsAlwaysGrow.setHgrow(Priority.ALWAYS);
+        ColumnConstraints lColumnConstraintsNeverGrow = new ColumnConstraints();
+        lColumnConstraintsNeverGrow.setHgrow(Priority.NEVER);
+        lGridPane.getColumnConstraints().addAll(lColumnConstraintsNeverGrow, lColumnConstraintsAlwaysGrow);
+        int lRowIdx = 0;
+
+        // Location
+        {
+            lGridPane.add(new Label("Location"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            lOrientationChoiceBox.getSelectionModel().select(CornerMenu.Orientation.TOP_LEFT);
+            lGridPane.add(lOrientationChoiceBox, new GridPane.C().row(lRowIdx).col(1));
+            lOrientationChoiceBox.valueProperty().addListener( (observable) -> {
+            	createCircularPane();
+            });
+        }
+        lRowIdx++;
 
         // done
         return lGridPane;
     }
+    private ChoiceBox<CornerMenu.Orientation> lOrientationChoiceBox =  new ChoiceBox<CornerMenu.Orientation>(FXCollections.observableArrayList(CornerMenu.Orientation.values()));;
+    
+    private void createCircularPane() {
+    	pane.getChildren().clear();
+    	
+    	cornerMenu = new CornerMenu();
+    	cornerMenu.setOrientation(lOrientationChoiceBox.getValue());
+		if (CornerMenu.Orientation.TOP_LEFT.equals(lOrientationChoiceBox.getValue())) {
+		}
+		else if (CornerMenu.Orientation.TOP_RIGHT.equals(lOrientationChoiceBox.getValue())) {
+			cornerMenu.layoutXProperty().bind( pane.widthProperty().subtract(cornerMenu.widthProperty()));
+		}
+		else if (CornerMenu.Orientation.BOTTOM_RIGHT.equals(lOrientationChoiceBox.getValue())) {
+			cornerMenu.layoutXProperty().bind( pane.widthProperty().subtract(cornerMenu.widthProperty()));
+	    	cornerMenu.layoutYProperty().bind( pane.heightProperty().subtract(cornerMenu.heightProperty()));
+		}
+		else if (CornerMenu.Orientation.BOTTOM_LEFT.equals(lOrientationChoiceBox.getValue())) {
+	    	cornerMenu.layoutYProperty().bind( pane.heightProperty().subtract(cornerMenu.heightProperty()));
+		}
+    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
 
+    	pane.getChildren().add(cornerMenu);
+    }
+    private CornerMenu cornerMenu;
+    
     /**
      *
      * @return
