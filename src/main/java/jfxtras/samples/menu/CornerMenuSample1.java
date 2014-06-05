@@ -1,6 +1,5 @@
-package jfxtras.samples.controls;
+package jfxtras.samples.menu;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,15 +13,13 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.control.CornerMenu;
+import jfxtras.labs.scene.menu.CornerMenu;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.control.ListSpinner;
 import jfxtras.scene.layout.GridPane;
-import jfxtras.util.PlatformUtil;
 
 import org.controlsfx.dialog.Dialogs;
 
@@ -73,11 +70,11 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
      */
     @Override
     public Node getPanel(Stage stage) {
-    	stackPane.getChildren().add(new Label("Some stuff that is visible on the pane"));
+    	//stackPane.getChildren().add(new Label("Some stuff that is visible on the pane"));
     	return stackPane;
     }
     StackPane stackPane = new StackPane();
-    private CornerMenu cornerMenu = new CornerMenu(CornerMenu.Orientation.TOP_LEFT);
+    private CornerMenu cornerMenu = new CornerMenu(CornerMenu.Orientation.TOP_LEFT, stackPane);
 
     @Override
     public Node getControlPanel() {
@@ -114,7 +111,14 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
             shownCheckBox.setTooltip(new Tooltip("When reaching the last in the list, cycle back to the first"));
             lGridPane.add(shownCheckBox, new GridPane.C().row(lRowIdx).col(1));
 			shownCheckBox.selectedProperty().addListener( (observable) -> {
-				cornerMenu.setShown(shownCheckBox.selectedProperty().get());
+				if (cornerMenu != null) {
+					if (shownCheckBox.selectedProperty().get()) {
+						cornerMenu.show();
+					}
+					else {
+						cornerMenu.hide();
+					}
+				}
             });
         }
         lRowIdx++;
@@ -128,12 +132,13 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
     private void createCornerMenu() {
     	// uninstall the current cornerMenu
     	if (cornerMenu != null) {
-    		cornerMenu.install(null);
+        	cornerMenu.removeFromStackPane();
+        	cornerMenu = null;
     	}
     	shownCheckBox.selectedProperty().set(true);
     	
     	// create a new one
-    	cornerMenu = new CornerMenu(orientationChoiceBox.getValue());
+    	cornerMenu = new CornerMenu(orientationChoiceBox.getValue(), stackPane);
     	//cornerMenu.setStyle("-fx-border-color: red;");
 		if (CornerMenu.Orientation.TOP_LEFT.equals(cornerMenu.getOrientation())) {
 	    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
@@ -147,7 +152,6 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
 		else if (CornerMenu.Orientation.BOTTOM_LEFT.equals(cornerMenu.getOrientation())) {
 	    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem);
 		}
-    	cornerMenu.install(stackPane);
     }
     
     /**

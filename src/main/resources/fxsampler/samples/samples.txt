@@ -1,4 +1,4 @@
-jfxtras.samples.controls.CornerMenuSample1.java
+jfxtras.samples.menu.CornerMenuSample1.java
 jfxtras.samples.controls.ListSpinnerSample1.java
 jfxtras.samples.controls.agenda.AgendaSample1.java
 jfxtras.samples.controls.calendar.CalendarPickerSample1.java
