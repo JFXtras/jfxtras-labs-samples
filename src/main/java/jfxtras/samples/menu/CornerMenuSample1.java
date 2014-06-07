@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -20,6 +21,7 @@ import jfxtras.labs.scene.menu.CornerMenu;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.control.ListSpinner;
 import jfxtras.scene.layout.GridPane;
+import jfxtras.scene.layout.HBox;
 
 import org.controlsfx.dialog.Dialogs;
 
@@ -60,7 +62,7 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
      */
     @Override
     public String getSampleDescription() {
-        return "Basic CornerMenu usage; CornerMenu uses CircularPane to render a menu that can be placed in the corner of a screen.";
+        return "Basic CornerMenu usage; CornerMenu is a quarter circle menu that can be placed in the corner of a pane.";
     }
 
     /**
@@ -74,7 +76,7 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
     	return stackPane;
     }
     StackPane stackPane = new StackPane();
-    private CornerMenu cornerMenu = new CornerMenu(CornerMenu.Orientation.TOP_LEFT, stackPane);
+    private CornerMenu cornerMenu = new CornerMenu(CornerMenu.Location.TOP_LEFT, stackPane, true);
 
     @Override
     public Node getControlPanel() {
@@ -94,7 +96,7 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
         // Location
         {
             lGridPane.add(new Label("Location"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            orientationChoiceBox.getSelectionModel().select(CornerMenu.Orientation.TOP_LEFT);
+            orientationChoiceBox.getSelectionModel().select(CornerMenu.Location.TOP_LEFT);
             lGridPane.add(orientationChoiceBox, new GridPane.C().row(lRowIdx).col(1));
             orientationChoiceBox.valueProperty().addListener( (observable) -> {
             	createCornerMenu();
@@ -103,55 +105,73 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
         }
         lRowIdx++;
 
-        // shown
+        // show and hide buttons
         {
-            Label lLabel = new Label("Shown");
+            Label lLabel = new Label("Manual actions");
             lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            
-            shownCheckBox.setTooltip(new Tooltip("When reaching the last in the list, cycle back to the first"));
-            lGridPane.add(shownCheckBox, new GridPane.C().row(lRowIdx).col(1));
-			shownCheckBox.selectedProperty().addListener( (observable) -> {
-				if (cornerMenu != null) {
-					if (shownCheckBox.selectedProperty().get()) {
-						cornerMenu.show();
-					}
-					else {
-						cornerMenu.hide();
-					}
-				}
+
+            HBox lHBox = new HBox();
+            lGridPane.add(lHBox, new GridPane.C().row(lRowIdx).col(1));
+            // show
+            Button lShowButton = new Button("show");
+            lHBox.add(lShowButton);
+            lShowButton.setOnAction((actionEvent) -> {
+				cornerMenu.show();
+            });
+            // show
+            Button lHideButton = new Button("hide");
+            lHBox.add(lHideButton);
+            lHideButton.setOnAction((actionEvent) -> {
+				cornerMenu.hide();
             });
         }
         lRowIdx++;
         
+
+        // autoShowAndHide
+        {
+            Label lLabel = new Label("Auto show and hide");
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            autoShowAndHideCheckBox.setTooltip(new Tooltip("Automatically show and hide"));
+            lGridPane.add(autoShowAndHideCheckBox, new GridPane.C().row(lRowIdx).col(1));
+            
+            // when activating auto show hide, and the menu is visible, hide it (because the mouse is not inside the pane)
+            autoShowAndHideCheckBox.selectedProperty().addListener( (observable) -> {
+            	if (autoShowAndHideCheckBox.selectedProperty().get() && cornerMenu.isShown()) {
+            		cornerMenu.hide();
+            	}
+            });
+        }
+        lRowIdx++;
         // done
         return lGridPane;
     }
-    private ChoiceBox<CornerMenu.Orientation> orientationChoiceBox =  new ChoiceBox<CornerMenu.Orientation>(FXCollections.observableArrayList(CornerMenu.Orientation.values()));;
-    CheckBox shownCheckBox = new CheckBox();
+    private ChoiceBox<CornerMenu.Location> orientationChoiceBox =  new ChoiceBox<CornerMenu.Location>(FXCollections.observableArrayList(CornerMenu.Location.values()));;
+    private CheckBox autoShowAndHideCheckBox = new CheckBox();
     
     private void createCornerMenu() {
     	// uninstall the current cornerMenu
     	if (cornerMenu != null) {
+    		cornerMenu.autoShowAndHideProperty().unbind();
         	cornerMenu.removeFromStackPane();
         	cornerMenu = null;
     	}
-    	shownCheckBox.selectedProperty().set(true);
     	
     	// create a new one
-    	cornerMenu = new CornerMenu(orientationChoiceBox.getValue(), stackPane);
-    	//cornerMenu.setStyle("-fx-border-color: red;");
-		if (CornerMenu.Orientation.TOP_LEFT.equals(cornerMenu.getOrientation())) {
+    	cornerMenu = new CornerMenu(orientationChoiceBox.getValue(), stackPane, !autoShowAndHideCheckBox.selectedProperty().get());
+		if (CornerMenu.Location.TOP_LEFT.equals(cornerMenu.getLocation())) {
 	    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
 		}
-		else if (CornerMenu.Orientation.TOP_RIGHT.equals(cornerMenu.getOrientation())) {
+		else if (CornerMenu.Location.TOP_RIGHT.equals(cornerMenu.getLocation())) {
 	    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem);
 		}
-		else if (CornerMenu.Orientation.BOTTOM_RIGHT.equals(cornerMenu.getOrientation())) {
+		else if (CornerMenu.Location.BOTTOM_RIGHT.equals(cornerMenu.getLocation())) {
 	    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem);
 		}
-		else if (CornerMenu.Orientation.BOTTOM_LEFT.equals(cornerMenu.getOrientation())) {
+		else if (CornerMenu.Location.BOTTOM_LEFT.equals(cornerMenu.getLocation())) {
 	    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem);
 		}
+    	cornerMenu.autoShowAndHideProperty().bind(autoShowAndHideCheckBox.selectedProperty());
     }
     
     /**
