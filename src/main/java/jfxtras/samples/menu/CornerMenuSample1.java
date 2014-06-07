@@ -96,12 +96,33 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
         // Location
         {
             lGridPane.add(new Label("Location"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            orientationChoiceBox.getSelectionModel().select(CornerMenu.Location.TOP_LEFT);
-            lGridPane.add(orientationChoiceBox, new GridPane.C().row(lRowIdx).col(1));
-            orientationChoiceBox.valueProperty().addListener( (observable) -> {
+            locationChoiceBox.getSelectionModel().select(CornerMenu.Location.TOP_LEFT);
+            lGridPane.add(locationChoiceBox, new GridPane.C().row(lRowIdx).col(1));
+            locationChoiceBox.valueProperty().addListener( (observable) -> {
             	createCornerMenu();
             });
         	createCornerMenu();
+        }
+        lRowIdx++;
+
+        // Animation
+        {
+            lGridPane.add(new Label("Animation"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            animationChoiceBox.getSelectionModel().select(0);
+            lGridPane.add(animationChoiceBox, new GridPane.C().row(lRowIdx).col(1));
+            
+            // run the animation
+            animationChoiceBox.getSelectionModel().selectedItemProperty().addListener( (observable) -> {
+            	if (Animations.OverTheArc.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
+            		cornerMenu.setAnimationInterpolation(CornerMenu::animateOverTheArc);
+            	}
+            	else if (Animations.FromOrigin.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
+            		cornerMenu.setAnimationInterpolation(CornerMenu::animateFromTheOrigin);
+            	}
+            	else {
+            		cornerMenu.setAnimationInterpolation(null);
+            	}
+            });
         }
         lRowIdx++;
 
@@ -146,8 +167,10 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
         // done
         return lGridPane;
     }
-    private ChoiceBox<CornerMenu.Location> orientationChoiceBox =  new ChoiceBox<CornerMenu.Location>(FXCollections.observableArrayList(CornerMenu.Location.values()));;
+    private ChoiceBox<CornerMenu.Location> locationChoiceBox =  new ChoiceBox<CornerMenu.Location>(FXCollections.observableArrayList(CornerMenu.Location.values()));;
     private CheckBox autoShowAndHideCheckBox = new CheckBox();
+    enum Animations {OverTheArc, FromOrigin, None};
+    private ChoiceBox<String> animationChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(Animations.FromOrigin.toString(), Animations.OverTheArc.toString(), Animations.None.toString()));
     
     private void createCornerMenu() {
     	// uninstall the current cornerMenu
@@ -158,7 +181,7 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
     	}
     	
     	// create a new one
-    	cornerMenu = new CornerMenu(orientationChoiceBox.getValue(), stackPane, !autoShowAndHideCheckBox.selectedProperty().get());
+    	cornerMenu = new CornerMenu(locationChoiceBox.getValue(), stackPane, !autoShowAndHideCheckBox.selectedProperty().get());
 		if (CornerMenu.Location.TOP_LEFT.equals(cornerMenu.getLocation())) {
 	    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
 		}
