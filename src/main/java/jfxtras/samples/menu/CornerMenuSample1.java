@@ -17,6 +17,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.menu.CornerMenu;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.control.ListSpinner;
@@ -119,6 +120,9 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
             	else if (Animations.FromOrigin.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
             		cornerMenu.setAnimationInterpolation(CornerMenu::animateFromTheOrigin);
             	}
+            	else if (Animations.Appear.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
+            		cornerMenu.setAnimationInterpolation(CircularPane::animateAppear);
+            	}
             	else {
             		cornerMenu.setAnimationInterpolation(null);
             	}
@@ -169,8 +173,8 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
     }
     private ChoiceBox<CornerMenu.Location> locationChoiceBox =  new ChoiceBox<CornerMenu.Location>(FXCollections.observableArrayList(CornerMenu.Location.values()));;
     private CheckBox autoShowAndHideCheckBox = new CheckBox();
-    enum Animations {OverTheArc, FromOrigin, None};
-    private ChoiceBox<String> animationChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(Animations.FromOrigin.toString(), Animations.OverTheArc.toString(), Animations.None.toString()));
+    enum Animations {OverTheArc, FromOrigin, Appear, None};
+    private ChoiceBox<String> animationChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(Animations.FromOrigin.toString(), Animations.OverTheArc.toString(), Animations.Appear.toString(), Animations.None.toString()));
     
     private void createCornerMenu() {
     	// uninstall the current cornerMenu

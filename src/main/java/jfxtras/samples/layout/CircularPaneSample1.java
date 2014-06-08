@@ -148,6 +148,9 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
             	else if (Animations.FromOrigin.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
             		circularPane.setAnimationInterpolation(CircularPane::animateFromTheOrigin);
             	}
+            	else if (Animations.Appear.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
+            		circularPane.setAnimationInterpolation(CircularPane::animateAppear);
+            	}
                	circularPane.animateOut();
             });
             lGridPane.add(new HBox(3).add(animationChoiceBox).add(lButton), new GridPane.C().row(lRowIdx).col(1));
@@ -210,8 +213,8 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
     }
     private ChoiceBox<String> shapeChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(Rectangle.class.getSimpleName(), Circle.class.getSimpleName()));
     private BigDecimalField amountBigDecimalField = new BigDecimalField(BigDecimal.valueOf(12));
-    enum Animations {OverTheArc, FromOrigin};
-    private ChoiceBox<String> animationChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(Animations.OverTheArc.toString(), Animations.FromOrigin.toString()));
+    enum Animations {OverTheArc, FromOrigin, Appear};
+    private ChoiceBox<String> animationChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(Animations.OverTheArc.toString(), Animations.FromOrigin.toString(), Animations.Appear.toString()));
      
     private void reconstructPane() {
     	circularPane.getChildren().clear();
