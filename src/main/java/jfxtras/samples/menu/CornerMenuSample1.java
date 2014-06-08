@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.menu.CornerMenu;
 import jfxtras.samples.JFXtrasSampleBase;
-import jfxtras.scene.control.ListSpinner;
 import jfxtras.scene.layout.GridPane;
 import jfxtras.scene.layout.HBox;
 
@@ -207,7 +206,7 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
      */
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/jfxtras-controls/" + ListSpinner.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-controls/" + CornerMenu.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

@@ -1,4 +1,3 @@
-jfxtras.samples.menu.CornerMenuSample1.java
 jfxtras.samples.controls.ListSpinnerSample1.java
 jfxtras.samples.controls.agenda.AgendaSample1.java
 jfxtras.samples.controls.calendar.CalendarPickerSample1.java
@@ -11,6 +10,8 @@ jfxtras.samples.controls.datetime.LocalDateTimePickerSample1.java
 jfxtras.samples.controls.datetime.LocalDateTimeTextFieldSample1.java
 jfxtras.samples.controls.datetime.LocalTimePickerSample1.java
 jfxtras.samples.controls.datetime.LocalTimeTextFieldSample1.java
+jfxtras.samples.menu.CornerMenuSample1.java
+jfxtras.samples.menu.CirclePopupMenuSample1.java
 jfxtras.samples.layout.CircularPaneSample1.java
 jfxtras.samples.layout.HBoxSample1.java
 jfxtras.samples.layout.VBoxSample1.java
