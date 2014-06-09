@@ -5,11 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -27,10 +29,21 @@ public class CirclePopupMenuSample1 extends JFXtrasSampleBase
      *
      */
     public CirclePopupMenuSample1() {
+        stackPane = new StackPane();
+        
+        // create underlying button
+    	Button lButton = new Button("Underlying");
+    	stackPane.getChildren().add(lButton);
+    	lButton.setOnAction( actionEvent -> {
+        	Dialogs.create().masthead("Click").message( "You clicked the underlying button").showInformation();
+    	});
+    	
+    	// create circle popup
+        circlePopupMenu = new CirclePopupMenu(stackPane, MouseButton.SECONDARY);
     	circlePopupMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
 	}
-    final private StackPane stackPane = new StackPane();
-    final private CirclePopupMenu circlePopupMenu = new CirclePopupMenu(stackPane);
+    final private StackPane stackPane;
+    final private CirclePopupMenu circlePopupMenu;
 	final private MenuItem facebookMenuItem = registerAction(new MenuItem("Facebook", new ImageView(new Image(this.getClass().getResourceAsStream("social_facebook_button_blue.png")))));
 	final private MenuItem googleMenuItem = registerAction(new MenuItem("Google", new ImageView(new Image(this.getClass().getResourceAsStream("social_google_button_blue.png")))));
 	final private MenuItem skypeMenuItem = registerAction(new MenuItem("Skype", new ImageView(new Image(this.getClass().getResourceAsStream("social_skype_button_blue.png")))));

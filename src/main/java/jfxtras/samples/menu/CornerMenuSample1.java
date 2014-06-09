@@ -31,13 +31,17 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
      *
      */
     public CornerMenuSample1() {
+        stackPane = new StackPane();
+        // corner menu will be created when the control panel is setup 
 	}
+    final private StackPane stackPane;
 	final private MenuItem facebookMenuItem = registerAction(new MenuItem("Facebook", new ImageView(new Image(this.getClass().getResourceAsStream("social_facebook_button_blue.png")))));
 	final private MenuItem googleMenuItem = registerAction(new MenuItem("Google", new ImageView(new Image(this.getClass().getResourceAsStream("social_google_button_blue.png")))));
 	final private MenuItem skypeMenuItem = registerAction(new MenuItem("Skype", new ImageView(new Image(this.getClass().getResourceAsStream("social_skype_button_blue.png")))));
 	final private MenuItem twitterMenuItem = registerAction(new MenuItem("Twitter", new ImageView(new Image(this.getClass().getResourceAsStream("social_twitter_button_blue.png")))));
 	final private MenuItem windowsMenuItem = registerAction(new MenuItem("Windows", new ImageView(new Image(this.getClass().getResourceAsStream("social_windows_button.png")))));
-
+    private CornerMenu cornerMenu;
+	
     private MenuItem registerAction(MenuItem menuItem) {
     	menuItem.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
@@ -75,8 +79,6 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
     	//stackPane.getChildren().add(new Label("Some stuff that is visible on the pane"));
     	return stackPane;
     }
-    StackPane stackPane = new StackPane();
-    private CornerMenu cornerMenu = new CornerMenu(CornerMenu.Location.TOP_LEFT, stackPane, true);
 
     @Override
     public Node getControlPanel() {
