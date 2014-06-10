@@ -29,21 +29,7 @@ public class CirclePopupMenuSample1 extends JFXtrasSampleBase
      *
      */
     public CirclePopupMenuSample1() {
-        stackPane = new StackPane();
-        
-        // create underlying button
-    	Button lButton = new Button("Underlying");
-    	stackPane.getChildren().add(lButton);
-    	lButton.setOnAction( actionEvent -> {
-        	Dialogs.create().masthead("Click").message( "You clicked the underlying button").showInformation();
-    	});
-    	
-    	// create circle popup
-        circlePopupMenu = new CirclePopupMenu(stackPane, MouseButton.SECONDARY);
-    	circlePopupMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
 	}
-    final private StackPane stackPane;
-    final private CirclePopupMenu circlePopupMenu;
 	final private MenuItem facebookMenuItem = registerAction(new MenuItem("Facebook", new ImageView(new Image(this.getClass().getResourceAsStream("social_facebook_button_blue.png")))));
 	final private MenuItem googleMenuItem = registerAction(new MenuItem("Google", new ImageView(new Image(this.getClass().getResourceAsStream("social_google_button_blue.png")))));
 	final private MenuItem skypeMenuItem = registerAction(new MenuItem("Skype", new ImageView(new Image(this.getClass().getResourceAsStream("social_skype_button_blue.png")))));
@@ -84,8 +70,23 @@ public class CirclePopupMenuSample1 extends JFXtrasSampleBase
      */
     @Override
     public Node getPanel(Stage stage) {
+        stackPane = new StackPane();
+        
+        // create underlying button
+    	Button lButton = new Button("Underlying");
+    	stackPane.getChildren().add(lButton);
+    	lButton.setOnAction( actionEvent -> {
+        	Dialogs.create().masthead("Click").message( "You clicked the underlying button").showInformation();
+    	});
+    	
+    	// create circle popup
+        circlePopupMenu = new CirclePopupMenu(stackPane, MouseButton.SECONDARY);
+    	circlePopupMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
+    	
     	return stackPane;
     }
+    private StackPane stackPane;
+    private CirclePopupMenu circlePopupMenu;
 
     @Override
     public Node getControlPanel() {
