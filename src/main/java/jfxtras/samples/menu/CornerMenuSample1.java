@@ -13,6 +13,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -31,10 +32,10 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
      *
      */
     public CornerMenuSample1() {
-        stackPane = new StackPane();
+        stackPane = new BorderPane();
         // corner menu will be created when the control panel is setup 
 	}
-    final private StackPane stackPane;
+    final private BorderPane stackPane;
 	final private MenuItem facebookMenuItem = registerAction(new MenuItem("Facebook", new ImageView(new Image(this.getClass().getResourceAsStream("social_facebook_button_blue.png")))));
 	final private MenuItem googleMenuItem = registerAction(new MenuItem("Google", new ImageView(new Image(this.getClass().getResourceAsStream("social_google_button_blue.png")))));
 	final private MenuItem skypeMenuItem = registerAction(new MenuItem("Skype", new ImageView(new Image(this.getClass().getResourceAsStream("social_skype_button_blue.png")))));
@@ -181,7 +182,7 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
     	// uninstall the current cornerMenu
     	if (cornerMenu != null) {
     		cornerMenu.autoShowAndHideProperty().unbind();
-        	cornerMenu.removeFromStackPane();
+        	cornerMenu.removeFromPane();
         	cornerMenu = null;
     	}
     	
