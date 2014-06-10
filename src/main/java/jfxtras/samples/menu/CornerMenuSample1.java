@@ -16,7 +16,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.menu.CornerMenu;
