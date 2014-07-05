@@ -1,6 +1,5 @@
 package jfxtras.samples.menu;
 
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -16,9 +15,9 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.labs.scene.menu.CirclePopupMenu;
 import jfxtras.samples.JFXtrasSampleBase;
+import jfxtras.samples.layout.CircularPaneSample1;
 import jfxtras.scene.layout.GridPane;
 
 import org.controlsfx.dialog.Dialogs;
@@ -106,32 +105,20 @@ public class CirclePopupMenuSample1 extends JFXtrasSampleBase
         // Animation
         {
             lGridPane.add(new Label("Animation"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            animationChoiceBox.getSelectionModel().select(0);
             lGridPane.add(animationChoiceBox, new GridPane.C().row(lRowIdx).col(1));
             
-            // run the animation
             animationChoiceBox.getSelectionModel().selectedItemProperty().addListener( (observable) -> {
-            	if (Animations.OverTheArc.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
-            		circlePopupMenu.setAnimationInterpolation(CirclePopupMenu::animateOverTheArc);
-            	}
-            	else if (Animations.FromOrigin.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
-            		circlePopupMenu.setAnimationInterpolation(CirclePopupMenu::animateFromTheOrigin);
-            	}
-            	else if (Animations.Appear.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
-            		circlePopupMenu.setAnimationInterpolation(CircularPane::animateAppear);
-            	}
-            	else {
-            		circlePopupMenu.setAnimationInterpolation(null);
-            	}
+            	circlePopupMenu.setAnimationInterpolation( CircularPaneSample1.convertAnimationInterPolation(animationChoiceBox) );
             });
+            animationChoiceBox.getSelectionModel().select(CircularPaneSample1.Animations.OverTheArcWithFade.toString()); 
+        	circlePopupMenu.setAnimationInterpolation( CircularPaneSample1.convertAnimationInterPolation(animationChoiceBox) );
         }
         lRowIdx++;
         
         // done
         return lGridPane;
     }
-    enum Animations {OverTheArc, FromOrigin, Appear, None};
-    private ChoiceBox<String> animationChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(Animations.FromOrigin.toString(), Animations.OverTheArc.toString(), Animations.Appear.toString(), Animations.None.toString()));
+    private ChoiceBox<String> animationChoiceBox = CircularPaneSample1.animationChoiceBox();
     
     /**
      *

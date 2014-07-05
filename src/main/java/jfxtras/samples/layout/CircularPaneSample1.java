@@ -3,8 +3,6 @@ package jfxtras.samples.layout;
 import java.math.BigDecimal;
 
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -13,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
@@ -24,8 +21,6 @@ import javafx.stage.Stage;
 import jfxtras.labs.scene.control.BigDecimalField;
 import jfxtras.labs.scene.layout.CircularPane;
 import jfxtras.samples.JFXtrasSampleBase;
-import jfxtras.scene.control.ListSpinner;
-import jfxtras.scene.control.ListSpinnerIntegerList;
 import jfxtras.scene.layout.GridPane;
 import jfxtras.scene.layout.HBox;
 import jfxtras.scene.layout.VBox;
@@ -142,15 +137,7 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
             // run the animation
             Button lButton = new Button("Animate");
             lButton.setOnAction( (eventHandler) -> {
-            	if (Animations.OverTheArc.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
-            		circularPane.setAnimationInterpolation(CircularPane::animateOverTheArc);
-            	}
-            	else if (Animations.FromOrigin.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
-            		circularPane.setAnimationInterpolation(CircularPane::animateFromTheOrigin);
-            	}
-            	else if (Animations.Appear.toString().equals(animationChoiceBox.getSelectionModel().getSelectedItem())) {
-            		circularPane.setAnimationInterpolation(CircularPane::animateAppear);
-            	}
+           		circularPane.setAnimationInterpolation( convertAnimationInterPolation(animationChoiceBox) );
                	circularPane.animateOut();
             });
             lGridPane.add(new HBox(3).add(animationChoiceBox).add(lButton), new GridPane.C().row(lRowIdx).col(1));
@@ -213,8 +200,35 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
     }
     private ChoiceBox<String> shapeChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(Rectangle.class.getSimpleName(), Circle.class.getSimpleName()));
     private BigDecimalField amountBigDecimalField = new BigDecimalField(BigDecimal.valueOf(12));
-    enum Animations {OverTheArc, FromOrigin, Appear};
-    private ChoiceBox<String> animationChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(Animations.OverTheArc.toString(), Animations.FromOrigin.toString(), Animations.Appear.toString()));
+    static public enum Animations {OverTheArc, OverTheArcWithFade, FromOrigin, FromOriginWithFadeRotate, Appear, None};
+    private ChoiceBox<String> animationChoiceBox = animationChoiceBox();
+    static public ChoiceBox<String> animationChoiceBox() {
+    	return new ChoiceBox<>(FXCollections.observableArrayList(Animations.OverTheArc.toString(), 
+    			Animations.OverTheArcWithFade.toString(), 
+    			Animations.FromOrigin.toString(), 
+    			Animations.FromOriginWithFadeRotate.toString(), 
+    			Animations.Appear.toString(), 
+    			Animations.None.toString()));
+    }
+    static public CircularPane.AnimationInterpolation convertAnimationInterPolation(ChoiceBox<String> animationChoiceBox) {
+    	String s = animationChoiceBox.getSelectionModel().getSelectedItem();
+    	if (Animations.OverTheArc.toString().equals(s)) {
+    		return CircularPane::animateOverTheArc;
+    	}
+    	else if (Animations.OverTheArcWithFade.toString().equals(s)) {
+    		return CircularPane::animateOverTheArcWithFade;
+    	}
+    	else if (Animations.FromOrigin.toString().equals(s)) {
+    		return CircularPane::animateFromTheOrigin;
+    	}
+    	else if (Animations.FromOriginWithFadeRotate.toString().equals(s)) {
+    		return CircularPane::animateFromTheOriginWithFadeRotate;
+    	}
+    	else if (Animations.Appear.toString().equals(s)) {
+    		return CircularPane::animateAppear;
+    	}
+    	return null;
+    }
      
     private void reconstructPane() {
     	circularPane.getChildren().clear();
