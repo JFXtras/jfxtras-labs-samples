@@ -101,6 +101,16 @@ public class CalendarTextFieldSample1 extends JFXtrasSampleBase
         }
         lRowIdx++;
 
+        // showTime
+        {
+            Label lLabel = new Label("Show time");
+            lGridPane.add(lLabel, new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            CheckBox lCheckBox = new CheckBox();
+            lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
+            lCheckBox.selectedProperty().bindBidirectional(calendarTextField.showTimeProperty());
+        }
+        lRowIdx++;
+
         // Locale
         {
             lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));

@@ -200,7 +200,7 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
     }
     private ChoiceBox<String> shapeChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(Rectangle.class.getSimpleName(), Circle.class.getSimpleName()));
     private BigDecimalField amountBigDecimalField = new BigDecimalField(BigDecimal.valueOf(12));
-    static public enum Animations {OverTheArc, OverTheArcWithFade, FromOrigin, FromOriginWithFadeRotate, Appear, None};
+    static public enum Animations {OverTheArc, OverTheArcWithFade, FromOrigin, FromOriginWithFadeRotate, SpiralOut, Appear, None};
     private ChoiceBox<String> animationChoiceBox = animationChoiceBox();
     static public ChoiceBox<String> animationChoiceBox() {
     	return new ChoiceBox<>(FXCollections.observableArrayList(Animations.OverTheArc.toString(), 
@@ -208,6 +208,7 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
     			Animations.FromOrigin.toString(), 
     			Animations.FromOriginWithFadeRotate.toString(), 
     			Animations.Appear.toString(), 
+    			Animations.SpiralOut.toString(),
     			Animations.None.toString()));
     }
     static public CircularPane.AnimationInterpolation convertAnimationInterPolation(ChoiceBox<String> animationChoiceBox) {
@@ -223,6 +224,9 @@ public class CircularPaneSample1 extends JFXtrasSampleBase
     	}
     	else if (Animations.FromOriginWithFadeRotate.toString().equals(s)) {
     		return CircularPane::animateFromTheOriginWithFadeRotate;
+    	}
+    	else if (Animations.SpiralOut.toString().equals(s)) {
+    		return CircularPane::animateSpiralOut;
     	}
     	else if (Animations.Appear.toString().equals(s)) {
     		return CircularPane::animateAppear;
