@@ -17,11 +17,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.menu.CornerMenu;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.samples.layout.CircularPaneSample1;
 import jfxtras.scene.layout.GridPane;
 import jfxtras.scene.layout.HBox;
+import jfxtras.scene.menu.CornerMenu;
 
 import org.controlsfx.dialog.Dialogs;
 

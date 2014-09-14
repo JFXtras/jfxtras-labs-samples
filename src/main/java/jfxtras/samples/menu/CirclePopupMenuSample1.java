@@ -15,10 +15,10 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.menu.CirclePopupMenu;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.samples.layout.CircularPaneSample1;
 import jfxtras.scene.layout.GridPane;
+import jfxtras.scene.menu.CirclePopupMenu;
 
 import org.controlsfx.dialog.Dialogs;
 

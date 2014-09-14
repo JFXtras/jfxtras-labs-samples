@@ -40,6 +40,7 @@ dependencies {
     compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r2-SNAPSHOT'
     compile group: 'org.jfxtras', name: 'jfxtras-controls', version: '8.0-r2-SNAPSHOT'
     compile group: 'org.jfxtras', name: 'jfxtras-agenda', version: '8.0-r2-SNAPSHOT'
+    compile group: 'org.jfxtras', name: 'jfxtras-menu', version: '8.0-r2-SNAPSHOT'
 }
 
 // setup the generated jar
