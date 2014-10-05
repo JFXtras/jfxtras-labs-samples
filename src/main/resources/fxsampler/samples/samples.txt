@@ -1,4 +1,5 @@
 jfxtras.samples.controls.ListSpinnerSample1.java
+jfxtras.samples.controls.ListViewSample1.java
 jfxtras.samples.controls.ToggleGroupValueSample1.java
 jfxtras.samples.controls.agenda.AgendaSample1.java
 jfxtras.samples.controls.calendar.CalendarPickerSample1.java

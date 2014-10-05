@@ -56,7 +56,7 @@ public class ListSpinnerSample1 extends JFXtrasSampleBase
      */
     @Override
     public String getSampleDescription() {
-        return "Basic ListSpinner usage";
+        return "ListSpinner is exactly what is says: a spinner control based upon a list. It will render one value from the underlying list and allow you to cycle up and down (or left and right, if the arrows are setup horizontally).";
     }
 
     /**

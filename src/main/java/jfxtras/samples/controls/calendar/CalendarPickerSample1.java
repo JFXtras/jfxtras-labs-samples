@@ -49,7 +49,9 @@ public class CalendarPickerSample1 extends JFXtrasSampleBase
 
     @Override
     public String getSampleDescription() {
-        return "Basic CalendarPicker usage";
+        return "CalendarPicker is a stand alone date picker, based on Java's Calendar class (hence the name CalendarPicker). It can be used stand alone, but also is used by CalendarTextField. \n"
+        	 + "Other implementations are available as well, based on Java 8 Data API, like LocalDatePicker, LocalDateTimePicker, ..."
+        	 ;
     }
 
     @Override

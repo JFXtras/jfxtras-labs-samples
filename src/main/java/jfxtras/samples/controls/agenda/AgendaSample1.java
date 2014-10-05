@@ -190,7 +190,10 @@ public class AgendaSample1 extends JFXtrasLabsSampleBase
 
     @Override
     public String getSampleDescription() {
-        return "Basic Agenda usage";
+        return "Agenda is a Google calendar alike control. \n"
+             + "It requires a list of appointments to be shown. An appointment is just an interface, so you can provide your own implementation (usually a domain entity), but there also is a default implementation avaiable for easy experimenting. \n"
+             + "Similar to calendars in Google calendar, Agenda has the concept of AppointmentGroups. A group is used to style all the appointments in the same group identically, for example by setting the color in CSS. "
+        	 ;
     }
 
     @Override

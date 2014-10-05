@@ -39,7 +39,9 @@ public class CalendarTimePickerSample1 extends JFXtrasSampleBase
 
     @Override
     public String getSampleDescription() {
-        return "Basic CalendarTimePicker usage";
+        return "CalendarTimePicker is a time picker based on Java's Calendar class (hence the name CalendarTimePicker). \n"
+        	 + "There are also an implementation available for Java 8 new date API like LocalTimePicker. "
+        	 ;
     }
 
     @Override

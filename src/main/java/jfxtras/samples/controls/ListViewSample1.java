@@ -1,48 +1,36 @@
 package jfxtras.samples.controls;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jfxtras.samples.JFXtrasSampleBase;
+import jfxtras.scene.control.ListView;
 import jfxtras.scene.control.ToggleGroupValue;
 import jfxtras.scene.layout.GridPane;
 
-public class ToggleGroupValueSample1 extends JFXtrasSampleBase
+public class ListViewSample1 extends JFXtrasSampleBase
 {
     /**
      *
      */
-	public ToggleGroupValueSample1() {
-		toggleGroupValue = new ToggleGroupValue<>();
-		
-		int idx = 0;
-		for (int i = 0; i < 3; i++) {
-			RadioButton lButton = new RadioButton("" + idx);
-			toggleGroupValue.add(lButton, "value" + idx);
-			toggles.add(lButton);
-			idx++;
+	public ListViewSample1() {
+		ObservableList<String> items = FXCollections.observableArrayList();
+		for (int i = 0; i < 100; i++) {
+			items.add("A list item numbered " + i);
 		}
-		for (int i = 0; i < 3; i++) {
-			ToggleButton lButton = new ToggleButton("" + idx);
-			toggleGroupValue.add(lButton, "value" + idx);
-			toggles.add(lButton);
-			idx++;
-		}
+		listView = new ListView<String>();
+		listView.setItems(items);
 	}
-	final ToggleGroupValue<String> toggleGroupValue;
-	final List<ToggleButton> toggles = new ArrayList<>();
+	final ListView<String> listView;
 
 	/**
      *
@@ -59,7 +47,9 @@ public class ToggleGroupValueSample1 extends JFXtrasSampleBase
      */
     @Override
     public String getSampleDescription() {
-        return "ToggleGroupValue extends the standard ToggleGroup with a bindable 'value' property. It contains the value (stored in the toggle's UserData) that is associated with the selected toggle button.";
+        return "ListView is an extention on the standard ListView which adds a bindable 'selectedItem' property.\n"
+             + "This allows for easy binding to other properties. You can see this in action by selecting in the list, or typing a value in the list in the textfield."
+             ;
     }
 
     /**
@@ -71,7 +61,7 @@ public class ToggleGroupValueSample1 extends JFXtrasSampleBase
     public Node getPanel(Stage stage) {
         VBox root = new VBox(5);
         root.setPadding(new Insets(30, 30, 30, 30));
-		root.getChildren().addAll(toggles);
+		root.getChildren().add(listView);
         return root;
     }
 
@@ -97,7 +87,7 @@ public class ToggleGroupValueSample1 extends JFXtrasSampleBase
             TextField lTextField = new TextField();
             lTextField.setTooltip(new Tooltip("The value corresponding to the selected toggle button"));
             lGridPane.add(lTextField, new GridPane.C().row(lRowIdx).col(1));
-            lTextField.textProperty().bindBidirectional(toggleGroupValue.valueProperty());
+            lTextField.textProperty().bindBidirectional(listView.selectedItemProperty());
         }
         lRowIdx++;
 
