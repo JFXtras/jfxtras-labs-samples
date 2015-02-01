@@ -31,8 +31,6 @@ import jfxtras.scene.layout.GridPane;
 import jfxtras.scene.layout.HBox;
 import jfxtras.scene.layout.VBox;
 
-import org.controlsfx.dialog.Dialogs;
-
 public class LocalDateTextFieldSample1 extends JFXtrasSampleBase
 {
     public LocalDateTextFieldSample1() {
@@ -60,11 +58,7 @@ public class LocalDateTextFieldSample1 extends JFXtrasSampleBase
         root.getChildren().addAll(localDateTextField);
 
 		localDateTextField.parseErrorCallbackProperty().set( (Callback<Throwable, Void>) (Throwable p) -> {
-			Dialogs.create()
-				.owner( stage )
-				.title("Parse error")
-				.message( p.getLocalizedMessage() )
-				.showError();
+			showPopup(localDateTextField, "Parse error: " + p.getLocalizedMessage());
 			return null;
 		});
 

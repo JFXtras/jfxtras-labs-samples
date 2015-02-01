@@ -20,8 +20,6 @@ import jfxtras.samples.layout.CircularPaneSample1;
 import jfxtras.scene.layout.GridPane;
 import jfxtras.scene.menu.CirclePopupMenu;
 
-import org.controlsfx.dialog.Dialogs;
-
 public class CirclePopupMenuSample1 extends JFXtrasSampleBase
 {
     /**
@@ -38,7 +36,7 @@ public class CirclePopupMenuSample1 extends JFXtrasSampleBase
     private MenuItem registerAction(MenuItem menuItem) {
     	menuItem.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-            	Dialogs.create().masthead("Click").message( "You clicked the " + menuItem.getText() + " icon").showInformation();
+            	showPopup(stackPane, "You clicked the " + menuItem.getText() + " icon");
             }
         });
     	return menuItem;
@@ -75,7 +73,7 @@ public class CirclePopupMenuSample1 extends JFXtrasSampleBase
     	Button lButton = new Button("Underlying");
     	stackPane.getChildren().add(lButton);
     	lButton.setOnAction( actionEvent -> {
-        	Dialogs.create().masthead("Click").message( "You clicked the underlying button").showInformation();
+			showPopup(lButton, "You clicked the underlying button");
     	});
     	
     	// create circle popup

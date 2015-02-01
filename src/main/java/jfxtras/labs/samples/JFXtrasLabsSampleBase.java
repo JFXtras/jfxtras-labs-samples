@@ -1,17 +1,14 @@
 package jfxtras.labs.samples;
 
+import jfxtras.samples.JFXtrasSampleBase;
+
 
 /**
  */
-abstract public class JFXtrasLabsSampleBase extends SampleBase {
+abstract public class JFXtrasLabsSampleBase extends JFXtrasSampleBase {
 
 	/** {@inheritDoc} */
 	@Override public String getProjectName() {
 		return "JFXtrasLabs";
-	}
-
-	/** {@inheritDoc} */
-	@Override public String getProjectVersion() {
-		return "8.0"; // TODO read from gradle meta-inf?
 	}
 }

@@ -34,8 +34,6 @@ import jfxtras.scene.layout.GridPane;
 import jfxtras.scene.layout.HBox;
 import jfxtras.scene.layout.VBox;
 
-import org.controlsfx.dialog.Dialogs;
-
 public class CalendarTextFieldSample1 extends JFXtrasSampleBase
 {
     public CalendarTextFieldSample1() {
@@ -63,11 +61,7 @@ public class CalendarTextFieldSample1 extends JFXtrasSampleBase
         root.getChildren().addAll(calendarTextField);
 
 		calendarTextField.parseErrorCallbackProperty().set( (Callback<Throwable, Void>) (Throwable p) -> {
-			Dialogs.create()
-				.owner( stage )
-				.title("Parse error")
-				.message( p.getLocalizedMessage() )
-				.showError();
+			showPopup(calendarTextField, "Parse error: " + p.getLocalizedMessage());
 			return null;
 		});
 

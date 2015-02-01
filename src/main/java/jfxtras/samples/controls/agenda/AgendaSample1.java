@@ -1,21 +1,31 @@
 package jfxtras.samples.controls.agenda;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 
 import javafx.geometry.HPos;
+import javafx.print.PrinterJob;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.labs.samples.JFXtrasLabsSampleBase;
-import jfxtras.scene.control.CalendarTextField;
+import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
+import jfxtras.scene.control.agenda.AgendaSkinSwitcher;
 import jfxtras.scene.layout.GridPane;
 
 public class AgendaSample1 extends JFXtrasLabsSampleBase
@@ -25,161 +35,192 @@ public class AgendaSample1 extends JFXtrasLabsSampleBase
 
         // setup appointment groups
         final Map<String, Agenda.AppointmentGroup> lAppointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
-        for (int i = 0; i < 24; i++) {
-        	lAppointmentGroupMap.put("group" + (i < 10 ? "0" : "") + i, new Agenda.AppointmentGroupImpl().withStyleClass("group" + i));
-        }
-        for (String lId : lAppointmentGroupMap.keySet())
-        {
-            Agenda.AppointmentGroup lAppointmentGroup = lAppointmentGroupMap.get(lId);
-            lAppointmentGroup.setDescription(lId);
-            agenda.appointmentGroups().add(lAppointmentGroup);
+        for (Agenda.AppointmentGroup lAppointmentGroup : agenda.appointmentGroups()) {
+        	lAppointmentGroupMap.put(lAppointmentGroup.getDescription(), lAppointmentGroup);
         }
 
         // accept new appointments
-        agenda.createAppointmentCallbackProperty().set(new Callback<Agenda.CalendarRange, Agenda.Appointment>()
-        {
-            @Override
-            public Agenda.Appointment call(Agenda.CalendarRange calendarRange)
-            {
-                return new Agenda.AppointmentImpl()
-                        .withStartTime(calendarRange.getStartCalendar())
-                        .withEndTime(calendarRange.getEndCalendar())
-                        .withSummary("new")
-                        .withDescription("new")
-                        .withAppointmentGroup(lAppointmentGroupMap.get("group01"));
-            }
-        });
+		agenda.newAppointmentCallbackProperty().set(new Callback<Agenda.LocalDateTimeRange, Agenda.Appointment>()
+		{
+			@Override
+			public Agenda.Appointment call(LocalDateTimeRange dateTimeRange)
+			{
+				return new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime( dateTimeRange.getStartLocalDateTime() )
+				.withEndLocalDateTime( dateTimeRange.getEndLocalDateTime() )
+				.withSummary("new")
+				.withDescription("new")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group01"));
+			}
+		});
 
-        // initial set
-        Calendar lToday = agenda.getDisplayedCalendar();
-        int lTodayYear = lToday.get(Calendar.YEAR);
-        int lTodayMonth = lToday.get(Calendar.MONTH);
-        int lTodayDay = lToday.get(Calendar.DATE);
-		/*
-		 *  . . . .
-		 *  . . . . 
-		 *  A . . .  8:00
-		 *  A B C .  8:30
-		 *  A B C D  9:00
-		 *  A B . D  9:30
-		 *  A . . D 10:00
-		 *  A E . D 10:30
-		 *  A . . D 11:00
-		 *  . . . D 11:30
-		 *  . . . D 12:00
-		 *  F . . D 12:30
-		 *  F H . D 13:00
-		 *  . . . . 13:30
-		 *  G . . . 14:00
-		 *  . . . . 14:30
-		 * 
-		 */
-        agenda.appointments().addAll(
-          new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 00))
-            .withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 11, 30))
-            .withSummary("A")
-            .withDescription("A much longer test description")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group07"))
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 30))
-            .withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 10, 00))
-            .withSummary("B")
-            .withDescription("A description 2")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group08"))
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 30))
-            .withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 9, 30))
-            .withSummary("C")
-            .withDescription("A description 3")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group09"))
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 9, 00))
-            .withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 13, 30))
-            .withSummary("D")
-            .withDescription("A description 4")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group07"))
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 10, 30))
-            .withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 11, 00))
-            .withSummary("E")
-            .withDescription("A description 4")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group07"))
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 12, 30))
-            .withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 13, 30))
-            .withSummary("F")
-            .withDescription("A description 4")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group07"))
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 13, 00))
-            .withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 13, 30))
-            .withSummary("H")
-            .withDescription("A description 4")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group07"))
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 14, 00))
-            .withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 14, 45))
-            .withSummary("G")
-            .withDescription("A description 4")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group07"))
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 8, 10))
-            .withEndTime(null)
-            .withSummary("K asfsfd dsfsdfs fsfds sdgsds dsdfsd ")
-            .withDescription("A description 4")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group07"))
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 19, 00))
-            .withEndTime(null)
-            .withSummary("L asfsfd dsfsdfs fsfds sdgsds dsdfsd ")
-            .withDescription("A description 4")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group07"))
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 15, 00))
-            .withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 16, 00))
-            .withSummary("I")
-            .withDescription("A description 4")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group07"))
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 15, 30))
-            .withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 16, 00))
-            .withSummary("J")
-            .withDescription("A description 4")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group07"))
-            // -----
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 20, 30))
-            .withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay, 20, 31))
-            .withSummary("S")
-            .withDescription("Too short")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group07"))
-            // -----
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay))
-            .withSummary("all day1")
-            .withDescription("A description")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group07"))
-            .withWholeDay(true)
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay))
-            .withSummary("all day2")
-            .withDescription("A description")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group08"))
-            .withWholeDay(true)
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay))
-            .withSummary("all day3")
-            .withDescription("A description3")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group09"))
-            .withWholeDay(true)
-        , new Agenda.AppointmentImpl()
-            .withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth, lTodayDay + 1))
-            .withSummary("all day")
-            .withDescription("A description3")
-            .withAppointmentGroup(lAppointmentGroupMap.get("group03"))
-            .withWholeDay(true)
-        );
+		// initial set
+		LocalDate lToday = LocalDate.now();
+		int lTodayYear = lToday.getYear();
+		int lTodayMonth = lToday.getMonthValue();
+		int lTodayDay = lToday.getDayOfMonth();
+		int idx = 0;
+		final String lIpsum = "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus";
+		LocalDateTime lMultipleDaySpannerStartDateTime = lToday.atStartOfDay().plusHours(5);
+		lMultipleDaySpannerStartDateTime = lMultipleDaySpannerStartDateTime.minusDays(lMultipleDaySpannerStartDateTime.getDayOfWeek().getValue() > 3 && lMultipleDaySpannerStartDateTime.getDayOfWeek().getValue() < 7 ? 3 : -1);
+		LocalDateTime lMultipleDaySpannerEndDateTime = lMultipleDaySpannerStartDateTime.plusDays(2);
+		
+		Appointment[] lTestAppointments = new Appointment[]{
+			new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 8, 00))
+				.withEndLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 11, 30))
+				.withSummary("A")
+				.withDescription("A much longer test description")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group07"))
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 8, 30))
+				.withEndLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 10, 00))
+				.withSummary("B")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group08"))
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 8, 30))
+				.withEndLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 9, 30))
+				.withSummary("C")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group09"))
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 9, 00))
+				.withEndLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 13, 30))
+				.withSummary("D")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group07"))
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 10, 30))
+				.withEndLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 11, 00))
+				.withSummary("E")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group07"))
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 12, 30))
+				.withEndLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 13, 30))
+				.withSummary("F")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group07"))
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 13, 00))
+				.withEndLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 13, 30))
+				.withSummary("H")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group07"))
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 14, 00))
+				.withEndLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 14, 45))
+				.withSummary("G")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group07"))
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 15, 00))
+				.withEndLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 16, 00))
+				.withSummary("I")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group07"))
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 15, 30))
+				.withEndLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 16, 00))
+				.withSummary("J")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group07"))
+		// backwards compatibility: calendar based appointment
+		, 	new Agenda.AppointmentImpl()
+				.withStartTime(new GregorianCalendar(lTodayYear, lTodayMonth - 1, lTodayDay, 4, 00)) // yeah, calendar month is 0 based
+				.withEndTime(new GregorianCalendar(lTodayYear, lTodayMonth - 1, lTodayDay, 5, 30)) // yeah, calendar month is 0 based
+				.withSummary("Cal")
+				.withDescription("Calendar based")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group08"))
+		// ZonedDateTime: there is no additional value in using ZonedDateTime everywhere, so we just have one test appointment
+		, 	new Agenda.AppointmentImplZoned()
+				.withStartZonedDateTime(ZonedDateTime.of(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 2, 00), ZoneId.systemDefault()) )
+				.withEndZonedDateTime(ZonedDateTime.of(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 3, 30), ZoneId.systemDefault()) ) 
+				.withSummary("Zoned")
+				.withDescription("Zoned based")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group08"))
+		// -----
+		// too short for actual rendering
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 20, 30))
+				.withEndLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 20, 31))
+				.withSummary("S")
+				.withDescription("Too short")
+				.withAppointmentGroup(lAppointmentGroupMap.get("group07"))
+		// -----
+		// tasks
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 8, 10))
+				.withSummary("K kk kkkkk k k k k ")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group17"))
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 8, 10))
+				.withSummary("M mmm m m m m m mmmm")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group18"))
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 8, 11))
+				.withSummary("N nnnn n n n  nnnnn")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group19"))
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDateTime.of(lTodayYear, lTodayMonth, lTodayDay, 6, 00))
+				.withSummary("L asfsfd dsfsdfs fsfds sdgsds dsdfsd ")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group11"))
+		// -----
+		// wholeday
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDate.of(lTodayYear, lTodayMonth, lTodayDay).atStartOfDay())
+				.withSummary("whole1")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group17"))
+				.withWholeDay(true)
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDate.of(lTodayYear, lTodayMonth, lTodayDay).atStartOfDay())
+				.withSummary("whole2")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group18"))
+				.withWholeDay(true)
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDate.of(lTodayYear, lTodayMonth, lTodayDay).atStartOfDay())
+				.withEndLocalDateTime(LocalDate.of(lTodayYear, lTodayMonth, lTodayDay + 1).atStartOfDay()) // at we going to do en
+				.withSummary("whole3")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group19"))
+				.withWholeDay(true)
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDate.of(lTodayYear, lTodayMonth, lTodayDay + 1).atStartOfDay())
+				.withEndLocalDateTime(LocalDate.of(lTodayYear, lTodayMonth, lTodayDay + 1).atTime(13, 00))
+				.withSummary("whole+end")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group13"))
+				.withWholeDay(true)
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(LocalDate.of(lTodayYear, lTodayMonth, lTodayDay).atStartOfDay())
+				.withEndLocalDateTime(LocalDate.of(lTodayYear, lTodayMonth, lTodayDay + 1).atTime(13, 00))
+				.withSummary("whole+spanning")
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group14"))
+				.withWholeDay(true)
+		// -----
+		// regular spanning
+		, 	new Agenda.AppointmentImplLocal()
+				.withStartLocalDateTime(lMultipleDaySpannerStartDateTime)
+				.withEndLocalDateTime(lMultipleDaySpannerEndDateTime)
+				.withSummary(lIpsum.substring(0, 20 + new Random().nextInt(lIpsum.length() - 20)))
+				.withDescription("A description " + (++idx))
+				.withAppointmentGroup(lAppointmentGroupMap.get("group20"))
+		};
+		agenda.appointments().addAll(lTestAppointments);
+		
+		// action
+		agenda.setActionCallback( (appointment) -> {
+			showPopup(agenda, "Action on " + appointment);
+			return null;
+		});
     }
     final Agenda agenda;
 
@@ -216,17 +257,47 @@ public class AgendaSample1 extends JFXtrasLabsSampleBase
         lGridPane.getColumnConstraints().addAll(lColumnConstraintsNeverGrow, lColumnConstraintsAlwaysGrow);
         int lRowIdx = 0;
 
+        // skin
+        {
+            lGridPane.add(new Label("Skin"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            AgendaSkinSwitcher lAgendaSkinSwitcher = new AgendaSkinSwitcher(agenda);
+            lGridPane.add(lAgendaSkinSwitcher, new GridPane.C().row(lRowIdx).col(1));
+        }
+        lRowIdx++;
+
         // week
         {
-            lGridPane.add(new Label("Week of"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            CalendarTextField lCalendarTextField = new CalendarTextField();
-            lGridPane.add(lCalendarTextField, new GridPane.C().row(lRowIdx).col(1));
-            lCalendarTextField.calendarProperty().bindBidirectional(agenda.displayedCalendar());
+            lGridPane.add(new Label("Display"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            LocalDateTimeTextField lLocalDateTimeTextField = new LocalDateTimeTextField();
+            lGridPane.add(lLocalDateTimeTextField, new GridPane.C().row(lRowIdx).col(1));
+            lLocalDateTimeTextField.localDateTimeProperty().bindBidirectional(agenda.displayedLocalDateTime());
+        }
+        lRowIdx++;
+
+        // print
+        {
+            //lGridPane.add(new Label("Print"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            Button lButton = new Button("Print to default printer");
+            lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(1));
+            lButton.setOnAction( (event) -> {
+            	print();
+            });
         }
         lRowIdx++;
 
         // done
         return lGridPane;
+    }
+    
+    /** Scales the node based on the standard letter, portrait paper to be printed.
+     * @param node The scene node to be printed.
+     */
+    public void print() {
+        PrinterJob job = PrinterJob.createPrinterJob();
+        if (job != null) {
+            agenda.print(job);
+            job.endJob();
+        }
     }
 
     @Override

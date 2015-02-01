@@ -23,18 +23,16 @@ import jfxtras.scene.layout.GridPane;
 import jfxtras.scene.layout.HBox;
 import jfxtras.scene.menu.CornerMenu;
 
-import org.controlsfx.dialog.Dialogs;
-
 public class CornerMenuSample1 extends JFXtrasSampleBase
 {
     /**
      *
      */
     public CornerMenuSample1() {
-        stackPane = new BorderPane();
+        borderPane = new BorderPane();
         // corner menu will be created when the control panel is setup 
 	}
-    final private BorderPane stackPane;
+    final private BorderPane borderPane;
 	final private MenuItem facebookMenuItem = registerAction(new MenuItem("Facebook", new ImageView(new Image(this.getClass().getResourceAsStream("social_facebook_button_blue.png")))));
 	final private MenuItem googleMenuItem = registerAction(new MenuItem("Google", new ImageView(new Image(this.getClass().getResourceAsStream("social_google_button_blue.png")))));
 	final private MenuItem skypeMenuItem = registerAction(new MenuItem("Skype", new ImageView(new Image(this.getClass().getResourceAsStream("social_skype_button_blue.png")))));
@@ -45,7 +43,7 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
     private MenuItem registerAction(MenuItem menuItem) {
     	menuItem.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent t) {
-            	 Dialogs.create().masthead("Click").message( "You clicked the " + menuItem.getText() + " icon").showInformation();
+            	showPopup(borderPane, "You clicked the " + menuItem.getText() + " icon");
             }
         });
     	return menuItem;
@@ -77,7 +75,7 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
     @Override
     public Node getPanel(Stage stage) {
     	//stackPane.getChildren().add(new Label("Some stuff that is visible on the pane"));
-    	return stackPane;
+    	return borderPane;
     }
 
     @Override
@@ -174,7 +172,7 @@ public class CornerMenuSample1 extends JFXtrasSampleBase
     	}
     	
     	// create a new one
-    	cornerMenu = new CornerMenu(locationChoiceBox.getValue(), stackPane, !autoShowAndHideCheckBox.selectedProperty().get());
+    	cornerMenu = new CornerMenu(locationChoiceBox.getValue(), borderPane, !autoShowAndHideCheckBox.selectedProperty().get());
 		if (CornerMenu.Location.TOP_LEFT.equals(cornerMenu.getLocation())) {
 	    	cornerMenu.getItems().addAll(facebookMenuItem, googleMenuItem, skypeMenuItem, twitterMenuItem, windowsMenuItem);
 		}
