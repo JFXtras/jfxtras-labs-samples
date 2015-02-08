@@ -7,7 +7,7 @@ import fxsampler.FXSamplerProject;
 public class JFXtrasSamplesProject implements FXSamplerProject {
 	@Override
 	public String getProjectName() {
-		return "JFXtras";
+		return "JFxtras";
 	}
 
 	@Override

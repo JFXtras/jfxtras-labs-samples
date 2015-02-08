@@ -20,7 +20,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.samples.JFXtrasLabsSampleBase;
+import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -28,7 +28,7 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 import jfxtras.scene.control.agenda.AgendaSkinSwitcher;
 import jfxtras.scene.layout.GridPane;
 
-public class AgendaSample1 extends JFXtrasLabsSampleBase
+public class AgendaSample1 extends JFXtrasSampleBase
 {
     public AgendaSample1() {
         agenda = new Agenda();
@@ -265,7 +265,7 @@ public class AgendaSample1 extends JFXtrasLabsSampleBase
         }
         lRowIdx++;
 
-        // week
+        // displayed calendar
         {
             lGridPane.add(new Label("Display"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             LocalDateTimeTextField lLocalDateTimeTextField = new LocalDateTimeTextField();
@@ -276,7 +276,7 @@ public class AgendaSample1 extends JFXtrasLabsSampleBase
 
         // print
         {
-            //lGridPane.add(new Label("Print"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            lGridPane.add(new Label("Print"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             Button lButton = new Button("Print to default printer");
             lGridPane.add(lButton, new GridPane.C().row(lRowIdx).col(1));
             lButton.setOnAction( (event) -> {

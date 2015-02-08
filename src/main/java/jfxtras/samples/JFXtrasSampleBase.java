@@ -14,7 +14,7 @@ abstract public class JFXtrasSampleBase extends SampleBase {
 
 	/** {@inheritDoc} */
 	@Override public String getProjectName() {
-		return "JFXtras";
+		return "JFxtras";
 	}
 
 	/** {@inheritDoc} */
