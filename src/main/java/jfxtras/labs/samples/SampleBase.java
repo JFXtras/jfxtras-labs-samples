@@ -35,6 +35,13 @@ abstract public class SampleBase extends fxsampler.SampleBase {
 		//System.out.println(s);
 		return s;
 	}
+	
+
+	@Override
+	public String getControlStylesheetURL() {
+		return null;
+	}
+
 
 	/**
 	 * Create a TextArea that automatically saves its contents as a CSS files and adds that to the stage.
