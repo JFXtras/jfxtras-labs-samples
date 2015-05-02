@@ -1,17 +1,13 @@
 package jfxtras.labs.samples.control.gauge.linear;
 
-import javafx.collections.FXCollections;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
 import jfxtras.scene.layout.GridPane;
 
-public class SimpleMetroArcGaugeSample1 extends AbstractLinearGaugeSample1
+public class SimpleMetroArcGaugeSample1 extends AbstractLinearGaugeSample1<SimpleMetroArcGauge>
 {
     /**
      *
@@ -46,6 +42,8 @@ public class SimpleMetroArcGaugeSample1 extends AbstractLinearGaugeSample1
      */
     @Override
     public Node getPanel(Stage stage) {
+    	super.setup(stage);
+    	
         VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
@@ -58,35 +56,9 @@ public class SimpleMetroArcGaugeSample1 extends AbstractLinearGaugeSample1
     public Node getControlPanel() {
     	GridPane lGridPane = super.getControlPanel(simpleMetroArcGauge);
     	
-        // Colorschemes
-        {
-            lGridPane.add(new Label("Colorscheme"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
-            ChoiceBox<String> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList("colorscheme-blue-to-red-5"
-            		 , "colorscheme-red-to-blue-5"
-            		 , "colorscheme-green-to-darkgreen-6"
-            		 , "colorscheme-green-to-red-6"
-            		 , "colorscheme-red-to-green-6"
-            		 , "colorscheme-purple-to-red-6" 
-            		 , "colorscheme-blue-to-red-6"
-            		 , "colorscheme-green-to-red-7"
-            		 , "colorscheme-red-to-green-7"
-            		 , "colorscheme-green-to-red-10"
-            		 , "colorscheme-red-to-green-10"
-            		 , "colorscheme-purple-to-cyan-10"
-            		 , "colorscheme-first-grey-rest-transparent-10"));
-            lGridPane.add(lChoiceBox, new GridPane.C().row(lRowIdx).col(1));
-            lChoiceBox.valueProperty().addListener( (observable) -> {
-            	simpleMetroArcGauge.getStyleClass().remove(colorSchemeClass);
-                colorSchemeClass = lChoiceBox.getValue();
-                simpleMetroArcGauge.getStyleClass().add(colorSchemeClass);
-            });
-        }
-        lRowIdx++;
-        
         // done
         return lGridPane;
     }
-    private String colorSchemeClass = "";
 
     /**
      *

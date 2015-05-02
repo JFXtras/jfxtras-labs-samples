@@ -9,9 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
+import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 import jfxtras.scene.layout.GridPane;
 
-public class BasicArcGaugeSample1 extends AbstractLinearGaugeSample1
+public class BasicArcGaugeSample1 extends AbstractLinearGaugeSample1<BasicArcGauge>
 {
     /**
      *
@@ -46,6 +47,8 @@ public class BasicArcGaugeSample1 extends AbstractLinearGaugeSample1
      */
     @Override
     public Node getPanel(Stage stage) {
+    	super.setup(stage);
+    	
         VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
@@ -60,7 +63,7 @@ public class BasicArcGaugeSample1 extends AbstractLinearGaugeSample1
     	
         // Colorschemes
         {
-            lGridPane.add(new Label("Colorscheme"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            lGridPane.add(new Label("Needle & backpane colorscheme"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
             ChoiceBox<String> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList("colorscheme-light"
             		 , "colorscheme-dark"
             		 , "colorscheme-green"

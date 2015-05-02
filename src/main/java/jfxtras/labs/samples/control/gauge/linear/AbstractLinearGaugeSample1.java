@@ -14,7 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
-import jfxtras.labs.internal.scene.control.skin.gauge.linear.SimpleMetroArcGaugeSkin;
+import javafx.stage.Stage;
+import jfxtras.labs.internal.scene.control.gauge.linear.skin.SimpleMetroArcGaugeSkin;
 import jfxtras.labs.scene.control.BigDecimalField;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
@@ -24,6 +25,10 @@ import jfxtras.scene.layout.GridPane;
 
 abstract public class AbstractLinearGaugeSample1<T> extends JFXtrasSampleBase
 {
+	protected void setup(Stage stage) {
+        stage.getScene().getStylesheets().add(LinearGauge.segmentColorschemeCSSPath());
+	}
+
     public GridPane getControlPanel(LinearGauge<T> linearGauge) {
     	this.linearGauge = linearGauge;
     	
@@ -163,12 +168,38 @@ abstract public class AbstractLinearGaugeSample1<T> extends JFXtrasSampleBase
         }
         lRowIdx++;
         
+        // Segment Colorschemes
+        {
+            lGridPane.add(new Label("Segment colorscheme"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            ChoiceBox<String> lChoiceBox = new ChoiceBox(FXCollections.observableArrayList("colorscheme-blue-to-red-5"
+            		 , "colorscheme-red-to-blue-5"
+            		 , "colorscheme-green-to-darkgreen-6"
+            		 , "colorscheme-green-to-red-6"
+            		 , "colorscheme-red-to-green-6"
+            		 , "colorscheme-purple-to-red-6" 
+            		 , "colorscheme-blue-to-red-6"
+            		 , "colorscheme-green-to-red-7"
+            		 , "colorscheme-red-to-green-7"
+            		 , "colorscheme-green-to-red-10"
+            		 , "colorscheme-red-to-green-10"
+            		 , "colorscheme-purple-to-cyan-10"
+            		 , "colorscheme-first-grey-rest-transparent-10"));
+            lGridPane.add(lChoiceBox, new GridPane.C().row(lRowIdx).col(1));
+            lChoiceBox.valueProperty().addListener( (observable) -> {
+            	linearGauge.getStyleClass().remove(colorSchemeClass);
+                colorSchemeClass = lChoiceBox.getValue();
+                linearGauge.getStyleClass().add(colorSchemeClass);
+            });
+        }
+        lRowIdx++;
+        
         // done
         return lGridPane;
     }
     protected int lRowIdx = 0;
     private LinearGauge<T> linearGauge = null;
-    
+    private String colorSchemeClass = "";
+
     private void setSegments() {
     	// first calculate total
     	double lTotal = 0.0;
