@@ -1,6 +1,5 @@
 package jfxtras.samples;
 
-import javafx.scene.control.Label;
 import javafx.scene.web.WebView;
 import fxsampler.FXSamplerProject;
 import fxsampler.model.WelcomePage;

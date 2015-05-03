@@ -52,10 +52,14 @@ abstract public class SampleBase extends fxsampler.SampleBase {
 	protected TextArea createTextAreaForCSS(Stage stage, ObservableList<String> examples) {
 		try {
 			// clear any existing
-			stage.getScene().getStylesheets().clear();
+			for (String stylesheet : stage.getScene().getStylesheets()) {
+				if (stylesheet.startsWith("TextAreaForCSS_")) {
+					stage.getScene().getStylesheets().remove(stylesheet);
+				}
+			}
 			
 			// the CSS file
-			File lFile = File.createTempFile(this.getClass().getSimpleName(), ".css");
+			File lFile = File.createTempFile("TextAreaForCSS_" + this.getClass().getSimpleName(), ".css");
 			lFile.deleteOnExit();
 
 			// text field
