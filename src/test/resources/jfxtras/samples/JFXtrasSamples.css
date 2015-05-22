@@ -2,7 +2,7 @@
     -fx-font-size: 14pt;
 }
 
-.ListSpinnerx {
+.CalendarPicker .ListSpinnerx {
 	-fxx-arrow-position:SPLIT;
 	-fxx-arrow-direction:VERTICAL;
 }
