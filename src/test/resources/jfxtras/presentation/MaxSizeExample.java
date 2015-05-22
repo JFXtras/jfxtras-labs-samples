@@ -1,6 +1,7 @@
 package jfxtras.presentation;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -20,18 +21,20 @@ public class MaxSizeExample extends Application {
 		HBox lHBox = new HBox();
 		
 		// add textfield
-		Button lButton = new Button("Button");
-		// JavaFX
-//		lHBox.getChildren().add(lButton);
+		Button lButton = new Button("Button");		
+		// -- JavaFX
+		lHBox.getChildren().add(lButton);
+//		HBox.setMargin(lButton, new Insets(10));
 //		HBox.setHgrow(lButton, Priority.ALWAYS);
 //		lButton.setMaxWidth(Integer.MAX_VALUE);
-//		lButton.setMaxWidth(200);
-		// JFXtras
+//		lButton.setMaxWidth(200);		
+		// -- JFXtras
 //		lHBox.add(lButton, new HBox.C()
+//			.margin(new Insets(10))
 //			.hgrow(Priority.ALWAYS)
 //		);
 //		lButton.setMaxWidth(200);
-		
+
 		// create scene
         Scene scene = new Scene(lHBox, 300, 300);
         
