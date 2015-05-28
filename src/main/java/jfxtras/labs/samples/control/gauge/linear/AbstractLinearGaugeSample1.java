@@ -18,8 +18,8 @@ import javafx.stage.Stage;
 import jfxtras.labs.internal.scene.control.gauge.linear.skin.SimpleMetroArcGaugeSkin;
 import jfxtras.labs.scene.control.BigDecimalField;
 import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
-import jfxtras.labs.scene.control.gauge.linear.PercentSegment;
-import jfxtras.labs.scene.control.gauge.linear.Segment;
+import jfxtras.labs.scene.control.gauge.linear.elements.PercentSegment;
+import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.layout.GridPane;
 
