@@ -17,7 +17,7 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import jfxtras.labs.internal.scene.control.gauge.linear.skin.SimpleMetroArcGaugeSkin;
 import jfxtras.labs.scene.control.BigDecimalField;
-import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.AbstractLinearGauge;
 import jfxtras.labs.scene.control.gauge.linear.elements.PercentSegment;
 import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
 import jfxtras.samples.JFXtrasSampleBase;
@@ -26,10 +26,10 @@ import jfxtras.scene.layout.GridPane;
 abstract public class AbstractLinearGaugeSample1<T> extends JFXtrasSampleBase
 {
 	protected void setup(Stage stage) {
-        stage.getScene().getStylesheets().add(LinearGauge.segmentColorschemeCSSPath());
+        stage.getScene().getStylesheets().add(AbstractLinearGauge.segmentColorschemeCSSPath());
 	}
 
-    public GridPane getControlPanel(LinearGauge<T> linearGauge) {
+    public GridPane getControlPanel(AbstractLinearGauge<T> linearGauge) {
     	this.linearGauge = linearGauge;
     	
         // the result
@@ -197,7 +197,7 @@ abstract public class AbstractLinearGaugeSample1<T> extends JFXtrasSampleBase
         return lGridPane;
     }
     protected int lRowIdx = 0;
-    private LinearGauge<T> linearGauge = null;
+    private AbstractLinearGauge<T> linearGauge = null;
     private String colorSchemeClass = "";
 
     private void setSegments() {

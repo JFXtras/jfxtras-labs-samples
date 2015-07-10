@@ -8,19 +8,19 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.control.gauge.linear.BasicArcGauge;
-import jfxtras.labs.scene.control.gauge.linear.LinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.BasicRoundDailGauge;
+import jfxtras.labs.scene.control.gauge.linear.AbstractLinearGauge;
 import jfxtras.scene.layout.GridPane;
 
-public class BasicArcGaugeSample1 extends AbstractLinearGaugeSample1<BasicArcGauge>
+public class BasicRoundDailGaugeSample1 extends AbstractLinearGaugeSample1<BasicRoundDailGauge>
 {
     /**
      *
      */
-    public BasicArcGaugeSample1() {
-    	basicArcGauge = new BasicArcGauge();
+    public BasicRoundDailGaugeSample1() {
+    	basicRoundDailGauge = new BasicRoundDailGauge();
 	}
-    final BasicArcGauge basicArcGauge;
+    final BasicRoundDailGauge basicRoundDailGauge;
 
 	/**
      *
@@ -37,7 +37,7 @@ public class BasicArcGaugeSample1 extends AbstractLinearGaugeSample1<BasicArcGau
      */
     @Override
     public String getSampleDescription() {
-        return "BasicArcGauge is a simple round arc shaped gauge. The needle ranges from about 7 o'clock (min) clockwise to 5 o'clock (max). The backpane and needle can have different colors.";
+        return "BasicRoundDailGauge is a simple round arc shaped gauge. The needle ranges from about 7 o'clock (min) clockwise to 5 o'clock (max). The backpane and needle can have different colors.";
     }
 
     /**
@@ -52,14 +52,14 @@ public class BasicArcGaugeSample1 extends AbstractLinearGaugeSample1<BasicArcGau
         VBox root = new VBox(20);
         root.setPadding(new Insets(30, 30, 30, 30));
 
-        root.getChildren().addAll(basicArcGauge);
+        root.getChildren().addAll(basicRoundDailGauge);
 
         return root;
     }
 
     @Override
     public Node getControlPanel() {
-    	GridPane lGridPane = super.getControlPanel(basicArcGauge);
+    	GridPane lGridPane = super.getControlPanel(basicRoundDailGauge);
     	
         // Colorschemes
         {
@@ -70,9 +70,9 @@ public class BasicArcGaugeSample1 extends AbstractLinearGaugeSample1<BasicArcGau
             		 , "colorscheme-red"));
             lGridPane.add(lChoiceBox, new GridPane.C().row(lRowIdx).col(1));
             lChoiceBox.valueProperty().addListener( (observable) -> {
-            	basicArcGauge.getStyleClass().remove(colorSchemeClass);
+            	basicRoundDailGauge.getStyleClass().remove(colorSchemeClass);
                 colorSchemeClass = lChoiceBox.getValue();
-                basicArcGauge.getStyleClass().add(colorSchemeClass);
+                basicRoundDailGauge.getStyleClass().add(colorSchemeClass);
             });
         }
         lRowIdx++;
@@ -88,7 +88,7 @@ public class BasicArcGaugeSample1 extends AbstractLinearGaugeSample1<BasicArcGau
      */
     @Override
     public String getJavaDocURL() {
-		return "http://jfxtras.org/doc/8.0/jfxtras-controls/" + BasicArcGauge.class.getName().replace(".", "/") + ".html";
+		return "http://jfxtras.org/doc/8.0/jfxtras-controls/" + BasicRoundDailGauge.class.getName().replace(".", "/") + ".html";
     }
 
     public static void main(String[] args) {

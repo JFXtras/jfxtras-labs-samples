@@ -23,4 +23,4 @@ jfxtras.labs.samples.magnifier.MagnifierSample.java
 jfxtras.labs.samples.radialmenu.RadialMenuSample.java
 jfxtras.labs.samples.matrixpanel.MatrixPanelSample.java
 jfxtras.labs.samples.control.gauge.linear.SimpleMetroArcGaugeSample1.java
-jfxtras.labs.samples.control.gauge.linear.BasicArcGaugeSample1.java
+jfxtras.labs.samples.control.gauge.linear.BasicRoundDailGaugeSample1.java
