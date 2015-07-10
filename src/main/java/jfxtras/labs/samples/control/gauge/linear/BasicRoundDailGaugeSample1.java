@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jfxtras.labs.scene.control.gauge.linear.BasicRoundDailGauge;
-import jfxtras.labs.scene.control.gauge.linear.AbstractLinearGauge;
 import jfxtras.scene.layout.GridPane;
 
 public class BasicRoundDailGaugeSample1 extends AbstractLinearGaugeSample1<BasicRoundDailGauge>

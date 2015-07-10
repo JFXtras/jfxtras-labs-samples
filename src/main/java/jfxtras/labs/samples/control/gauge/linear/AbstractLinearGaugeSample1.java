@@ -6,7 +6,6 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -18,6 +17,7 @@ import javafx.stage.Stage;
 import jfxtras.labs.internal.scene.control.gauge.linear.skin.SimpleMetroArcGaugeSkin;
 import jfxtras.labs.scene.control.BigDecimalField;
 import jfxtras.labs.scene.control.gauge.linear.AbstractLinearGauge;
+import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
 import jfxtras.labs.scene.control.gauge.linear.elements.PercentSegment;
 import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
 import jfxtras.samples.JFXtrasSampleBase;
@@ -31,6 +31,8 @@ abstract public class AbstractLinearGaugeSample1<T> extends JFXtrasSampleBase
 
     public GridPane getControlPanel(AbstractLinearGauge<T> linearGauge) {
     	this.linearGauge = linearGauge;
+		linearGauge.indicators().add(new Indicator(0, "warning"));
+		linearGauge.indicators().add(new Indicator(1, "error"));
     	
         // the result
         GridPane lGridPane = new GridPane();
