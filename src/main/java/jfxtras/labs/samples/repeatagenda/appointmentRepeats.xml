@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<repeatRules keys="0 1">
+    <repeat daysOfWeek="TUESDAY FRIDAY THURSDAY" deletedDates="" endCriteria="NEVER" endTime="07:55" intervalUnit="WEEKLY" key="0" repeatFrequency="1" startDate="2015-09-29" startTime="05:15">
+        <appointment description="" groupIndex="0" summary="New" wholeDay="false"/>
+    </repeat>
+    <repeat deletedDates="" endCriteria="NEVER" endTime="15:20" intervalUnit="DAILY" key="1" repeatFrequency="2" startDate="2015-09-29" startTime="14:25">
+        <appointment description="" groupIndex="0" summary="New" wholeDay="false"/>
+    </repeat>
+</repeatRules>
