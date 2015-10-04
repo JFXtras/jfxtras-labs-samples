@@ -192,7 +192,7 @@ public class Agenda extends Control
 	 */
 	@Override public String getUserAgentStylesheet()
 	{
-		return Agenda.class.getResource("/jfxtras.labs.samples.repeatagenda.internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+        return Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
 	}
 	
 	/**
