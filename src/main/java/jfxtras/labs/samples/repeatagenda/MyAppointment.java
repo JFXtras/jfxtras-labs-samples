@@ -1,0 +1,359 @@
+package jfxtras.labs.samples.repeatagenda;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentImplBase;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.DataUtilities;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
+
+public class MyAppointment extends AppointmentImplBase<MyAppointment> implements Appointment {
+
+//    /** WholeDay: */
+//    public BooleanProperty wholeDayProperty() { return wholeDayObjectProperty; }
+//    final private BooleanProperty wholeDayObjectProperty = new SimpleBooleanProperty(this, "wholeDay", false);
+//    public Boolean isWholeDay() { return wholeDayObjectProperty.getValue(); }
+//    public void setWholeDay(Boolean value) { wholeDayObjectProperty.setValue(value); }
+//    public MyAppointment withWholeDay(Boolean value) { setWholeDay(value); return this; } 
+//    
+//    /** Summary: */
+//    public StringProperty summaryProperty() { return summaryObjectProperty; }
+//    final private StringProperty summaryObjectProperty = new SimpleStringProperty(this, "summary", "");
+//    public String getSummary() { return summaryObjectProperty.getValue(); }
+//    public void setSummary(String value) { summaryObjectProperty.setValue(value); }
+//    public MyAppointment withSummary(String value) { setSummary(value); return this; } 
+//    
+//    /** Description: */
+//    public StringProperty descriptionProperty() { return descriptionObjectProperty; }
+//    final private StringProperty descriptionObjectProperty = new SimpleStringProperty(this, "description", "");
+//    public String getDescription() { return descriptionObjectProperty.getValue(); }
+//    public void setDescription(String value) { descriptionObjectProperty.setValue(value); }
+//    public MyAppointment withDescription(String value) { setDescription(value); return this; } 
+//    
+      /** AppointmentGroupIndex: */
+    private int appointmentGroupIndex = 0; // only used privately - later matched up to an appointmentGroup
+//    public IntegerProperty appointmentGroupIndexProperty() { return appointmentGroupIndexProperty; }
+//    final private IntegerProperty appointmentGroupIndexProperty = new SimpleIntegerProperty(this, "appointmentGroup");
+    public Integer getAppointmentGroupIndex() { return appointmentGroupIndex; }
+    public void setAppointmentGroupIndex(Integer value) { appointmentGroupIndex = value; }
+//    public T withAppointmentGroupIndex(Integer value) { setAppointmentGroupIndex(value); return (T)this; }
+//
+//    /** AppointmentGroup: */
+//    public ObjectProperty<AppointmentGroup> appointmentGroupProperty() { return appointmentGroupObjectProperty; }
+//    final private ObjectProperty<AppointmentGroup> appointmentGroupObjectProperty = new SimpleObjectProperty<AppointmentGroup>(this, "appointmentGroup");
+//    public AppointmentGroup getAppointmentGroup() { return appointmentGroupObjectProperty.getValue(); }
+//    public void setAppointmentGroup(AppointmentGroup value) { appointmentGroupObjectProperty.setValue(value); }
+//    public MyAppointment withAppointmentGroup(AppointmentGroup value) { setAppointmentGroup(value); return this; }
+//    public void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups) { setAppointmentGroup(appointmentGroups.get(appointmentGroupIndex));  }
+//   
+    private static int nextKey = 0;
+    private static Map<Integer, MyRepeat> repeatMap = new HashMap<Integer, MyRepeat>(); // private map of repeats used to match Repeat objects to appointments
+    /** create map of Repeat objects and repeat keys.  Its used to find Repeat objects to attach to Appointment objects.
+     * Only used when setting up appointments from file */
+    protected static void setupRepeats(Set<Repeat> set)
+    {
+        Set<MyRepeat> myRepeats
+            = set.stream().map(a -> (MyRepeat) a).collect(Collectors.toSet());
+        repeatMap = myRepeats.stream()
+                           .collect(Collectors.toMap(a -> a.getKey(), a -> a));
+    }
+
+    /** Unique appointment key */
+    private Integer key;
+    public Integer getKey() { return key; }
+    public void setKey(Integer value) { key = value; }
+    public boolean hasKey() { return key != null; }
+    public MyAppointment withKey(Integer value) { setKey(value); return this; }
+    
+    /** StudentKeys: */
+    final private ObservableList<Integer> studentKeys = FXCollections.observableArrayList();
+    public List<Integer> getStudentKeys() { return studentKeys; }
+    public void setStudentKeys(List<Integer> value) { studentKeys.setAll(value); }
+    public MyAppointment withStudentKeys(List<Integer> value) { setStudentKeys(value); return this; }
+    public ObservableList<Integer> studentKeysProperty() { return studentKeys; }
+
+    /** RepeatKey: only used privately */
+    private Integer repeatKey;
+    private Integer getRepeatKey() { return repeatKey; }
+    private void setRepeatKey(Integer value) { repeatKey = value; }
+    private boolean hasRepeatKey() { return getRepeatKey() != null; }
+    
+    /** Repeat rules, null if an individual appointment */
+    private Repeat repeat;
+    public void setRepeat(Repeat repeat) { this.repeat = repeat; }
+    public Repeat getRepeat() { return repeat; }
+    public boolean hasRepeat() { return repeat != null; }
+    public MyAppointment withRepeat(Repeat value) { setRepeat(value); return this; }
+
+    /**
+     * true = a temporary appointment created by a repeat rule
+     * false = a permanent appointment stored on disk
+     */
+    final private BooleanProperty repeatMade = new SimpleBooleanProperty(this, "repeatMade", false);
+    public BooleanProperty repeatMadeProperty() { return repeatMade; }
+    public boolean isRepeatMade() { return repeatMade.getValue(); }
+    public void setRepeatMade(boolean b) {repeatMade.set(b); }
+    public MyAppointment withRepeatMade(boolean b) {repeatMade.set(b); return this; }
+    
+    private static Map<Integer, Integer> appointmentGroupCount = new HashMap<Integer, Integer>();
+    
+    /** StartDateTime: */
+    public ObjectProperty<LocalDateTime> startLocalDateTimeProperty() { return startLocalDateTime; }
+    final private ObjectProperty<LocalDateTime> startLocalDateTime = new SimpleObjectProperty<LocalDateTime>(this, "startDateTime");
+    public LocalDateTime getStartLocalDateTime() { return startLocalDateTime.getValue(); }
+    public void setStartLocalDateTime(LocalDateTime value) { startLocalDateTime.setValue(value); }
+    public MyAppointment withStartLocalDateTime(LocalDateTime value) { setStartLocalDateTime(value); return this; }
+    
+    /** EndDateTime: */
+    public ObjectProperty<LocalDateTime> endLocalDateTimeProperty() { return endLocalDateTime; }
+    protected final ObjectProperty<LocalDateTime> endLocalDateTime = new SimpleObjectProperty<LocalDateTime>(this, "endDateTime");
+    public LocalDateTime getEndLocalDateTime() { return endLocalDateTime.getValue(); }
+    public void setEndLocalDateTime(LocalDateTime value) { endLocalDateTime.setValue(value); }
+    public MyAppointment withEndLocalDateTime(LocalDateTime value) { setEndLocalDateTime(value); return this; } 
+    
+    /** Location: */
+    // I'M NOT USING THESE
+    public ObjectProperty<String> locationProperty() { return locationObjectProperty; }
+    final private ObjectProperty<String> locationObjectProperty = new SimpleObjectProperty<String>(this, "location");
+    public String getLocation() { return locationObjectProperty.getValue(); }
+    public void setLocation(String value) { locationObjectProperty.setValue(value); }
+    public MyAppointment withLocation(String value) { setLocation(value); return this; } 
+    
+    public MyAppointment() { }
+    
+    /**
+     * Copy constructor
+     * 
+     * @param appointment
+     */
+    public MyAppointment(Appointment appointment) {
+        appointment.copyInto(this);
+    }
+    
+    public static void writeToFile(Collection<Appointment> appointments, Path file)
+    {
+        // XML document
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = null;
+        try {
+            builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+//            Main.log.log(Level.SEVERE, "Can't build appointmentMap factory" , e);
+        }
+        Document doc = builder.newDocument();
+
+        Element rootElement = doc.createElement("appointments");
+        doc.appendChild(rootElement);
+        
+        // Appointments
+        for (Appointment myAppointment : appointments)
+        {
+            if (myAppointment.isRepeatMade()) continue; // skip appointments that are made by repeat rules
+            Element appointmentElement = doc.createElement("appointment");
+            AppointmentFactory.returnConcreteAppointment(myAppointment).marshal(appointmentElement);
+            rootElement.appendChild(appointmentElement);
+        }
+
+        Set<MyAppointment> myAppointments = appointments
+                .stream()
+                .map(a -> (MyAppointment) a)
+                .collect(Collectors.toSet());
+        String repeatKeys = myAppointments
+                .stream()
+                .filter(a -> ! a.isRepeatMade())
+                .map(a -> a.getKey().toString()).collect(Collectors.joining(" "));
+        rootElement.setAttribute("keys", repeatKeys);
+        
+        try {
+            writeDocument(doc, file);
+        } catch (TransformerException e) {
+//            Main.log.log(Level.SEVERE, "Can't write appointmentMap file=" + file, e);
+        }
+    }
+    
+    /**
+     * Writes a org.w3c.dom.Document to a output file.
+     * 
+     * @param doc
+     * @param file
+     * @throws TransformerException
+     */
+    public static void writeDocument(Document doc, Path file) throws TransformerException {
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        if (Settings.PRETTY_XML) {
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        }
+        
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(file.toFile());
+        transformer.transform(source, result);
+    }
+    
+    public Element marshal(Element myElement)
+    {
+//        super.marshal(myElement);
+        myElement.setAttribute("wholeDay", Boolean.toString(isWholeDay()));
+        myElement.setAttribute("summary", getSummary());
+        myElement.setAttribute("description", getDescription());
+//        myElement.setAttribute("locationKey", Integer.toString(getLocationKey()));
+        myElement.setAttribute("groupIndex", Integer.toString(getAppointmentGroup().getKey()));
+//        final String s = getStaffKeys().stream()
+//                                 .map(a -> a.toString())
+//                                 .collect(Collectors.joining(" "));
+//        myElement.setAttribute("staffKeys", s);
+//        myElement.setAttribute("styleKey", DataUtilities.myInt2String(getStyleKey()));
+        
+        if (getKey() == null) setKey(nextKey++); // if it has no key (meaning its new) give it the next one
+        myElement.setAttribute("key", getKey().toString());
+        myElement.setAttribute("repeatKey", (getRepeat() == null) ? "" : ((MyRepeat) getRepeat()).getKey().toString());
+        final String s = getStudentKeys().stream()
+                                         .map(a -> a.toString())
+                                         .collect(Collectors.joining(" "));
+        myElement.setAttribute("studentKeys", s);
+        
+        myElement.setAttribute(endLocalDateTimeProperty().getName(), DataUtilities.myFormatLocalDateTime(getEndLocalDateTime()));
+        myElement.setAttribute(startLocalDateTimeProperty().getName(), DataUtilities.myFormatLocalDateTime(getStartLocalDateTime()));
+        return myElement;
+    }
+    
+    
+    /**
+     * Read in an appointment map from a file.  Adds elements to appointments
+     * 
+     * @param file
+     * @param appointmentGroups 
+     * @param appointments
+     * @return
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     * @throws IOException
+     */
+    public static Collection<Appointment> readFromFile(File file
+            , ObservableList<AppointmentGroup> appointmentGroups
+            , Collection<Appointment> appointments)
+            throws ParserConfigurationException, SAXException 
+    {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = null;
+        try {
+            doc = builder.parse(file);
+        } catch (IOException e) {
+//            Main.log.log(Level.WARNING, "Appointment file not found: " + file);
+            return null;
+        }
+        
+        Map<String, String> appointmentAttributes;
+        Map<String, String> rootAttributes = DataUtilities.getAttributes(doc.getFirstChild(), "repeatRules");
+        List<Integer> keys = DataUtilities.myGetList(rootAttributes, "keys", "");
+        Iterator<Integer> keyIterator = keys.iterator();
+        
+        NodeList appointmentNodeList = doc.getElementsByTagName("appointment");
+        for (int appointmentNodeCounter=0; appointmentNodeCounter < appointmentNodeList.getLength(); appointmentNodeCounter++)
+        {
+            Node appointmentNode = appointmentNodeList.item(appointmentNodeCounter);
+            if (appointmentNode.hasAttributes())
+            {
+                Integer expectedKey = keyIterator.next();
+                appointmentAttributes = (HashMap<String, String>) DataUtilities.getAttributes(appointmentNode, "appointment");
+                String appointmentName = DataUtilities.myGet(appointmentAttributes, "summary", file.toString());
+                String errorMessage = ", file: " + file + " summary: " + appointmentName;
+                Appointment anAppointment = AppointmentFactory.newAppointment()
+                        .unmarshal(appointmentAttributes, expectedKey, errorMessage);
+                Integer i = anAppointment.getAppointmentGroupIndex();
+                anAppointment.setAppointmentGroup(appointmentGroups.get(i));
+                appointments.add(anAppointment);
+            }
+        }
+        return appointments;
+    }
+
+    /**
+     * Unmarshal only repeatable fields
+     */
+    public MyAppointment unmarshal(Map<String, String> appointmentAttributes, String errorMessage)
+    {
+        setDescription(DataUtilities.myGet(appointmentAttributes, "description", errorMessage));
+        setAppointmentGroupIndex(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", errorMessage)));
+//        setLocationKey(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "locationKey", errorMessage)));
+//        setStaffKeys(DataUtilities.myGetList(appointmentAttributes, "staffKeys", errorMessage));
+//        setStyleKey(Integer.parseInt( DataUtilities.myGet(appointmentAttributes, "styleKey", errorMessage)));
+        setSummary( DataUtilities.myGet(appointmentAttributes, "summary", errorMessage));
+        setWholeDay(DataUtilities.myParseBoolean(DataUtilities.myGet(appointmentAttributes, "wholeDay", errorMessage)));
+
+        return this;
+    }
+    
+    
+    /**
+     * extracts this class's fields from map of attributes
+     * @param myKey 
+     */
+    public Appointment unmarshal(Map<String, String> appointmentAttributes, Integer expectedKey, String errorMessage)
+    {
+////      super.unmarshal(appointmentAttributes, expectedKey, errorMessage);
+//       
+//        setDescription(DataUtilities.myGet(appointmentAttributes, "description", errorMessage));
+//        setAppointmentGroupIndex(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", errorMessage)));
+////        setLocationKey(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "locationKey", errorMessage)));
+////        setStaffKeys(DataUtilities.myGetList(appointmentAttributes, "staffKeys", errorMessage));
+////        setStyleKey(Integer.parseInt( DataUtilities.myGet(appointmentAttributes, "styleKey", errorMessage)));
+//        setSummary( DataUtilities.myGet(appointmentAttributes, "summary", errorMessage));
+//        setWholeDay(DataUtilities.myParseBoolean(DataUtilities.myGet(appointmentAttributes, "wholeDay", errorMessage)));
+        unmarshal(appointmentAttributes, errorMessage);
+  
+        setRepeatKey(DataUtilities.myParseInt(DataUtilities.myGet(appointmentAttributes, "repeatKey", errorMessage)));
+        setKey(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "key", errorMessage)));
+        if (! (getKey() == expectedKey)) {
+//            Main.log.log(Level.WARNING, "Appointment key does not match expected key. Appointment key = " + getKey()
+//                    + " Expected appointment key = " + expectedKey + ". Using expected appointment key.", new IllegalArgumentException());
+        }
+        nextKey = Math.max(nextKey, getKey()) + 1;
+        if (hasRepeatKey()) setRepeat(repeatMap.get(getRepeatKey()));
+        setStudentKeys(DataUtilities.myGetList(appointmentAttributes, "studentKeys", errorMessage));
+
+        
+      setEndLocalDateTime(LocalDateTime.parse(DataUtilities.myGet(appointmentAttributes,endLocalDateTime.getName(), errorMessage), Settings.DATE_FORMAT_AGENDA));
+      setStartLocalDateTime(LocalDateTime.parse( DataUtilities.myGet(appointmentAttributes, startLocalDateTime.getName(), errorMessage), Settings.DATE_FORMAT_AGENDA));
+      return this;
+    }
+
+}

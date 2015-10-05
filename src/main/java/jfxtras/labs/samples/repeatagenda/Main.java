@@ -21,7 +21,6 @@ import jfxtras.labs.samples.repeatagenda.controller.CalendarController;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentIO;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 
 public class Main extends Application {
@@ -44,13 +43,17 @@ public class Main extends Application {
         ObservableList<AppointmentGroup> appointmentGroups = AppointmentIO.readAppointmentGroups(appointmentGroupsPath.toFile());
         data.setAppointmentGroups(appointmentGroups);
         Path appointmentRepeatsPath = Paths.get(Main.class.getResource("").getPath() + "appointmentRepeats.xml");
-        Repeat.readFromFile(appointmentRepeatsPath, appointmentGroups, data.getRepeats());
-        AppointmentFactory.setupRepeatMap(data.getRepeats()); // must be done before appointments are read
+        MyRepeat.readFromFile(appointmentRepeatsPath, appointmentGroups, data.getRepeats());
+        MyAppointment.setupRepeats(data.getRepeats()); // must be done before appointments are read
+//        AppointmentFactory.setupRepeats(data.getRepeats()); // must be done before appointments are read
         Path appointmentsPath = Paths.get(Main.class.getResource("").getPath() + "appointments.xml");
         AppointmentFactory.readFromFile(appointmentsPath, appointmentGroups, data.getAppointments());
+//        MyAppointment.readFromFile(appointmentsPath.toFile(), appointmentGroups, data.getAppointments());
         data.getRepeats().stream().forEach(a -> a.collectAppointments(data.getAppointments())); // add individual appointments that have repeat rules to their Repeat objects
         data.getRepeats().stream().forEach(a -> a.makeAppointments(data.getAppointments())); // Make repeat appointments
-	    
+//        System.out.println(data.getAppointments().size());	    
+//        System.out.println(data.getRepeats().size());
+//        System.exit(0);;
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
         mainLoader.setLocation(Main.class.getResource("view/Calendar.fxml"));

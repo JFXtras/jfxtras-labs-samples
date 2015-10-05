@@ -65,7 +65,10 @@ public class AppointmentEditController {
             endTextField.setDisable(newSelection);
             endTextField.setLocalDateTime(startTextField.getLocalDateTime());
         });
-   }
+    }
+    
+//    ChangeListener<? super LocalDateTime> startDateListener = (observable, oldValue, newValue)
+//            -> appointment.setStartLocalDateTime(newValue);
 
     // Setup up data for controls
     public void setupData(Appointment appointment, LayoutHelp layoutHelp)
@@ -93,14 +96,18 @@ public class AppointmentEditController {
         // START DATE TIME TEXT FIELD
         startTextField.setLocale(layoutHelp.skinnable.getLocale());
         startTextField.setLocalDateTime(appointment.getStartLocalDateTime());
-        startTextField.localDateTimeProperty().bindBidirectional(appointment.startLocalDateTimeProperty());
-        
+
+        //        startTextField.localDateTimeProperty().bindBidirectional(appointment.startLocalDateTimeProperty());
+//        startTextField.localDateTimeProperty().addListener(startDateListener);
+        startTextField.localDateTimeProperty().addListener((observable, oldValue, newValue)
+                -> appointment.setStartLocalDateTime(newValue));
+
         // END DATE TIME TEXT FIELD
         endTextField.setLocale(layoutHelp.skinnable.getLocale());
         endTextField.setLocalDateTime(appointment.getEndLocalDateTime());
         endTextField.setVisible(appointment.getEndLocalDateTime() != null);
 
-        endTextField.localDateTimeProperty().addListener( (observable, oldValue, newValue) ->  {
+        endTextField.localDateTimeProperty().addListener((observable, oldValue, newValue) ->  {
             appointment.setEndLocalDateTime(newValue);
         });
         

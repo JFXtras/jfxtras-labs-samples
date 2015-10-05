@@ -77,8 +77,8 @@ public class CalendarController {
 
         // accept new appointments
         agenda.newAppointmentCallbackProperty().set(dateTimeRange -> AppointmentFactory.newAppointment()
-            .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime() )
-            .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime() )
+            .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime())
+            .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
             .withSummary("New")
             .withDescription("")
             .withAppointmentGroup(agenda.appointmentGroups().get(0)));

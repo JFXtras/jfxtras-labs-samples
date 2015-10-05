@@ -1,7 +1,5 @@
 package jfxtras.labs.samples.repeatagenda.scene.control.agenda;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.security.InvalidParameterException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -25,17 +23,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -44,17 +31,15 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.StringConverter;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Repeatable;
 
 /**
  * Contains rules for repeatable appointments in the calendar
  *  
  * @author David Bal
  */
-public class Repeat implements Cloneable {
+public class Repeat {
     
-    private static int nextKey = 0;
+//    private static int nextKey = 0;
     public boolean isEmpty() { return intervalUnit.getValue() == null; }
 
     public static Period repeatPeriod = Period.ofWeeks(1);
@@ -63,12 +48,12 @@ public class Repeat implements Cloneable {
     private LocalDate startDate;
     private LocalDate endDate;
     
-    /** Unique number identifying this Repeat object. */
-    private Integer key;
-    public Integer getKey() { return key; }
-    protected void setKey(Integer value) { key = value; } 
-    public Repeat withKey(Integer value) { setKey(value); return this; }
-    public boolean hasKey() { return (getKey() != null); } // new Repeat has no key
+//    /** Unique number identifying this Repeat object. */
+//    private Integer key;
+//    public Integer getKey() { return key; }
+//    protected void setKey(Integer value) { key = value; } 
+//    public Repeat withKey(Integer value) { setKey(value); return this; }
+//    public boolean hasKey() { return (getKey() != null); } // new Repeat has no key
     
     final private ObjectProperty<IntervalUnit> intervalUnit = new SimpleObjectProperty<IntervalUnit>();
     public ObjectProperty<IntervalUnit> intervalUnitProperty() { return intervalUnit; }
@@ -127,14 +112,14 @@ public class Repeat implements Cloneable {
 
     private int ordinal; // used when repeatDayOfWeek is true, this is the number of weeks into the month the date is set (i.e 3rd Wednesday -> ordinal=3).
     
-    final private MonthlyRepeat getMonthlyRepeat()
+    protected final MonthlyRepeat getMonthlyRepeat()
     { // returns MonthlyRepeat enum from boolean properties
         if (isRepeatDayOfMonth()) return MonthlyRepeat.DAY_OF_MONTH;
         if (isRepeatDayOfWeek()) return MonthlyRepeat.DAY_OF_WEEK;
         return null; // should not get here
     }
 
-    final private void setMonthlyRepeat(MonthlyRepeat monthlyRepeat)
+    protected final void setMonthlyRepeat(MonthlyRepeat monthlyRepeat)
     { // sets boolean properties from MonthlyRepeat
         switch (monthlyRepeat)
         {
@@ -230,10 +215,14 @@ public class Repeat implements Cloneable {
     public Repeat withDeletedDates(Set<LocalDate> dates) { setDeletedDates(dates); return this; }
     
     /** Appointment-specific data */
-    private Repeatable appointmentData = AppointmentFactory.newAppointmentRepeatable();
-    public Repeatable getAppointmentData() { return appointmentData; }
-    public Repeat withAppointmentData(Repeatable appointment) { appointment.copyInto(appointment); return this; }
-    
+//    private Repeatable appointmentData = AppointmentFactory.newAppointmentRepeatable();
+//    public Repeatable getAppointmentData() { return appointmentData; }
+//    public Repeat withAppointmentData(Repeatable appointment) { appointment.copyInto(appointment); return this; }
+
+    private Appointment appointmentData = AppointmentFactory.newAppointment();
+    public Appointment getAppointmentData() { return appointmentData; }
+    public Repeat withAppointmentData(Appointment appointment) { appointment.copyInto(appointment); return this; }
+
     /** Appointments generated from this repeat rule.  Objects are a subset of appointments in main appointments list
      * used in the Agenda calendar.  Names myAppointments to differentiate it from main name appointments */
     final private Set<Appointment> myAppointments = new HashSet<Appointment>();
@@ -418,242 +407,11 @@ public class Repeat implements Cloneable {
       , ON;
     }
     
-    private enum MonthlyRepeat {
+    public enum MonthlyRepeat {
         DAY_OF_MONTH, DAY_OF_WEEK;
     }
 
-    /**
-     * Reads from a XML file a collection of all repeat rules, adds them to repeats
-     * @param appointmentGroups 
-     * 
-     * @param inputFile: File originating in the Setting class
-     * @param inputFile: File originating in the Setting class
-     * @return the collection of repeats, to be put into KarateData.appointmentRepeatMap
-     * @throws TransformerException
-     * @throws ParserConfigurationException
-     */
-    public static Collection<Repeat> readFromFile(Path inputFile
-            , List<AppointmentGroup> appointmentGroups
-            , Collection<Repeat> repeats) throws TransformerException, ParserConfigurationException
-    {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        try {
-            Document doc = builder.parse(inputFile.toFile());
-            Map<String, String> rootAttributes = DataUtilities.getAttributes(doc.getFirstChild(), "repeatRules");
-            List<Integer> keys = DataUtilities.myGetList(rootAttributes, "keys", "");
-            Iterator<Integer> keyIterator = keys.iterator();
 
-            NodeList myNodeList = doc.getElementsByTagName("repeat");
-            for (int n=0; n<myNodeList.getLength(); n++) {
-                Node myNode = myNodeList.item(n);
-                if (myNode.hasAttributes()) {
-                    try {
-                        Integer myKey = keyIterator.next();
-                        nextKey = Math.max(nextKey, myKey);
-                        Repeat myRepeat = new Repeat().unmarshal((Element) myNodeList.item(n), myKey);
-                        Integer i = myRepeat.getAppointmentData().getAppointmentGroupIndex();
-                        myRepeat.getAppointmentData().setAppointmentGroup(appointmentGroups.get(i));
-                        repeats.add(myRepeat);
-                    } catch (IllegalArgumentException e2) {
-//                        Main.log.log(Level.WARNING, "Repeat rule skipped: " + inputFile.toString() + " key=" + keys.get(n), e2);                   
-                    }
-                }
-            }
-        } catch (SAXException | IOException e) {
-//            Main.log.log(Level.WARNING, "Missing file: " + inputFile.toString(), e);
-        }
-        nextKey++;
-        if (repeats.size() > 0) {
-            nextKey = DataUtilities.checkNextKey(nextKey
-                    , repeats.stream().map(r -> r.getKey()).collect(Collectors.toSet())
-                    , "Repeat.nextRepeatKey");
-        }
-        return repeats;
-    }
-    
-    /**
-     * Unmarshal one org.w3c.dom.Element into a new Repeat object
-     * @param expectedKey 
-     * 
-     * @param myElement: Element with one Repeat object's data
-     * @return A Repeat object with all the data fields filled from the Element
-     */
-    private Repeat unmarshal(Element myElement, Integer expectedKey)
-    {
-        Map<String, String> repeatAttributes = DataUtilities.getAttributes(myElement, "repeat");
-
-        setKey(Integer.valueOf(DataUtilities.myGet(repeatAttributes, "key", "")));
-        if (! (getKey() == expectedKey)) {
-//            Main.log.log(Level.WARNING, "Repeat key does not match expected key. Repeat key = " + getKey()
-//                    + " Expected repeat key = " + expectedKey + ". Using expected repeat key.", new IllegalArgumentException());
-        }
-        String intervalUnitString = DataUtilities.myGet(repeatAttributes, "intervalUnit", "");
-        IntervalUnit myIntervalUnit = IntervalUnit.valueOf(intervalUnitString);
-        setIntervalUnit(myIntervalUnit);
-        setRepeatFrequency(DataUtilities.myParseInt(DataUtilities.myGet(repeatAttributes, "repeatFrequency", "")));
-        String endCriteriaString = DataUtilities.myGet(repeatAttributes, "endCriteria", "");
-        EndCriteria myEndCriteria = EndCriteria.valueOf(endCriteriaString);
-        setEndCriteria(myEndCriteria);
-        setStartLocalDate(DataUtilities.myParseLocalDate(DataUtilities.myGet(repeatAttributes, "startDate", "")));
-        setStartLocalTime(DataUtilities.myParseLocalTime(DataUtilities.myGet(repeatAttributes, "startTime", ""), Settings.TIME_FORMAT_AGENDA));
-        setEndLocalTime(DataUtilities.myParseLocalTime(DataUtilities.myGet(repeatAttributes, "endTime", ""), Settings.TIME_FORMAT_AGENDA));
-        setDeletedDates(DataUtilities.myGetSet(repeatAttributes, "deletedDates", "", Settings.DATE_FORMAT1));
-
-        switch (myIntervalUnit) {
-            case DAILY:
-                break;
-            case WEEKLY:
-                Arrays.stream(DataUtilities.myGet(repeatAttributes, "daysOfWeek", "").split(" "))
-                      .map(a -> DayOfWeek.valueOf(a))
-                      .forEach(a -> getDayOfWeekMap().get(a).set(true));
-                break;
-            case MONTHLY:
-                setMonthlyRepeat(MonthlyRepeat.valueOf(DataUtilities.myGet(repeatAttributes, "monthlyRepeat", "")));
-                break;
-            case YEARLY:
-                break;
-            default:
-                break;
-        }
-
-        switch (myEndCriteria) {
-            case NEVER:
-                break;
-            case AFTER:
-                setEndAfterEvents(DataUtilities.myParseInt(DataUtilities.myGet(repeatAttributes, "endAfterEvents", "")));
-                // fall through
-            case ON:
-                setEndOnDate(LocalDate.parse(DataUtilities.myGet(repeatAttributes, "endOnDate", ""), Settings.DATE_FORMAT1));
-                break;
-            default:
-                break;
-        }
-        
-        Element appointmentElement = (Element) myElement.getElementsByTagName("appointment").item(0);   // must be only one appointment element
-        Map<String, String> appointmentAttributes = DataUtilities.getAttributes(appointmentElement, "appointment");
-        AppointmentFactory.returnRepeatable(appointmentData).unmarshal(appointmentAttributes, "Repeat appointment settings");
-        return this;
-    }
-    
-    /**
-     * Writes a set of repeat rules to a file.
-     * 
-     * @param appointmentRepeatMap: Map of all Repeat objects to be written (KarateDataUtilities.appointmentRepeatMap)
-     * @param writeFile: File on disk for new data - overwrites automatically
-     * @throws ParserConfigurationException
-     */
-    private static void writeToFile(Collection<Repeat> repeats, Path writeFile)
-    {
-        // XML document
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = null;
-        try {
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e1) {
-            e1.printStackTrace();
-        }
-        Document doc = builder.newDocument();
-
-        // root node
-        Element rootElement = doc.createElement("repeatRules");
-        doc.appendChild(rootElement);
-
-        // map loop
-        for(Repeat myRepeat : repeats)
-        {
-            Node myElement = myRepeat.marshal(doc);
-            rootElement.appendChild(myElement);
-        }
-
-        String repeatKeys = repeats
-                .stream()
-                .map(a -> a.getKey().toString()).collect(Collectors.joining(" "));
-        rootElement.setAttribute("keys", repeatKeys);
-
-        try {
-            DataUtilities.writeDocument(doc, writeFile);
-        } catch (TransformerException e) {
-//            Main.log.log(Level.SEVERE, "Appointment Repeat file " + writeFile + " can't be written");
-        }
-    }
-    /**
-     * Writes a map of repeat rules to a default file.
-     * 
-     * @param appointmentRepeatMap: Map of all Repeat objects to be written (KarateDataUtilities.appointmentRepeatMap)
-     * @throws ParserConfigurationException
-     */
-    public static void writeToFile(Collection<Repeat> repeatSet)
-    {
-        writeToFile(repeatSet, Settings.APPOINTMENT_REPEATS_FILE);
-    }
-    
-        
-    /**
-     * Marshal one Repeat object into one org.w3c.dom.Element
-     * 
-     * @param Document: org.w3c.dom.Document used to make a new element to be returned
-     * @return: myElement populated with attributes containing Repeat object data
-     */
-    private Element marshal(Document doc)
-    {
-        Element myElement = doc.createElement("repeat");
-        myElement.setAttribute("endCriteria", getEndCriteria().toString());
-        myElement.setAttribute("intervalUnit", getIntervalUnit().toString());
-        if (getKey() == null) setKey(nextKey++); // if it has no key (meaning its new) give it the next one
-        myElement.setAttribute("key", Integer.toString(getKey()));
-        myElement.setAttribute("repeatFrequency", Integer.toString(getRepeatFrequency()));
-        myElement.setAttribute("startDate", DataUtilities.myFormatLocalDate(getStartLocalDate()));
-        myElement.setAttribute("startTime", DataUtilities.myFormatLocalTime(getStartLocalTime()));
-        myElement.setAttribute("endTime", DataUtilities.myFormatLocalTime(getEndLocalTime()));
-        String d = getDeletedDates().stream()
-                                    .map(a -> DataUtilities.myFormatLocalDate(a))
-                                    .collect(Collectors.joining(" "));
-        myElement.setAttribute("deletedDates", d);
-
-        switch (getIntervalUnit())
-        {
-            case DAILY:
-                break;
-            case WEEKLY:
-                String days = getDayOfWeekMap().entrySet()
-                                                    .stream()
-                                                    .filter(a -> a.getValue().get())
-                                                    .map(a -> a.getKey().toString())
-                                                    .collect(Collectors.joining(" "));
-                myElement.setAttribute("daysOfWeek", days);
-                break;
-            case MONTHLY:
-                myElement.setAttribute("monthlyRepeat", getMonthlyRepeat().toString());
-                break;
-            case YEARLY:
-                break;
-            default:
-//                Main.log.log(Level.WARNING, "Unknown intervalUnit " + getIntervalUnit());
-                break;
-        }
-
-        switch (getEndCriteria())
-        {
-            case NEVER:
-                break;
-            case AFTER:
-                myElement.setAttribute("endAfterEvents", getEndAfterEvents().toString());
-                if (getEndOnDate() == null) makeEndOnDateFromEndAfterEvents();  // new AFTER repeat rules need end dates calculated.
-                // fall through
-            case ON:
-                myElement.setAttribute("endOnDate", getEndOnDate().toString());
-                break;
-            default:
-                break;
-        }
-        
-        Element appointmentElement = doc.createElement("appointment");
-        AppointmentFactory.returnRepeatable(getAppointmentData()).marshal(appointmentElement);
-        myElement.appendChild(appointmentElement);
-        
-        return myElement;
-    }
 
     /**
      * Adds appointments as members of this repeat rule to myAppointments collection
@@ -698,7 +456,17 @@ public class Repeat implements Cloneable {
                     .iterate(myStartDate, (a) -> a.with(new NextAppointment())) // infinite stream of valid dates
                     .filter(a -> ! usedDates.contains(a))                       // filter out dates already used
                     .filter(a -> ! getDeletedDates().contains(a))               // filter out deleted dates
-                    .map(a -> AppointmentFactory.newAppointment(this, a))       // map to new appointments
+                    .map(a -> {                                                 // make new appointment
+                        LocalDateTime myStartDateTime = a.atTime(getStartLocalTime());
+                        LocalDateTime myEndDateTime = a.atTime(getEndLocalTime());
+                        Appointment appt = AppointmentFactory
+                                .newAppointment()
+                                .withStartLocalDateTime(myStartDateTime)
+                                .withEndLocalDateTime(myEndDateTime)
+                                .withRepeat(this)
+                                .withRepeatMade(true);
+                        return appt;
+                    })
                     .iterator();                                                // make iterator
             
             while (i.hasNext())
@@ -752,7 +520,7 @@ public class Repeat implements Cloneable {
      */
     protected void updateAppointments(Collection<Appointment> appointments
             , Appointment appointment
-            , Repeatable appointmentOld
+            , Appointment appointmentOld
             , TemporalAdjuster startTemporalAdjuster
             , TemporalAdjuster endTemporalAdjuster)
     {
@@ -770,11 +538,42 @@ public class Repeat implements Cloneable {
                     { // copy all changed data
                         getAppointmentData().copyInto(a);
                     } else { // copy only non-unique data
-                        getAppointmentData().copyInto(a, appointmentOld);
+//                        getAppointmentData().copyInto(a, appointmentOld);
+                        this.copyAppointmentInto(a, appointmentOld);
                     }
                 });
         updateAppointments(appointments, appointment);
     }
+    
+    /**
+     * Copies appointment data from this objects appointmentData field into the appointmentData
+     * argument unless the data in appointmentData is unique
+     * 
+     * @param appointmentData
+     * @param appointmentOld
+     * @return
+     */
+    public Appointment copyAppointmentInto(Appointment appointmentData, Appointment appointmentOld) {
+    if (appointmentData.getAppointmentGroup().equals(appointmentOld.getAppointmentGroup())) {
+        appointmentData.setAppointmentGroup(getAppointmentData().getAppointmentGroup());            
+    }
+    if (appointmentData.getDescription().equals(appointmentOld.getDescription())) {
+        appointmentData.setDescription(getAppointmentData().getDescription());            
+    }
+//  if (appointmentData.getLocationKey().equals(appointmentOld.getLocationKey())) {
+//      appointmentData.setLocationKey(getLocationKey());
+//  }
+//  if (appointmentData.getStaffKeys().equals(appointmentOld.getStaffKeys())) {
+//      appointmentData.getStaffKeys().addAll(getStaffKeys());
+//  }
+//  if (appointmentData.getStyleKey().equals(appointmentOld.getStyleKey())) {
+//      appointmentData.setStyleKey(getStyleKey());
+//  }
+    if (appointmentData.getSummary().equals(appointmentOld.getSummary())) {
+        appointmentData.setSummary(getAppointmentData().getSummary());
+    }
+    return appointmentData;
+}
     
     /**
      * Updates repeat-rule appointments with new repeat rule from startDate on.
@@ -838,13 +637,13 @@ public class Repeat implements Cloneable {
 
         for (Appointment a : invalidAppointments)
         {
-            if (a.getStudentKeys().isEmpty())
-            { // DELETE EXISTING INVALID APPOINTMENT
+//            if (a.getStudentKeys().isEmpty())
+//            { // DELETE EXISTING INVALID APPOINTMENT
                 appointments.remove(a);
                 getAppointments().remove(a);
-            } else { // LEAVE EXISTING APPOINTMENT BECAUSE HAS ATTENDANCE
-                getAppointmentData().copyInto(a);
-            }
+//            } else { // LEAVE EXISTING APPOINTMENT BECAUSE HAS ATTENDANCE
+//                getAppointmentData().copyInto(a);
+//            }
         }
         makeAppointments(appointments); // add any new appointments needed
         
@@ -1305,7 +1104,7 @@ public class Repeat implements Cloneable {
                                    .forEach(a -> a.getValue().unbind());
         this.startLocalDateProperty().unbind();
         this.startLocalTimeProperty().unbind();
-        this.getAppointmentData().unbindAll();
+//        this.getAppointmentData().unbindAll(); // I'll probably have to use listeners instead of bindings.  I need some way to remove listeners
     }
     
     /**

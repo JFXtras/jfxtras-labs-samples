@@ -22,10 +22,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
+import jfxtras.labs.samples.repeatagenda.MyRepeat;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 
 public final class RepeatableAppointmentUtilities {
     
@@ -207,7 +208,7 @@ public final class RepeatableAppointmentUtilities {
         
         // Write changes that occurred
         if (writeAppointments) AppointmentFactory.writeToFile(appointments);
-        if (writeRepeats) Repeat.writeToFile(repeats);
+        if (writeRepeats) MyRepeat.writeToFile(repeats);
 
     }
 
@@ -344,7 +345,9 @@ public final class RepeatableAppointmentUtilities {
                 { // copy all appointment changes (i.e. description, group, location, etc)
                     appointment.copyInto(repeat.getAppointmentData());
                 } else { // copy non-unique appointment changes (i.e. description, group, location, etc)
-                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
+//                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
+                    repeat.copyAppointmentInto(appointment, appointmentOld);
+//                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
                 }
                 switch (repeat.getIntervalUnit())
                 {
@@ -387,7 +390,8 @@ public final class RepeatableAppointmentUtilities {
                 { // copy all appointment changes
                     appointment.copyInto(repeat.getAppointmentData());
                 } else { // copy non-unique appointment changes
-                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
+                    repeat.copyAppointmentInto(appointment, appointmentOld);
+//                    appointment.copyAppointmentInto(repeat.getAppointmentData(), appointmentOld);
                 }
                 
                 // Split deleted dates between repeat and repeatOld
@@ -472,7 +476,7 @@ public final class RepeatableAppointmentUtilities {
         
         // Write changes that occurred
         if (writeAppointments) AppointmentFactory.writeToFile(appointments);
-        if (writeRepeats) Repeat.writeToFile(repeats);
+        if (writeRepeats) MyRepeat.writeToFile(repeats);
 
         return (writeAppointments || writeRepeats) ? WindowCloseType.CLOSE_WITH_CHANGE : WindowCloseType.CLOSE_WITHOUT_CHANGE;
         
@@ -491,7 +495,7 @@ public final class RepeatableAppointmentUtilities {
             }
         } else
         {
-            if (repeat.hasKey())
+            if (((MyRepeat) repeat).hasKey()) // TODO - NEED TO REMOVE CAST TO MYREPEAT
             {
                 return AppointmentType.WITH_EXISTING_REPEAT;
             } else {

@@ -24,9 +24,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import jfxtras.labs.samples.repeatagenda.MyRepeat;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AlertsAndDialogs;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 
 public class RepeatableController {
@@ -284,7 +285,8 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
             appointment.copyInto(repeat);
         }
         setupAppointmentBindings();
-        if (! repeat.hasKey()) startDatePicker.setDisable(true);
+        // TODO - REMOVE CAST TO MYREPEAT
+        if (! ((MyRepeat)repeat).hasKey()) startDatePicker.setDisable(true);
         
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
@@ -326,15 +328,15 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
     
     private void setupAppointmentBindings() {
 
-        // Setup bindings to appointment object
-        appointment.startLocalDateTimeProperty().addListener((obs) -> repeat.setStartLocalTime(appointment.getStartLocalDateTime().toLocalTime()));
-        appointment.endLocalDateTimeProperty().addListener((obs) -> repeat.setEndLocalTime(appointment.getEndLocalDateTime().toLocalTime()));
-        repeat.getAppointmentData().appointmentGroupProperty().bind(appointment.appointmentGroupProperty());
-        repeat.getAppointmentData().descriptionProperty().bind(appointment.descriptionProperty());
-//        repeat.getAppointmentData().locationKeyProperty().bind(appointment.locationKeyProperty());
-//        repeat.getAppointmentData().styleKeyProperty().bind(appointment.styleKeyProperty());
-        repeat.getAppointmentData().summaryProperty().bind(appointment.summaryProperty());
-//        repeat.getAppointmentData().getStaffKeys().addAll(appointment.getStaffKeys());
+//        // Setup bindings to appointment object
+//        appointment.startLocalDateTimeProperty().addListener((obs) -> repeat.setStartLocalTime(appointment.getStartLocalDateTime().toLocalTime()));
+//        appointment.endLocalDateTimeProperty().addListener((obs) -> repeat.setEndLocalTime(appointment.getEndLocalDateTime().toLocalTime()));
+//        repeat.getAppointmentData().appointmentGroupProperty().bind(appointment.appointmentGroupProperty());
+//        repeat.getAppointmentData().descriptionProperty().bind(appointment.descriptionProperty());
+////        repeat.getAppointmentData().locationKeyProperty().bind(appointment.locationKeyProperty());
+////        repeat.getAppointmentData().styleKeyProperty().bind(appointment.styleKeyProperty());
+//        repeat.getAppointmentData().summaryProperty().bind(appointment.summaryProperty());
+////        repeat.getAppointmentData().getStaffKeys().addAll(appointment.getStaffKeys());
     }
     
     private void removeBindings() {

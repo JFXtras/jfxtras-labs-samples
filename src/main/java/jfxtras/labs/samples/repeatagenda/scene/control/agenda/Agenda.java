@@ -29,12 +29,12 @@
 
 package jfxtras.labs.samples.repeatagenda.scene.control.agenda;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -43,7 +43,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.print.PrinterJob;
@@ -420,49 +419,97 @@ public class Agenda extends Control
 	}
 	
 	// ==================================================================================================================
-	// Appointment
-    /**
-     * Repeatable parts of an appointment
-     * 
-     * @author David Bal
-     *
-     */
-    static public interface Repeatable {
-
+//	// Appointment
+//    /**
+//     * Repeatable parts of an appointment
+//     * 
+//     * @author David Bal
+//     *
+//     */
+//    static public interface Repeatable {
+//
+//        Boolean isWholeDay();
+//        void setWholeDay(Boolean b);
+//        BooleanProperty wholeDayProperty();
+//        
+//        String getSummary();
+//        void setSummary(String s);
+//        StringProperty summaryProperty();
+//        
+//        String getDescription();
+//        void setDescription(String s);
+//        StringProperty descriptionProperty();
+//        
+//        AppointmentGroup getAppointmentGroup();
+//        void setAppointmentGroup(AppointmentGroup s);
+//        public ObjectProperty<AppointmentGroup> appointmentGroupProperty();
+//        void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups);
+//        
+//        Integer getAppointmentGroupIndex();
+////        void setAppointmentGroupIndex(Integer i);
+////        IntegerProperty appointmentGroupIndexProperty();
+//        
+//        // My variables
+////        ObservableList<Integer> getStaffKeys();     // instructors in class - first is owner of class
+////        void setStaffKeys(List<Integer> i);
+////        
+////        Integer getStyleKey();
+////        void setStyleKey(Integer i);
+////        IntegerProperty styleKeyProperty();
+////
+////        Integer getLocationKey();
+////        void setLocationKey(Integer i);
+////        IntegerProperty locationKeyProperty();
+//        
+//        Repeatable copyInto(Repeatable appointmentData);
+//        /**
+//         * Copy's current object's fields into passed parameter
+//         * For copying a moved appointment that is a part of a Repeat, but is not repeat-made and has some unique data.
+//         * Only copy over the non-unique data. 
+//         * 
+//         * @param appointmentData: the appointment fields associated with a Repeat
+//         * @param appointmentOld: the appointment prior to editing
+//         * @return
+//         */
+//        Repeatable copyInto(Repeatable appointmentData, Repeatable appointmentOld);
+//
+//        
+//        void unbindAll();   // unbind all properties
+//                       
+//        // ----
+//        // LocalDateTime 
+//        
+//        /** This is what Agenda uses to render the appointments */
+//            
+//    }
+	
+	/**
+	 * The interface that all appointments must adhere to; you can provide your own implementation.
+	 * You must either implement the Start & End using the Calendar based or LocalDateTime based methods
+	 */
+    static public interface Appointment
+    {
+        
         Boolean isWholeDay();
         void setWholeDay(Boolean b);
-        BooleanProperty wholeDayProperty();
+//        BooleanProperty wholeDayProperty();
         
         String getSummary();
         void setSummary(String s);
-        StringProperty summaryProperty();
+//        StringProperty summaryProperty();
         
         String getDescription();
         void setDescription(String s);
-        StringProperty descriptionProperty();
+//        StringProperty descriptionProperty();
         
         AppointmentGroup getAppointmentGroup();
         void setAppointmentGroup(AppointmentGroup s);
-        public ObjectProperty<AppointmentGroup> appointmentGroupProperty();
-        void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups);
-        
+//        public ObjectProperty<AppointmentGroup> appointmentGroupProperty();
+//        void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups);
+        default void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups) { setAppointmentGroup(appointmentGroups.get(getAppointmentGroupIndex()));  }
         Integer getAppointmentGroupIndex();
-//        void setAppointmentGroupIndex(Integer i);
-//        IntegerProperty appointmentGroupIndexProperty();
-        
-        // My variables
-//        ObservableList<Integer> getStaffKeys();     // instructors in class - first is owner of class
-//        void setStaffKeys(List<Integer> i);
 //        
-//        Integer getStyleKey();
-//        void setStyleKey(Integer i);
-//        IntegerProperty styleKeyProperty();
-//
-//        Integer getLocationKey();
-//        void setLocationKey(Integer i);
-//        IntegerProperty locationKeyProperty();
-        
-        Repeatable copyInto(Repeatable appointmentData);
+//        Repeatable copyInto(Repeatable appointmentData);
         /**
          * Copy's current object's fields into passed parameter
          * For copying a moved appointment that is a part of a Repeat, but is not repeat-made and has some unique data.
@@ -472,27 +519,15 @@ public class Agenda extends Control
          * @param appointmentOld: the appointment prior to editing
          * @return
          */
-        Repeatable copyInto(Repeatable appointmentData, Repeatable appointmentOld);
+//        Repeatable copyInto(Repeatable appointmentData, Repeatable appointmentOld);
 
         
-        void unbindAll();   // unbind all properties
-                       
-        // ----
-        // LocalDateTime 
+//        void unbindAll();   // unbind all properties
         
-        /** This is what Agenda uses to render the appointments */
-            
-    }
-	
-	/**
-	 * The interface that all appointments must adhere to; you can provide your own implementation.
-	 * You must either implement the Start & End using the Calendar based or LocalDateTime based methods
-	 */
-    static public interface Appointment extends Repeatable
-    {
+        
         
        boolean isRepeatMade();    // true = made by repeat rule & shouldn't be saved, false = has unique info, should be saved
-       BooleanProperty repeatMadeProperty();
+//       BooleanProperty repeatMadeProperty();
        void setRepeatMade(boolean b);
 
        void setRepeat(Repeat repeat);
@@ -505,14 +540,14 @@ public class Agenda extends Control
         // my variables
         public final static int INITIAL_KEY = -1;
     
-        Integer getKey(); // unique appointment key
-        void setKey(Integer value);
-        boolean hasKey();
+//        Integer getKey(); // unique appointment key
+//        void setKey(Integer value);
+//        boolean hasKey();
 //        void assignKey(); // add next key to appointment
 
-        List<Integer> getStudentKeys();     // students in class
-        void setStudentKeys(List<Integer> i);
-        ObservableList<Integer> studentKeysProperty();
+//        List<Integer> getStudentKeys();     // students in class
+//        void setStudentKeys(List<Integer> i);
+//        ObservableList<Integer> studentKeysProperty();
 		
 		// ----
 		// Calendar
@@ -561,7 +596,7 @@ public class Agenda extends Control
         
         /** This is what Agenda uses to render the appointments */
 //      public ObjectProperty<LocalDateTime> startLocalDateTimeProperty();
-        public ObjectProperty<LocalDateTime> startLocalDateTimeProperty();
+//        public ObjectProperty<LocalDateTime> startLocalDateTimeProperty();
         default LocalDateTime getStartLocalDateTime() {
             return getStartZonedDateTime().toLocalDateTime();
         }
@@ -572,7 +607,7 @@ public class Agenda extends Control
         }
         
         /** This is what Agenda uses to render the appointments */
-        public ObjectProperty<LocalDateTime> endLocalDateTimeProperty();
+//        public ObjectProperty<LocalDateTime> endLocalDateTimeProperty();
         default LocalDateTime getEndLocalDateTime() {
             return getEndZonedDateTime() == null ? null : getEndZonedDateTime().toLocalDateTime();
         }
@@ -585,147 +620,194 @@ public class Agenda extends Control
         boolean equals(Object obj);
 
         
-        Appointment copyInto(Appointment copyInto);
-        Repeat copyInto(Repeat repeat); // handled by temporaladjusters
+        /**
+         * Copy factory
+         * Returns new Appointment object with all fields copied from input parameter myAppointment
+         * 
+         * @param appointment
+         * @return
+         * @throws CloneNotSupportedException 
+         */
+        default Appointment copyInto(Appointment appointment) {
+//            super.copyInto(appointment);
+            appointment.setEndLocalDateTime(getEndLocalDateTime());
+            appointment.setStartLocalDateTime(getStartLocalDateTime());
+            return appointment;
+        }
+        
+        /**
+         *  Copy's current object's fields into passed parameter
+         *  
+         */
+        default Repeat copyInto(Repeat repeat) {
+            copyInto(repeat.getAppointmentData());
+            repeat.setStartLocalDate(getStartLocalDateTime().toLocalDate());
+            repeat.setStartLocalTime(getStartLocalDateTime().toLocalTime());
+            repeat.setEndLocalTime(getEndLocalDateTime().toLocalTime());
+            DayOfWeek d = getStartLocalDateTime().getDayOfWeek();
+            repeat.setDayOfWeek(d, true);
+            return repeat;
+        }
+        
+//        Appointment copyInto(Appointment copyInto);
+//        Repeat copyInto(Repeat repeat); // handled by temporaladjusters
 //        Repeat copyInto(Repeat repeat, TemporalAdjuster startTemporalAdjuster, TemporalAdjuster endTemporalAdjuster);
-
-        void unbindAll();   // unbind all properties
 
     }
 	
-//	/**
-//	 * Implements the base properties used by all AppointmentImpl classes. 
-//	 */
-//	static public abstract class AppointmentImplBase<T> 
-//	{
-//		/** WholeDay: */
-//		public ObjectProperty<Boolean> wholeDayProperty() { return wholeDayObjectProperty; }
-//		final private ObjectProperty<Boolean> wholeDayObjectProperty = new SimpleObjectProperty<Boolean>(this, "wholeDay", false);
-//		public Boolean isWholeDay() { return wholeDayObjectProperty.getValue(); }
-//		public void setWholeDay(Boolean value) { wholeDayObjectProperty.setValue(value); }
-//		public T withWholeDay(Boolean value) { setWholeDay(value); return (T)this; } 
-//		
-//		/** Summary: */
-//		public ObjectProperty<String> summaryProperty() { return summaryObjectProperty; }
-//		final private ObjectProperty<String> summaryObjectProperty = new SimpleObjectProperty<String>(this, "summary");
-//		public String getSummary() { return summaryObjectProperty.getValue(); }
-//		public void setSummary(String value) { summaryObjectProperty.setValue(value); }
-//		public T withSummary(String value) { setSummary(value); return (T)this; } 
-//		
-//		/** Description: */
-//		public ObjectProperty<String> descriptionProperty() { return descriptionObjectProperty; }
-//		final private ObjectProperty<String> descriptionObjectProperty = new SimpleObjectProperty<String>(this, "description");
-//		public String getDescription() { return descriptionObjectProperty.getValue(); }
-//		public void setDescription(String value) { descriptionObjectProperty.setValue(value); }
-//		public T withDescription(String value) { setDescription(value); return (T)this; } 
-//		
-//		/** Location: */
-//		public ObjectProperty<String> locationProperty() { return locationObjectProperty; }
-//		final private ObjectProperty<String> locationObjectProperty = new SimpleObjectProperty<String>(this, "location");
-//		public String getLocation() { return locationObjectProperty.getValue(); }
-//		public void setLocation(String value) { locationObjectProperty.setValue(value); }
-//		public T withLocation(String value) { setLocation(value); return (T)this; } 
-//		
-//		/** AppointmentGroup: */
-//		public ObjectProperty<AppointmentGroup> appointmentGroupProperty() { return appointmentGroupObjectProperty; }
-//		final private ObjectProperty<AppointmentGroup> appointmentGroupObjectProperty = new SimpleObjectProperty<AppointmentGroup>(this, "appointmentGroup");
-//		public AppointmentGroup getAppointmentGroup() { return appointmentGroupObjectProperty.getValue(); }
-//		public void setAppointmentGroup(AppointmentGroup value) { appointmentGroupObjectProperty.setValue(value); }
-//		public T withAppointmentGroup(AppointmentGroup value) { setAppointmentGroup(value); return (T)this; }
-//	}
-//	
-//	/**
-//	 * A class to help you get going using Calendar; all the required methods of the interface are implemented as JavaFX properties 
-//	 */
-//	static public class AppointmentImpl extends AppointmentImplBase<AppointmentImpl> 
-//	implements Appointment
-//	{
-//		/** StartTime: */
-//		public ObjectProperty<Calendar> startTimeProperty() { return startTimeObjectProperty; }
-//		final private ObjectProperty<Calendar> startTimeObjectProperty = new SimpleObjectProperty<Calendar>(this, "startTime");
-//		public Calendar getStartTime() { return startTimeObjectProperty.getValue(); }
-//		public void setStartTime(Calendar value) { startTimeObjectProperty.setValue(value); }
-//		public AppointmentImpl withStartTime(Calendar value) { setStartTime(value); return this; }
-//		
-//		/** EndTime: */
-//		public ObjectProperty<Calendar> endTimeProperty() { return endTimeObjectProperty; }
-//		final private ObjectProperty<Calendar> endTimeObjectProperty = new SimpleObjectProperty<Calendar>(this, "endTime");
-//		public Calendar getEndTime() { return endTimeObjectProperty.getValue(); }
-//		public void setEndTime(Calendar value) { endTimeObjectProperty.setValue(value); }
-//		public AppointmentImpl withEndTime(Calendar value) { setEndTime(value); return this; } 
-//		
-//		public String toString()
-//		{
-//			return super.toString()
-//				 + ", "
-//				 + DateTimeToCalendarHelper.quickFormatCalendar(this.getStartTime())
-//				 + " - "
-//				 + DateTimeToCalendarHelper.quickFormatCalendar(this.getEndTime())
-//				 ;
-//		}
-//	}
-//	
-//	/**
-//	 * A class to help you get going using LocalDateTime; all the required methods of the interface are implemented as JavaFX properties 
-//	 */
-//	static public class AppointmentImplLocal extends AppointmentImplBase<AppointmentImplLocal> 
-//	implements Appointment
-//	{
-//		/** StartDateTime: */
-//		public ObjectProperty<LocalDateTime> startLocalDateTime() { return startLocalDateTime; }
-//		final private ObjectProperty<LocalDateTime> startLocalDateTime = new SimpleObjectProperty<LocalDateTime>(this, "startLocalDateTime");
-//		public LocalDateTime getStartLocalDateTime() { return startLocalDateTime.getValue(); }
-//		public void setStartLocalDateTime(LocalDateTime value) { startLocalDateTime.setValue(value); }
-//		public AppointmentImplLocal withStartLocalDateTime(LocalDateTime value) { setStartLocalDateTime(value); return this; }
-//		
-//		/** EndDateTime: */
-//		public ObjectProperty<LocalDateTime> endLocalDateTimeProperty() { return endLocalDateTimeProperty; }
-//		final private ObjectProperty<LocalDateTime> endLocalDateTimeProperty = new SimpleObjectProperty<LocalDateTime>(this, "endLocalDateTimeProperty");
-//		public LocalDateTime getEndLocalDateTime() { return endLocalDateTimeProperty.getValue(); }
-//		public void setEndLocalDateTime(LocalDateTime value) { endLocalDateTimeProperty.setValue(value); }
-//		public AppointmentImplLocal withEndLocalDateTime(LocalDateTime value) { setEndLocalDateTime(value); return this; } 
-//		
-//		public String toString()
-//		{
-//			return super.toString()
-//				 + ", "
-//				 + this.getStartLocalDateTime()
-//				 + " - "
-//				 + this.getEndLocalDateTime()
-//				 ;
-//		}
-//	}
-//	
-//	/**
-//	 * A class to help you get going using ZonedDateTime; all the required methods of the interface are implemented as JavaFX properties 
-//	 */
-//	static public class AppointmentImplZoned extends AppointmentImplBase<AppointmentImplZoned> 
-//	implements Appointment
-//	{
-//		/** StartDateTime: */
-//		public ObjectProperty<ZonedDateTime> startZonedDateTime() { return startZonedDateTime; }
-//		final private ObjectProperty<ZonedDateTime> startZonedDateTime = new SimpleObjectProperty<ZonedDateTime>(this, "startZonedDateTime");
-//		public ZonedDateTime getStartZonedDateTime() { return startZonedDateTime.getValue(); }
-//		public void setStartZonedDateTime(ZonedDateTime value) { startZonedDateTime.setValue(value); }
-//		public AppointmentImplZoned withStartZonedDateTime(ZonedDateTime value) { setStartZonedDateTime(value); return this; }
-//		
-//		/** EndDateTime: */
-//		public ObjectProperty<ZonedDateTime> endZonedDateTimeProperty() { return endZonedDateTimeProperty; }
-//		final private ObjectProperty<ZonedDateTime> endZonedDateTimeProperty = new SimpleObjectProperty<ZonedDateTime>(this, "endZonedDateTimeProperty");
-//		public ZonedDateTime getEndZonedDateTime() { return endZonedDateTimeProperty.getValue(); }
-//		public void setEndZonedDateTime(ZonedDateTime value) { endZonedDateTimeProperty.setValue(value); }
-//		public AppointmentImplZoned withEndZonedDateTime(ZonedDateTime value) { setEndZonedDateTime(value); return this; } 
-//		
-//		public String toString()
-//		{
-//			return super.toString()
-//				 + ", "
-//				 + this.getStartZonedDateTime()
-//				 + " - "
-//				 + this.getEndZonedDateTime()
-//				 ;
-//		}
-//	}
+	/**
+	 * Implements the base properties used by all AppointmentImpl classes. 
+	 */
+	static public abstract class AppointmentImplBase<T> 
+	{
+	    /** Repeat rules, null if an individual appointment */
+	    private Repeat repeat;
+	    public void setRepeat(Repeat repeat) { this.repeat = repeat; }
+	    public Repeat getRepeat() { return repeat; }
+	    public boolean hasRepeat() { return repeat != null; }
+	    public T withRepeat(Repeat value) { setRepeat(value); return (T)this; }
+	    
+	    /**
+	     * true = a temporary appointment created by a repeat rule
+	     * false = a permanent appointment
+	     */
+	    final private BooleanProperty repeatMade = new SimpleBooleanProperty(this, "repeatMade", false);
+	    public BooleanProperty repeatMadeProperty() { return repeatMade; }
+	    public boolean isRepeatMade() { return repeatMade.getValue(); }
+	    public void setRepeatMade(boolean b) {repeatMade.set(b); }
+	    public T withRepeatMade(boolean b) {repeatMade.set(b); return (T)this; }
+	    
+		/** WholeDay: */
+		public ObjectProperty<Boolean> wholeDayProperty() { return wholeDayObjectProperty; }
+		final private ObjectProperty<Boolean> wholeDayObjectProperty = new SimpleObjectProperty<Boolean>(this, "wholeDay", false);
+		public Boolean isWholeDay() { return wholeDayObjectProperty.getValue(); }
+		public void setWholeDay(Boolean value) { wholeDayObjectProperty.setValue(value); }
+		public T withWholeDay(Boolean value) { setWholeDay(value); return (T)this; } 
+		
+		/** Summary: */
+		public ObjectProperty<String> summaryProperty() { return summaryObjectProperty; }
+		final private ObjectProperty<String> summaryObjectProperty = new SimpleObjectProperty<String>(this, "summary");
+		public String getSummary() { return summaryObjectProperty.getValue(); }
+		public void setSummary(String value) { summaryObjectProperty.setValue(value); }
+		public T withSummary(String value) { setSummary(value); return (T)this; } 
+		
+		/** Description: */
+		public ObjectProperty<String> descriptionProperty() { return descriptionObjectProperty; }
+		final private ObjectProperty<String> descriptionObjectProperty = new SimpleObjectProperty<String>(this, "description");
+		public String getDescription() { return descriptionObjectProperty.getValue(); }
+		public void setDescription(String value) { descriptionObjectProperty.setValue(value); }
+		public T withDescription(String value) { setDescription(value); return (T)this; } 
+		
+		/** Location: */
+		public ObjectProperty<String> locationProperty() { return locationObjectProperty; }
+		final private ObjectProperty<String> locationObjectProperty = new SimpleObjectProperty<String>(this, "location");
+		public String getLocation() { return locationObjectProperty.getValue(); }
+		public void setLocation(String value) { locationObjectProperty.setValue(value); }
+		public T withLocation(String value) { setLocation(value); return (T)this; } 
+		
+		/** AppointmentGroup: */
+		public ObjectProperty<AppointmentGroup> appointmentGroupProperty() { return appointmentGroupObjectProperty; }
+		final private ObjectProperty<AppointmentGroup> appointmentGroupObjectProperty = new SimpleObjectProperty<AppointmentGroup>(this, "appointmentGroup");
+		public AppointmentGroup getAppointmentGroup() { return appointmentGroupObjectProperty.getValue(); }
+		public void setAppointmentGroup(AppointmentGroup value) { appointmentGroupObjectProperty.setValue(value); }
+		public T withAppointmentGroup(AppointmentGroup value) { setAppointmentGroup(value); return (T)this; }
+
+        private int appointmentGroupIndex;
+        public Integer getAppointmentGroupIndex() { return appointmentGroupIndex; }
+	}
+	
+	/**
+	 * A class to help you get going using Calendar; all the required methods of the interface are implemented as JavaFX properties 
+	 */
+	static public class AppointmentImpl extends AppointmentImplBase<AppointmentImpl> 
+	implements Appointment
+	{
+		/** StartTime: */
+		public ObjectProperty<Calendar> startTimeProperty() { return startTimeObjectProperty; }
+		final private ObjectProperty<Calendar> startTimeObjectProperty = new SimpleObjectProperty<Calendar>(this, "startTime");
+		public Calendar getStartTime() { return startTimeObjectProperty.getValue(); }
+		public void setStartTime(Calendar value) { startTimeObjectProperty.setValue(value); }
+		public AppointmentImpl withStartTime(Calendar value) { setStartTime(value); return this; }
+		
+		/** EndTime: */
+		public ObjectProperty<Calendar> endTimeProperty() { return endTimeObjectProperty; }
+		final private ObjectProperty<Calendar> endTimeObjectProperty = new SimpleObjectProperty<Calendar>(this, "endTime");
+		public Calendar getEndTime() { return endTimeObjectProperty.getValue(); }
+		public void setEndTime(Calendar value) { endTimeObjectProperty.setValue(value); }
+		public AppointmentImpl withEndTime(Calendar value) { setEndTime(value); return this; } 
+		
+		public String toString()
+		{
+			return super.toString()
+				 + ", "
+				 + DateTimeToCalendarHelper.quickFormatCalendar(this.getStartTime())
+				 + " - "
+				 + DateTimeToCalendarHelper.quickFormatCalendar(this.getEndTime())
+				 ;
+		}
+	}
+	
+	/**
+	 * A class to help you get going using LocalDateTime; all the required methods of the interface are implemented as JavaFX properties 
+	 */
+	static public class AppointmentImplLocal extends AppointmentImplBase<AppointmentImplLocal> 
+	implements Appointment
+	{
+		/** StartDateTime: */
+		public ObjectProperty<LocalDateTime> startLocalDateTime() { return startLocalDateTime; }
+		final private ObjectProperty<LocalDateTime> startLocalDateTime = new SimpleObjectProperty<LocalDateTime>(this, "startLocalDateTime");
+		public LocalDateTime getStartLocalDateTime() { return startLocalDateTime.getValue(); }
+		public void setStartLocalDateTime(LocalDateTime value) { startLocalDateTime.setValue(value); }
+		public AppointmentImplLocal withStartLocalDateTime(LocalDateTime value) { setStartLocalDateTime(value); return this; }
+		
+		/** EndDateTime: */
+		public ObjectProperty<LocalDateTime> endLocalDateTimeProperty() { return endLocalDateTimeProperty; }
+		final private ObjectProperty<LocalDateTime> endLocalDateTimeProperty = new SimpleObjectProperty<LocalDateTime>(this, "endLocalDateTimeProperty");
+		public LocalDateTime getEndLocalDateTime() { return endLocalDateTimeProperty.getValue(); }
+		public void setEndLocalDateTime(LocalDateTime value) { endLocalDateTimeProperty.setValue(value); }
+		public AppointmentImplLocal withEndLocalDateTime(LocalDateTime value) { setEndLocalDateTime(value); return this; } 
+		
+		public String toString()
+		{
+			return super.toString()
+				 + ", "
+				 + this.getStartLocalDateTime()
+				 + " - "
+				 + this.getEndLocalDateTime()
+				 ;
+		}
+	}
+	
+	/**
+	 * A class to help you get going using ZonedDateTime; all the required methods of the interface are implemented as JavaFX properties 
+	 */
+	static public class AppointmentImplZoned extends AppointmentImplBase<AppointmentImplZoned> 
+	implements Appointment
+	{
+		/** StartDateTime: */
+		public ObjectProperty<ZonedDateTime> startZonedDateTime() { return startZonedDateTime; }
+		final private ObjectProperty<ZonedDateTime> startZonedDateTime = new SimpleObjectProperty<ZonedDateTime>(this, "startZonedDateTime");
+		public ZonedDateTime getStartZonedDateTime() { return startZonedDateTime.getValue(); }
+		public void setStartZonedDateTime(ZonedDateTime value) { startZonedDateTime.setValue(value); }
+		public AppointmentImplZoned withStartZonedDateTime(ZonedDateTime value) { setStartZonedDateTime(value); return this; }
+		
+		/** EndDateTime: */
+		public ObjectProperty<ZonedDateTime> endZonedDateTimeProperty() { return endZonedDateTimeProperty; }
+		final private ObjectProperty<ZonedDateTime> endZonedDateTimeProperty = new SimpleObjectProperty<ZonedDateTime>(this, "endZonedDateTimeProperty");
+		public ZonedDateTime getEndZonedDateTime() { return endZonedDateTimeProperty.getValue(); }
+		public void setEndZonedDateTime(ZonedDateTime value) { endZonedDateTimeProperty.setValue(value); }
+		public AppointmentImplZoned withEndZonedDateTime(ZonedDateTime value) { setEndZonedDateTime(value); return this; } 
+		
+		public String toString()
+		{
+			return super.toString()
+				 + ", "
+				 + this.getStartZonedDateTime()
+				 + " - "
+				 + this.getEndZonedDateTime()
+				 ;
+		}
+	}
 	
 	
 	// ==================================================================================================================
