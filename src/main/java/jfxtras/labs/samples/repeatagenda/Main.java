@@ -34,23 +34,44 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
 	    
+//	    System.out.println(data.getAppointmentGroups().size());
+	    
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);
         Settings.setup(resources);
-
+        
         // I/O and setup
+        ObservableList<AppointmentGroup> appointmentGroups = null;
         Path appointmentGroupsPath = Paths.get(Main.class.getResource("").getPath() + "appointmentGroups.xml");
-        ObservableList<AppointmentGroup> appointmentGroups = AppointmentIO.readAppointmentGroups(appointmentGroupsPath.toFile());
-        data.setAppointmentGroups(appointmentGroups);
+        boolean isAppointmentGroupsNew = (appointmentGroupsPath.toFile().exists() && ! appointmentGroupsPath.toFile().isDirectory());
+        if (! isAppointmentGroupsNew)
+        { // add saved appointment groups
+            appointmentGroups = AppointmentIO.readAppointmentGroups(appointmentGroupsPath.toFile());
+            data.setAppointmentGroups(appointmentGroups);
+        } else {
+            // else leave defaults from Agenda
+        }
         Path appointmentRepeatsPath = Paths.get(Main.class.getResource("").getPath() + "appointmentRepeats.xml");
-        MyRepeat.readFromFile(appointmentRepeatsPath, appointmentGroups, data.getRepeats());
+//        boolean isAppointmentRepeatsNew = (appointmentRepeatsPath.toFile().exists() && ! appointmentRepeatsPath.toFile().isDirectory());
+//        if (isAppointmentRepeatsNew)
+//        { // add hard-coded repeats
+//            data.getRepeats().add(e)
+//        }
+        MyRepeat.readFromFile(appointmentRepeatsPath, data.getAppointmentGroups(), data.getRepeats());
         MyAppointment.setupRepeats(data.getRepeats()); // must be done before appointments are read
-//        AppointmentFactory.setupRepeats(data.getRepeats()); // must be done before appointments are read
         Path appointmentsPath = Paths.get(Main.class.getResource("").getPath() + "appointments.xml");
-        AppointmentFactory.readFromFile(appointmentsPath, appointmentGroups, data.getAppointments());
+//        boolean isAppointmentsNew = (appointmentsPath.toFile().exists() && ! appointmentsPath.toFile().isDirectory());
+//        if (isAppointmentsNew)
+//        { // add hard-coded appointments
+//            
+//        }
+
+        AppointmentFactory.readFromFile(appointmentsPath, data.getAppointmentGroups(), data.getAppointments());
 //        MyAppointment.readFromFile(appointmentsPath.toFile(), appointmentGroups, data.getAppointments());
         data.getRepeats().stream().forEach(a -> a.collectAppointments(data.getAppointments())); // add individual appointments that have repeat rules to their Repeat objects
         data.getRepeats().stream().forEach(a -> a.makeAppointments(data.getAppointments())); // Make repeat appointments
+ 
+        // TODO - ADD SOME HARD CODED REPEATS AND APPOINTMENTS IF NONE FROM FILE
         
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();

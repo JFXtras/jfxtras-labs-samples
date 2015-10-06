@@ -19,9 +19,9 @@ import org.xml.sax.SAXException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.DataUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroupImpl;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.DataUtilities;
 
 
 /**
@@ -79,35 +79,41 @@ public final class AppointmentIO {
         }
     }
     
-    public static ObservableList<AppointmentGroup> readAppointmentGroups(File file) throws ParserConfigurationException, SAXException, IOException
+    public static ObservableList<AppointmentGroup> readAppointmentGroups(File file) throws ParserConfigurationException
     {
         ObservableList<AppointmentGroup> appointmentGroups = FXCollections.observableArrayList();
         
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(file);
-        
-        Map<String, String> groupAttributes;
-        String errorMessage = "File: " + file;
-        
-        NodeList groupNodeList = doc.getElementsByTagName("group");
-        for (int groupNodeCounter=0;
-                groupNodeCounter < groupNodeList.getLength();
-                groupNodeCounter++) {
-            Node groupNode = groupNodeList.item(groupNodeCounter);
-            if (groupNode.hasAttributes()) {
-                groupAttributes = DataUtilities.getAttributes(groupNode, "group");
-                
-                int myCount = (appointmentGroupCount.get(groupNodeCounter) == null)
-                        ? 0 : appointmentGroupCount.get(groupNodeCounter);
-
-                AppointmentGroupImpl aGroup = new AppointmentGroupImpl()
-                    .withDescription(DataUtilities.myGet(groupAttributes, "name", errorMessage))
-                    .withStyleClass(DataUtilities.myGet(groupAttributes, "style", errorMessage));
-//                    .withAppointmentCount(myCount);
-                appointmentGroups.add(aGroup);
-
+        try
+        {
+            Document doc = builder.parse(file);
+            
+            Map<String, String> groupAttributes;
+            String errorMessage = "File: " + file;
+            
+            NodeList groupNodeList = doc.getElementsByTagName("group");
+            for (int groupNodeCounter=0;
+                    groupNodeCounter < groupNodeList.getLength();
+                    groupNodeCounter++) {
+                Node groupNode = groupNodeList.item(groupNodeCounter);
+                if (groupNode.hasAttributes()) {
+                    groupAttributes = DataUtilities.getAttributes(groupNode, "group");
+                    
+                    int myCount = (appointmentGroupCount.get(groupNodeCounter) == null)
+                            ? 0 : appointmentGroupCount.get(groupNodeCounter);
+    
+                    AppointmentGroupImpl aGroup = new AppointmentGroupImpl()
+                        .withDescription(DataUtilities.myGet(groupAttributes, "name", errorMessage))
+                        .withStyleClass(DataUtilities.myGet(groupAttributes, "style", errorMessage));
+    //                    .withAppointmentCount(myCount);
+                    appointmentGroups.add(aGroup);
+    
+                }
             }
+        } catch (SAXException | IOException e) {
+//            System.out.println("Missing file: " + file.toString());
+//          Main.log.log(Level.WARNING, "Missing file: " + inputFile.toString(), e);
         }
         return appointmentGroups;
         

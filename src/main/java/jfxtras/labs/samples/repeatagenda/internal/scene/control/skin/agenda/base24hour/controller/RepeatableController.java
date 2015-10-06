@@ -190,7 +190,6 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
 
     endAfterEventsSpinner.valueProperty().addListener((observable, oldSelection, newSelection) ->
     {
-//        System.out.println("newSelection " + newSelection);
         if (! repeat.endAfterEventsProperty().isBound()) {
             endAfterEventsSpinner.getValueFactory().setValue(repeat.getEndAfterEvents());
             repeat.endAfterEventsProperty().bind(endAfterEventsSpinner.valueProperty());   
@@ -208,8 +207,7 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
             endAfterEventsSpinner.setDisable(false);
             eventLabel.setDisable(false);
             repeat.setEndCriteria(EndCriteria.AFTER);
-            endAfterEventsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000));
-            endAfterEventsSpinner.getValueFactory().setValue(repeat.getEndAfterEvents());
+            endAfterEventsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, repeat.getEndAfterEvents()));
             repeat.endAfterEventsProperty().bind(endAfterEventsSpinner.valueProperty());
             repeat.repeatFrequencyProperty().removeListener(makeEndOnDateListener); // in case listener was previously added remove it to ensure only 1 is attached
             repeat.repeatFrequencyProperty().addListener(makeEndOnDateListener);
@@ -283,9 +281,24 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
 //            repeat = new Repeat();
             repeat = RepeatFactory.newRepeat();
             repeat.setDefaults();
-            appointment.copyInto(repeat);
+            appointment.copyNonDateFieldsInto(repeat.getAppointmentData());
+            DayOfWeek d = appointment.getStartLocalDateTime().getDayOfWeek();
+            repeat.setDayOfWeek(d, true); // set default day of week for default Weekly appointment
         }
-        setupAppointmentBindings();
+//        setupAppointmentBindings();
+
+//        if (repeat.getEndCriteria() == EndCriteria.AFTER)
+//        {
+//            System.out.println("repeat.getEndAfterEvents() " + repeat.getEndAfterEvents());
+//            if (repeat.getEndAfterEvents() == 1) {
+//                System.out.println("event");
+//                eventLabel.setText(resources.getString("event"));
+//            } else {
+//                System.out.println("events");
+//                eventLabel.setText(resources.getString("events"));
+//            }
+//        }
+
         // TODO - REMOVE CAST TO MYREPEAT
 //        if (! ((MyRepeat)repeat).hasKey()) startDatePicker.setDisable(true);
         

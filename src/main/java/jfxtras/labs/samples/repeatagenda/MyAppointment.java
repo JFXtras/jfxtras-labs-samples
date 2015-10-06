@@ -66,7 +66,7 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
 //    public MyAppointment withDescription(String value) { setDescription(value); return this; } 
 //    
       /** AppointmentGroupIndex: */
-    private int appointmentGroupIndex = 0; // only used privately - later matched up to an appointmentGroup
+    private int appointmentGroupIndex = 0; // only used privately for I/O - later matched up to an appointmentGroup
     int getAppointmentGroupIndex() { return appointmentGroupIndex; }
     private void setAppointmentGroupIndex(Integer value) { appointmentGroupIndex = value; }
 //
@@ -252,6 +252,7 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
         myElement.setAttribute("summary", getSummary());
         myElement.setAttribute("description", getDescription());
 //        myElement.setAttribute("locationKey", Integer.toString(getLocationKey()));
+//        System.out.println(getAppointmentGroup());
         myElement.setAttribute("groupIndex", Integer.toString(getAppointmentGroup().getKey()));
 //        final String s = getStaffKeys().stream()
 //                                 .map(a -> a.toString())
@@ -317,6 +318,7 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
                 Appointment anAppointment = AppointmentFactory.newAppointment()
                         .unmarshal(appointmentAttributes, expectedKey, errorMessage);
                 Integer i = ((MyAppointment) anAppointment).getAppointmentGroupIndex();
+//              System.out.println("getAppointmentGroupIndex " + i);
                 anAppointment.setAppointmentGroup(appointmentGroups.get(i));
                 appointments.add(anAppointment);
             }
@@ -330,8 +332,9 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
     public MyAppointment unmarshal(Map<String, String> appointmentAttributes, String errorMessage)
     {
         setDescription(DataUtilities.myGet(appointmentAttributes, "description", errorMessage));
-//        setAppointmentGroupIndex(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", errorMessage)));
-//        setLocationKey(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "locationKey", errorMessage)));
+        setAppointmentGroupIndex(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", errorMessage)));
+//System.out.println("getAppointmentGroupIndex " + getAppointmentGroupIndex());
+        //        setLocationKey(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "locationKey", errorMessage)));
 //        setStaffKeys(DataUtilities.myGetList(appointmentAttributes, "staffKeys", errorMessage));
 //        setStyleKey(Integer.parseInt( DataUtilities.myGet(appointmentAttributes, "styleKey", errorMessage)));
         setSummary( DataUtilities.myGet(appointmentAttributes, "summary", errorMessage));

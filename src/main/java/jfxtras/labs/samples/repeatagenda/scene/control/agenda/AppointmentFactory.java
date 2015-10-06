@@ -40,6 +40,7 @@ public final class AppointmentFactory {
      * writes appointmentList to file
      */
     public static void writeToFile(Collection<Appointment> appointments) {
+//        System.out.println("writeToFile");
         MyAppointment.writeToFile(appointments, Settings.APPOINTMENTS_FILE);
     }
     
@@ -55,6 +56,7 @@ public final class AppointmentFactory {
     public static Collection<Appointment> readFromFile(Path appointmentsPath, ObservableList<AppointmentGroup> appointmentGroups, Collection<Appointment> appointments)
             throws ParserConfigurationException, SAXException, IOException
     {
+//        System.out.println("readFromFile");
         return MyAppointment.readFromFile(appointmentsPath.toFile(), appointmentGroups, appointments);
     }
     

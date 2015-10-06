@@ -47,20 +47,13 @@ public class Repeat {
     private LocalDate startDate;
     private LocalDate endDate;
     
-//    /** Unique number identifying this Repeat object. */
-//    private Integer key;
-//    public Integer getKey() { return key; }
-//    protected void setKey(Integer value) { key = value; } 
-//    public Repeat withKey(Integer value) { setKey(value); return this; }
-//    public boolean hasKey() { return (getKey() != null); } // new Repeat has no key
-    
     final private ObjectProperty<IntervalUnit> intervalUnit = new SimpleObjectProperty<IntervalUnit>();
     public ObjectProperty<IntervalUnit> intervalUnitProperty() { return intervalUnit; }
     public IntervalUnit getIntervalUnit() { return intervalUnit.getValue(); }
     public void setIntervalUnit(IntervalUnit intervalUnit) { this.intervalUnit.set(intervalUnit); }
     public Repeat withIntervalUnit(IntervalUnit intervalUnit) { setIntervalUnit(intervalUnit); return this; }
     
-    final private IntegerProperty repeatFrequency = new SimpleIntegerProperty();
+    final private IntegerProperty repeatFrequency = new SimpleIntegerProperty(1);
     public Integer getRepeatFrequency() { return repeatFrequency.getValue(); }
     public IntegerProperty repeatFrequencyProperty() { return repeatFrequency; }
     public void setRepeatFrequency(Integer repeatFrequency) {
@@ -98,27 +91,23 @@ public class Repeat {
     }
      
     final private BooleanProperty repeatDayOfMonth = new SimpleBooleanProperty(true); // default option
-    public Boolean isRepeatDayOfMonth() { return repeatDayOfMonth.getValue(); }
+    private Boolean isRepeatDayOfMonth() { return repeatDayOfMonth.getValue(); }
     public BooleanProperty repeatDayOfMonthProperty() { return repeatDayOfMonth; }
-    public void setRepeatDayOfMonth(Boolean repeatDayOfMonth) { this.repeatDayOfMonth.set(repeatDayOfMonth); }
-    public Repeat withRepeatDayOfMonth(Boolean repeatDayOfMonth) { setRepeatDayOfMonth(repeatDayOfMonth); return this; }
+    private void setRepeatDayOfMonth(Boolean repeatDayOfMonth) { this.repeatDayOfMonth.set(repeatDayOfMonth); }
 
     final private BooleanProperty repeatDayOfWeek = new SimpleBooleanProperty(false);
-    public Boolean isRepeatDayOfWeek() { return repeatDayOfWeek.getValue(); }
+    private Boolean isRepeatDayOfWeek() { return repeatDayOfWeek.getValue(); }
     public BooleanProperty repeatDayOfWeekProperty() { return repeatDayOfWeek; }
-    public void setRepeatDayOfWeek(Boolean repeatDayOfWeek) { this.repeatDayOfWeek.set(repeatDayOfWeek); }
-    public Repeat withRepeatDayOfWeek(Boolean repeatDayOfWeek) { setRepeatDayOfWeek(repeatDayOfWeek); return this; }
-
+    private void setRepeatDayOfWeek(Boolean repeatDayOfWeek) { this.repeatDayOfWeek.set(repeatDayOfWeek); }
     private int ordinal; // used when repeatDayOfWeek is true, this is the number of weeks into the month the date is set (i.e 3rd Wednesday -> ordinal=3).
     
-    protected final MonthlyRepeat getMonthlyRepeat()
+    public MonthlyRepeat getMonthlyRepeat()
     { // returns MonthlyRepeat enum from boolean properties
         if (isRepeatDayOfMonth()) return MonthlyRepeat.DAY_OF_MONTH;
         if (isRepeatDayOfWeek()) return MonthlyRepeat.DAY_OF_WEEK;
         return null; // should not get here
     }
-
-    protected final void setMonthlyRepeat(MonthlyRepeat monthlyRepeat)
+    public void setMonthlyRepeat(MonthlyRepeat monthlyRepeat)
     { // sets boolean properties from MonthlyRepeat
         switch (monthlyRepeat)
         {
@@ -141,6 +130,7 @@ public class Repeat {
             }
         }
     }
+    public Repeat withMonthlyRepeat(MonthlyRepeat monthlyRepeat) { setMonthlyRepeat(monthlyRepeat); return this; }
     
     final private ObjectProperty<LocalDate> startLocalDate = new SimpleObjectProperty<LocalDate>();
     public ObjectProperty<LocalDate> startLocalDateProperty() { return startLocalDate; }
@@ -221,7 +211,8 @@ public class Repeat {
     private Appointment appointmentData = AppointmentFactory.newAppointment();
     public Appointment getAppointmentData() { return appointmentData; }
     public void setAppointmentData(Appointment appointment) { appointmentData = appointment; }
-    public Repeat withAppointmentData(Appointment appointment) { appointment.copyNonDateFieldsInto(appointment); return this; }
+    public Repeat withAppointmentData(Appointment appointment) { setAppointmentData(appointment); return this; }
+//    public void setAppointmentData(Appointment appointment) { appointment.copyNonDateFieldsInto(appointmentData); }
 
     /** Appointments generated from this repeat rule.  Objects are a subset of appointments in main appointments list
      * used in the Agenda calendar.  Names myAppointments to differentiate it from main name appointments */

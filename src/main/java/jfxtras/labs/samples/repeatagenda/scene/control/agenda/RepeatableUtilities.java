@@ -231,7 +231,8 @@ public final class RepeatableUtilities {
     {
         final ResourceBundle resources = Settings.resources;
         final Repeat repeat = appointment.getRepeat(); // repeat with new changes
-        System.out.println("repeat start " + repeat.getStartLocalDate() + " " + repeat.getStartLocalTime());
+//        System.out.println("repeat start " + repeat);
+//        System.out.println("repeat start " + repeat.getStartLocalTime());
         final Repeat repeatOld = appointmentOld.getRepeat(); // repeat prior to changes
 //        System.out.println("repeatOld " + repeatOld + " " + appointmentOld);
         
@@ -267,7 +268,7 @@ public final class RepeatableUtilities {
 
         // FIND OUT WHICH TYPE OF APPOINTMENT IS BEING EDITED
         final AppointmentType appointmentType = makeAppointmentType(repeat, repeatOld);
-        System.out.println("appointmentType " + appointmentType);
+//        System.out.println("appointmentType " + appointmentType);
         switch (appointmentType)
         {
         case INDIVIDUAL:
@@ -372,7 +373,7 @@ public final class RepeatableUtilities {
                     repeat.adjustDateTime(startTemporalAdjuster, endTemporalAdjuster);
                     break;
                 case WEEKLY:
-                    System.out.println("dayShift " + dayShift);
+//                    System.out.println("dayShift " + dayShift);
                     if (dayShift != 0)
                     { // change selected day of week if there is a day shift
                         final DayOfWeek dayOfWeekOld = appointmentOld.getStartLocalDateTime().getDayOfWeek();
@@ -480,6 +481,7 @@ public final class RepeatableUtilities {
         }
         
         // Write changes that occurred
+//        System.out.println("writeRepeats " + writeRepeats);
         if (writeAppointments) AppointmentFactory.writeToFile(appointments);
         if (writeRepeats) MyRepeat.writeToFile(repeats);
 

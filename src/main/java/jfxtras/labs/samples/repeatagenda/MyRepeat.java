@@ -2,6 +2,7 @@ package jfxtras.labs.samples.repeatagenda;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -56,27 +57,32 @@ public class MyRepeat extends Repeat {
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        try {
+        try
+        {
             Document doc = builder.parse(inputFile.toFile());
             Map<String, String> rootAttributes = DataUtilities.getAttributes(doc.getFirstChild(), "repeatRules");
             List<Integer> keys = DataUtilities.myGetList(rootAttributes, "keys", "");
             Iterator<Integer> keyIterator = keys.iterator();
 
             NodeList myNodeList = doc.getElementsByTagName("repeat");
-            for (int n=0; n<myNodeList.getLength(); n++) {
+            for (int n=0; n<myNodeList.getLength(); n++)
+            {
                 Node myNode = myNodeList.item(n);
-                if (myNode.hasAttributes()) {
-                    try {
+                if (myNode.hasAttributes())
+                {
+                    try 
+                    {
                         Integer myKey = keyIterator.next();
                         nextKey = Math.max(nextKey, myKey);
                         Repeat myRepeat = new MyRepeat().unmarshal((Element) myNodeList.item(n), myKey);
                         int i = ((MyAppointment) myRepeat.getAppointmentData()).getAppointmentGroupIndex();
+//                        System.out.println("i " + i);
 //                        Integer i = myRepeat.getAppointmentData().getAppointmentGroup().getKey();
-//                        System.out.print(" appointment goup " + i);
 //                        Integer i = myRepeat.getAppointmentData().getAppointmentGroup().;
                         myRepeat.getAppointmentData().setAppointmentGroup(appointmentGroups.get(i));
                         repeats.add(myRepeat);
-                    } catch (IllegalArgumentException e2) {
+                    } catch (IllegalArgumentException e2)
+                    {
 //                        Main.log.log(Level.WARNING, "Repeat rule skipped: " + inputFile.toString() + " key=" + keys.get(n), e2);                   
                     }
                 }
@@ -154,8 +160,9 @@ public class MyRepeat extends Repeat {
         Element appointmentElement = (Element) myElement.getElementsByTagName("appointment").item(0);   // must be only one appointment element
         Map<String, String> appointmentAttributes = DataUtilities.getAttributes(appointmentElement, "appointment");
         MyAppointment appointment = AppointmentFactory.newAppointment().unmarshal(appointmentAttributes, "Repeat appointment settings");
+//        System.out.println("appointment.getAppointmentGroupIndex() " + appointment.getAppointmentGroupIndex());
         setAppointmentData(appointment);
-        int i = Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", "Repeat appointment settings"));
+//        int i = Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", "Repeat appointment settings"));
 // PROBLEM - I DON'T HAVE THE GROUPS HERE - HOW DO I CONNECT INDEX WITH GROUPS?
         //        AppointmentFactory.returnRepeatable(appointmentData).unmarshal(appointmentAttributes, "Repeat appointment settings");
         return this;
@@ -203,7 +210,8 @@ public class MyRepeat extends Repeat {
         try {
             DataUtilities.writeDocument(doc, writeFile);
         } catch (TransformerException e) {
-//            Main.log.log(Level.SEVERE, "Appointment Repeat file " + writeFile + " can't be written");
+//              Main.log.log(Level.SEVERE, "Appointment Repeat file " + writeFile + " can't be written");
+            e.printStackTrace();
         }
     }
     /**
@@ -214,7 +222,9 @@ public class MyRepeat extends Repeat {
      */
     public static void writeToFile(Collection<Repeat> repeats)
     {
-        writeToFile(repeats, Settings.APPOINTMENT_REPEATS_FILE);
+        Path appointmentRepeatsPath = Paths.get(Main.class.getResource("").getPath() + "appointmentRepeats.xml");
+//        System.out.println(appointmentRepeatsPath);
+        writeToFile(repeats, appointmentRepeatsPath);
     }
     
         

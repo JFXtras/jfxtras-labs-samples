@@ -17,7 +17,7 @@ public final class Settings {
 
     public final static Path APPOINTMENTS_FILE = Paths.get("src/jfxtras.labs.samples.repeatagenda.appointments.xml");
     public final static Path APPOINTMENT_GROUPS_FILE = Paths.get("data/appointments/appointmentGroups.xml");
-    public final static Path APPOINTMENT_REPEATS_FILE = Paths.get("data/appointments/appointmentRepeats.xml");
+    public final static Path APPOINTMENT_REPEATS_FILE = Paths.get("appointmentRepeats.xml");
     
     public static DateTimeFormatter DATE_FORMAT1; // format for output files
     public static DateTimeFormatter DATE_FORMAT2; // fancy format for displaying

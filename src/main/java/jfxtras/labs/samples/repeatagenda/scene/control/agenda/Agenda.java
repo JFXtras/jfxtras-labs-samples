@@ -29,15 +29,13 @@
 
 package jfxtras.labs.samples.repeatagenda.scene.control.agenda;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.stream.IntStream;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -180,7 +178,7 @@ public class Agenda extends Control
 		DateTimeToCalendarHelper.syncLocalDateTime(displayedCalendarObjectProperty, displayedLocalDateTimeObjectProperty, localeObjectProperty);
 
 		// appointmentGroups
-		constructAppointmentGroups();
+		setAppointmentGroups(constructDefaultAppointmentGroups());
 		
 		// appointments
 		constructAppointments();
@@ -241,19 +239,22 @@ public class Agenda extends Control
 	public ObservableList<AppointmentGroup> appointmentGroups() { return appointmentGroups; }
 	private ObservableList<AppointmentGroup> appointmentGroups =  javafx.collections.FXCollections.observableArrayList();
     public void setAppointmentGroups(ObservableList<AppointmentGroup> appointmentGroups) { this.appointmentGroups = appointmentGroups; }
-	private void constructAppointmentGroups() {
-		// setup appointment groups as predefined in the CSS
-        final Map<String, Agenda.AppointmentGroup> lAppointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
-        for (int i = 0; i < 24; i++) {
-        	lAppointmentGroupMap.put("group" + (i < 10 ? "0" : "") + i, new Agenda.AppointmentGroupImpl().withStyleClass("group" + i).withKey(i));
-        }
-        for (String lId : lAppointmentGroupMap.keySet())
-        {
-            Agenda.AppointmentGroup lAppointmentGroup = lAppointmentGroupMap.get(lId);
-            lAppointmentGroup.setDescription(lId);
-            appointmentGroups().add(lAppointmentGroup);
-        }
-	}
+    public static ObservableList<AppointmentGroup> constructDefaultAppointmentGroups() {
+        // setup appointment groups as predefined in the CSS
+        ObservableList<AppointmentGroup> myAppointmentGroups =  javafx.collections.FXCollections.observableArrayList();
+        IntStream
+            .iterate(0, i -> i + 1)
+            .limit(24)
+            .forEach(i -> {
+               String id = "group" + (i < 10 ? "0" : "") + i;
+               AppointmentGroupImpl appointmentGroup = new Agenda.AppointmentGroupImpl()
+	               .withStyleClass("group" + i)
+	               .withKey(i)
+	               .withDescription(id);
+               myAppointmentGroups.add(appointmentGroup);
+            });
+    return myAppointmentGroups;
+    }
 
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
 	public ObjectProperty<Locale> localeProperty() { return localeObjectProperty; }
@@ -419,70 +420,7 @@ public class Agenda extends Control
 	}
 	
 	// ==================================================================================================================
-//	// Appointment
-//    /**
-//     * Repeatable parts of an appointment
-//     * 
-//     * @author David Bal
-//     *
-//     */
-//    static public interface Repeatable {
-//
-//        Boolean isWholeDay();
-//        void setWholeDay(Boolean b);
-//        BooleanProperty wholeDayProperty();
-//        
-//        String getSummary();
-//        void setSummary(String s);
-//        StringProperty summaryProperty();
-//        
-//        String getDescription();
-//        void setDescription(String s);
-//        StringProperty descriptionProperty();
-//        
-//        AppointmentGroup getAppointmentGroup();
-//        void setAppointmentGroup(AppointmentGroup s);
-//        public ObjectProperty<AppointmentGroup> appointmentGroupProperty();
-//        void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups);
-//        
-//        Integer getAppointmentGroupIndex();
-////        void setAppointmentGroupIndex(Integer i);
-////        IntegerProperty appointmentGroupIndexProperty();
-//        
-//        // My variables
-////        ObservableList<Integer> getStaffKeys();     // instructors in class - first is owner of class
-////        void setStaffKeys(List<Integer> i);
-////        
-////        Integer getStyleKey();
-////        void setStyleKey(Integer i);
-////        IntegerProperty styleKeyProperty();
-////
-////        Integer getLocationKey();
-////        void setLocationKey(Integer i);
-////        IntegerProperty locationKeyProperty();
-//        
-//        Repeatable copyInto(Repeatable appointmentData);
-//        /**
-//         * Copy's current object's fields into passed parameter
-//         * For copying a moved appointment that is a part of a Repeat, but is not repeat-made and has some unique data.
-//         * Only copy over the non-unique data. 
-//         * 
-//         * @param appointmentData: the appointment fields associated with a Repeat
-//         * @param appointmentOld: the appointment prior to editing
-//         * @return
-//         */
-//        Repeatable copyInto(Repeatable appointmentData, Repeatable appointmentOld);
-//
-//        
-//        void unbindAll();   // unbind all properties
-//                       
-//        // ----
-//        // LocalDateTime 
-//        
-//        /** This is what Agenda uses to render the appointments */
-//            
-//    }
-	
+	// Appointment
 	/**
 	 * The interface that all appointments must adhere to; you can provide your own implementation.
 	 * You must either implement the Start & End using the Calendar based or LocalDateTime based methods
@@ -521,7 +459,7 @@ public class Agenda extends Control
        void setLocation(String s);  // I'm not using
        
         // my variables
-        public final static int INITIAL_KEY = -1;
+//        public final static int INITIAL_KEY = -1;
     
 //        Integer getKey(); // unique appointment key
 //        void setKey(Integer value);
@@ -637,44 +575,31 @@ public class Agenda extends Control
          */
         default Appointment copyNonDateFieldsInto(Appointment appointment, Appointment appointmentOld) {
             if (appointment.getAppointmentGroup().equals(appointmentOld.getAppointmentGroup())) {
-//                appointment.setAppointmentGroup(getAppointmentData().getAppointmentGroup());
                 appointment.setAppointmentGroup(getAppointmentGroup());
             }
             if (appointment.getDescription().equals(appointmentOld.getDescription())) {
                 appointment.setDescription(getDescription());
             }
-        //  if (appointment.getLocationKey().equals(appointmentOld.getLocationKey())) {
-//              appointment.setLocationKey(getLocationKey());
-        //  }
-        //  if (appointment.getStaffKeys().equals(appointmentOld.getStaffKeys())) {
-//              appointment.getStaffKeys().addAll(getStaffKeys());
-        //  }
-        //  if (appointment.getStyleKey().equals(appointmentOld.getStyleKey())) {
-//              appointment.setStyleKey(getStyleKey());
-        //  }
             if (appointment.getSummary().equals(appointmentOld.getSummary())) {
                 appointment.setSummary(getSummary());
             }
-//            appointment.setAppointmentGroup(getAppointmentGroup());
-//            appointment.setDescription(getDescription());
-//            appointment.setSummary(getSummary());
             appointment.setRepeat(getRepeat());
             return appointment;
         }
         
-        /**
-         *  Copy's current object's fields into passed parameter
-         *  
-         */
-        default Repeat copyInto(Repeat repeat) {
-            copyNonDateFieldsInto(repeat.getAppointmentData());
-            repeat.setStartLocalDate(getStartLocalDateTime().toLocalDate());
-            repeat.setStartLocalTime(getStartLocalDateTime().toLocalTime());
-            repeat.setEndLocalTime(getEndLocalDateTime().toLocalTime());
-            DayOfWeek d = getStartLocalDateTime().getDayOfWeek();
-            repeat.setDayOfWeek(d, true);
-            return repeat;
-        }
+//        /**
+//         *  Copy's current object's fields into passed parameter
+//         *  
+//         */
+//        default Repeat copyInto(Repeat repeat) {
+//            copyNonDateFieldsInto(repeat.getAppointmentData());
+//            repeat.setStartLocalDate(getStartLocalDateTime().toLocalDate());
+//            repeat.setStartLocalTime(getStartLocalDateTime().toLocalTime());
+//            repeat.setEndLocalTime(getEndLocalDateTime().toLocalTime());
+//            DayOfWeek d = getStartLocalDateTime().getDayOfWeek();
+//            repeat.setDayOfWeek(d, true);
+//            return repeat;
+//        }
         
 //        Appointment copyInto(Appointment copyInto);
 //        Repeat copyInto(Repeat repeat); // handled by temporaladjusters
