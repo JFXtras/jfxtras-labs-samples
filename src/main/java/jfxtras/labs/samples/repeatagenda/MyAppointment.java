@@ -36,8 +36,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentImplBase;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentImplBase;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.DataUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
@@ -67,11 +67,8 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
 //    
       /** AppointmentGroupIndex: */
     private int appointmentGroupIndex = 0; // only used privately - later matched up to an appointmentGroup
-//    public IntegerProperty appointmentGroupIndexProperty() { return appointmentGroupIndexProperty; }
-//    final private IntegerProperty appointmentGroupIndexProperty = new SimpleIntegerProperty(this, "appointmentGroup");
-    public Integer getAppointmentGroupIndex() { return appointmentGroupIndex; }
-    public void setAppointmentGroupIndex(Integer value) { appointmentGroupIndex = value; }
-//    public T withAppointmentGroupIndex(Integer value) { setAppointmentGroupIndex(value); return (T)this; }
+    int getAppointmentGroupIndex() { return appointmentGroupIndex; }
+    private void setAppointmentGroupIndex(Integer value) { appointmentGroupIndex = value; }
 //
 //    /** AppointmentGroup: */
 //    public ObjectProperty<AppointmentGroup> appointmentGroupProperty() { return appointmentGroupObjectProperty; }
@@ -107,6 +104,27 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
     public MyAppointment withStudentKeys(List<Integer> value) { setStudentKeys(value); return this; }
     public ObservableList<Integer> studentKeysProperty() { return studentKeys; }
 
+//    /** StaffKeys: */
+//  private ObservableList<Integer> staffKeys = FXCollections.observableArrayList();
+//  public ObservableList<Integer> getStaffKeys() { return staffKeys; }
+//  public void setStaffKeys(List<Integer> value) { staffKeys.setAll(value); }
+//  public T withStaffKeys(List<Integer> value) { setStaffKeys(value); return (T)this; }
+////  public ObservableList<Integer> staffKeysProperty() { return staffKeys; }
+//
+//  /** StyleKey: */
+//  public IntegerProperty styleKeyProperty() { return styleKeyProperty; }
+//  final private IntegerProperty styleKeyProperty = new SimpleIntegerProperty(this, "styleKey", -1);
+//  public Integer getStyleKey() { return styleKeyProperty.getValue(); }
+//  public void setStyleKey(Integer value) { styleKeyProperty.setValue(value); }
+//  public T withStyleKey(Integer value) { setStyleKey(value); return (T)this; }
+//    
+//    /** Location: */
+//    public IntegerProperty locationKeyProperty() { return locationKeyProperty; }
+//    final private IntegerProperty locationKeyProperty = new SimpleIntegerProperty(this, "locationKey", -1);
+//    public Integer getLocationKey() { return locationKeyProperty.getValue(); }
+//    public void setLocationKey(Integer value) { locationKeyProperty.setValue(value); }
+//    public T withLocationKey(Integer value) { setLocationKey(value); return (T)this; } 
+    
     /** RepeatKey: only used privately */
     private Integer repeatKey;
     private Integer getRepeatKey() { return repeatKey; }
@@ -146,13 +164,13 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
     public void setEndLocalDateTime(LocalDateTime value) { endLocalDateTime.setValue(value); }
     public MyAppointment withEndLocalDateTime(LocalDateTime value) { setEndLocalDateTime(value); return this; } 
     
-    /** Location: */
-    // I'M NOT USING THESE
-    public ObjectProperty<String> locationProperty() { return locationObjectProperty; }
-    final private ObjectProperty<String> locationObjectProperty = new SimpleObjectProperty<String>(this, "location");
-    public String getLocation() { return locationObjectProperty.getValue(); }
-    public void setLocation(String value) { locationObjectProperty.setValue(value); }
-    public MyAppointment withLocation(String value) { setLocation(value); return this; } 
+//    /** Location: */
+//    // I'M NOT USING THESE
+//    public ObjectProperty<String> locationProperty() { return locationObjectProperty; }
+//    final private ObjectProperty<String> locationObjectProperty = new SimpleObjectProperty<String>(this, "location");
+//    public String getLocation() { return locationObjectProperty.getValue(); }
+//    public void setLocation(String value) { locationObjectProperty.setValue(value); }
+//    public MyAppointment withLocation(String value) { setLocation(value); return this; } 
     
     public MyAppointment() { }
     
@@ -298,7 +316,7 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
                 String errorMessage = ", file: " + file + " summary: " + appointmentName;
                 Appointment anAppointment = AppointmentFactory.newAppointment()
                         .unmarshal(appointmentAttributes, expectedKey, errorMessage);
-                Integer i = anAppointment.getAppointmentGroupIndex();
+                Integer i = ((MyAppointment) anAppointment).getAppointmentGroupIndex();
                 anAppointment.setAppointmentGroup(appointmentGroups.get(i));
                 appointments.add(anAppointment);
             }
@@ -312,12 +330,13 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
     public MyAppointment unmarshal(Map<String, String> appointmentAttributes, String errorMessage)
     {
         setDescription(DataUtilities.myGet(appointmentAttributes, "description", errorMessage));
-        setAppointmentGroupIndex(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", errorMessage)));
+//        setAppointmentGroupIndex(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", errorMessage)));
 //        setLocationKey(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "locationKey", errorMessage)));
 //        setStaffKeys(DataUtilities.myGetList(appointmentAttributes, "staffKeys", errorMessage));
 //        setStyleKey(Integer.parseInt( DataUtilities.myGet(appointmentAttributes, "styleKey", errorMessage)));
         setSummary( DataUtilities.myGet(appointmentAttributes, "summary", errorMessage));
         setWholeDay(DataUtilities.myParseBoolean(DataUtilities.myGet(appointmentAttributes, "wholeDay", errorMessage)));
+//        System.out.println("groupIndex " + getAppointmentGroupIndex());
 
         return this;
     }
@@ -329,15 +348,6 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
      */
     public Appointment unmarshal(Map<String, String> appointmentAttributes, Integer expectedKey, String errorMessage)
     {
-////      super.unmarshal(appointmentAttributes, expectedKey, errorMessage);
-//       
-//        setDescription(DataUtilities.myGet(appointmentAttributes, "description", errorMessage));
-//        setAppointmentGroupIndex(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", errorMessage)));
-////        setLocationKey(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "locationKey", errorMessage)));
-////        setStaffKeys(DataUtilities.myGetList(appointmentAttributes, "staffKeys", errorMessage));
-////        setStyleKey(Integer.parseInt( DataUtilities.myGet(appointmentAttributes, "styleKey", errorMessage)));
-//        setSummary( DataUtilities.myGet(appointmentAttributes, "summary", errorMessage));
-//        setWholeDay(DataUtilities.myParseBoolean(DataUtilities.myGet(appointmentAttributes, "wholeDay", errorMessage)));
         unmarshal(appointmentAttributes, errorMessage);
   
         setRepeatKey(DataUtilities.myParseInt(DataUtilities.myGet(appointmentAttributes, "repeatKey", errorMessage)));
@@ -354,6 +364,12 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
       setEndLocalDateTime(LocalDateTime.parse(DataUtilities.myGet(appointmentAttributes,endLocalDateTime.getName(), errorMessage), Settings.DATE_FORMAT_AGENDA));
       setStartLocalDateTime(LocalDateTime.parse( DataUtilities.myGet(appointmentAttributes, startLocalDateTime.getName(), errorMessage), Settings.DATE_FORMAT_AGENDA));
       return this;
+    }
+    @Override
+    public Appointment copyNonDateFieldsInto(Appointment appointment) {
+        List<Integer> s = ((MyAppointment) appointment).getStudentKeys();
+        getStudentKeys().addAll(s);
+        return Appointment.super.copyNonDateFieldsInto(appointment);
     }
 
 }

@@ -504,28 +504,11 @@ public class Agenda extends Control
         
         AppointmentGroup getAppointmentGroup();
         void setAppointmentGroup(AppointmentGroup s);
-//        public ObjectProperty<AppointmentGroup> appointmentGroupProperty();
-//        void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups);
-        default void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups) { setAppointmentGroup(appointmentGroups.get(getAppointmentGroupIndex()));  }
-        Integer getAppointmentGroupIndex();
-//        
-//        Repeatable copyInto(Repeatable appointmentData);
-        /**
-         * Copy's current object's fields into passed parameter
-         * For copying a moved appointment that is a part of a Repeat, but is not repeat-made and has some unique data.
-         * Only copy over the non-unique data. 
-         * 
-         * @param appointmentData: the appointment fields associated with a Repeat
-         * @param appointmentOld: the appointment prior to editing
-         * @return
-         */
-//        Repeatable copyInto(Repeatable appointmentData, Repeatable appointmentOld);
+//        default void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups) { setAppointmentGroup(appointmentGroups.get(getAppointmentGroupIndex())); }
 
-        
-//        void unbindAll();   // unbind all properties
-        
-        
-        
+//        Integer getAppointmentGroupIndex();
+//        void setAppointmentGroupIndex(Integer i);
+
        boolean isRepeatMade();    // true = made by repeat rule & shouldn't be saved, false = has unique info, should be saved
 //       BooleanProperty repeatMadeProperty();
        void setRepeatMade(boolean b);
@@ -619,19 +602,63 @@ public class Agenda extends Control
         @Override   // requires checking object property and, if not null, checking of wrapped value
         boolean equals(Object obj);
 
-        
         /**
-         * Copy factory
-         * Returns new Appointment object with all fields copied from input parameter myAppointment
+         * Copies all fields into parameter appointment
          * 
          * @param appointment
          * @return
-         * @throws CloneNotSupportedException 
          */
         default Appointment copyInto(Appointment appointment) {
-//            super.copyInto(appointment);
             appointment.setEndLocalDateTime(getEndLocalDateTime());
             appointment.setStartLocalDateTime(getStartLocalDateTime());
+            copyNonDateFieldsInto(appointment);
+            return appointment;
+        }
+        
+        /**
+         * Copies this Appointment non-time fields into parameter appointment
+         * 
+         * @param appointment
+         * @return
+         */
+        default Appointment copyNonDateFieldsInto(Appointment appointment) {
+            appointment.setAppointmentGroup(getAppointmentGroup());
+            appointment.setDescription(getDescription());
+            appointment.setSummary(getSummary());
+            appointment.setRepeat(getRepeat());
+            return appointment;
+        }
+        
+        /**
+         * Copies this Appointment non-time fields into parameter appointment
+         * 
+         * @param appointment
+         * @return
+         */
+        default Appointment copyNonDateFieldsInto(Appointment appointment, Appointment appointmentOld) {
+            if (appointment.getAppointmentGroup().equals(appointmentOld.getAppointmentGroup())) {
+//                appointment.setAppointmentGroup(getAppointmentData().getAppointmentGroup());
+                appointment.setAppointmentGroup(getAppointmentGroup());
+            }
+            if (appointment.getDescription().equals(appointmentOld.getDescription())) {
+                appointment.setDescription(getDescription());
+            }
+        //  if (appointment.getLocationKey().equals(appointmentOld.getLocationKey())) {
+//              appointment.setLocationKey(getLocationKey());
+        //  }
+        //  if (appointment.getStaffKeys().equals(appointmentOld.getStaffKeys())) {
+//              appointment.getStaffKeys().addAll(getStaffKeys());
+        //  }
+        //  if (appointment.getStyleKey().equals(appointmentOld.getStyleKey())) {
+//              appointment.setStyleKey(getStyleKey());
+        //  }
+            if (appointment.getSummary().equals(appointmentOld.getSummary())) {
+                appointment.setSummary(getSummary());
+            }
+//            appointment.setAppointmentGroup(getAppointmentGroup());
+//            appointment.setDescription(getDescription());
+//            appointment.setSummary(getSummary());
+            appointment.setRepeat(getRepeat());
             return appointment;
         }
         
@@ -640,7 +667,7 @@ public class Agenda extends Control
          *  
          */
         default Repeat copyInto(Repeat repeat) {
-            copyInto(repeat.getAppointmentData());
+            copyNonDateFieldsInto(repeat.getAppointmentData());
             repeat.setStartLocalDate(getStartLocalDateTime().toLocalDate());
             repeat.setStartLocalTime(getStartLocalDateTime().toLocalTime());
             repeat.setEndLocalTime(getEndLocalDateTime().toLocalTime());
@@ -712,8 +739,9 @@ public class Agenda extends Control
 		public void setAppointmentGroup(AppointmentGroup value) { appointmentGroupObjectProperty.setValue(value); }
 		public T withAppointmentGroup(AppointmentGroup value) { setAppointmentGroup(value); return (T)this; }
 
-        private int appointmentGroupIndex;
-        public Integer getAppointmentGroupIndex() { return appointmentGroupIndex; }
+//        private int appointmentGroupIndex;
+//        public Integer getAppointmentGroupIndex() { return appointmentGroupIndex; }
+//        public void setAppointmentGroupIndex(Integer i) { appointmentGroupIndex = i; }
 	}
 	
 	/**

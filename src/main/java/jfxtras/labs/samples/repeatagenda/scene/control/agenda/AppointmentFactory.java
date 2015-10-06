@@ -14,54 +14,22 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 
 /**
- * Provides one location where some method of Appointment interface can be accessed.
- * These include creating new object, file read and write
+ * Provides new Appointment factory for implementation of Appointment interface
+ * Also, provides location to specify read and write methods for appointment collections
  * @author David Bal
  *
  */
 public final class AppointmentFactory {
     
-//    public static int nextAppointmentKey;
-
     private AppointmentFactory() {}
 
     public static MyAppointment newAppointment() {
         return new MyAppointment();
     }
-    
-//    public static Appointment newAppointment(Repeat repeat, LocalDate date) {
-//        return new MyAppointment(repeat, date);
-//    }
-
-//    /**
-//     * Copy constructor for a repeatable appointment
-//     * 
-//     * @param repeat
-//     * @param date 
-//     */
-//    default Appointment(Repeat repeat, LocalDate date)
-//    {
-//        repeat.getAppointmentData().copyInto(this);
-//        LocalDateTime myStartDateTime = date.atTime(repeat.getStartLocalTime());
-//        LocalDateTime myEndDateTime = date.atTime(repeat.getEndLocalTime());
-//        
-//        this.withStartLocalDateTime(myStartDateTime)
-//            .withEndLocalDateTime(myEndDateTime)
-//            .withRepeat(repeat)
-//            .withRepeatMade(true);
-//    }
-    
+        
     public static Appointment newAppointment(Appointment appointment) {
         return new MyAppointment(appointment);
     }
-
-//    public static RepeatableBase<Repeatable> newAppointmentRepeatable() {
-//        return new RepeatableBase<Repeatable>();
-//   }
-
-//    public static RepeatableBase<Repeatable> returnRepeatable(Repeatable myRepeatable) {
-//        return (RepeatableBase<Repeatable>) myRepeatable;
-//    }
 
     public static MyAppointment returnConcreteAppointment(Appointment myAppointment) {
         return (MyAppointment) myAppointment;

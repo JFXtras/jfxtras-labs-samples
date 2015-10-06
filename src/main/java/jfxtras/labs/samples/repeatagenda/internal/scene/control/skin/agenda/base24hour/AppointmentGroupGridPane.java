@@ -5,7 +5,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.LayoutHelp;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -62,7 +61,8 @@ public class AppointmentGroupGridPane extends GridPane {
          lCnt++;
      }
    //int index = layoutHelp.skinnable.appointmentGroups().indexOf(appointment.getAppointmentGroup());
-     int index = appointment.getAppointmentGroupIndex();
+//     int index = appointment.getAppointmentGroupIndex();
+     int index = appointment.getAppointmentGroup().getKey();
      setAppointmentGroupSelected(index);
      setLPane(index);
      

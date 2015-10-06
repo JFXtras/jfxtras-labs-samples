@@ -51,9 +51,7 @@ public class Main extends Application {
 //        MyAppointment.readFromFile(appointmentsPath.toFile(), appointmentGroups, data.getAppointments());
         data.getRepeats().stream().forEach(a -> a.collectAppointments(data.getAppointments())); // add individual appointments that have repeat rules to their Repeat objects
         data.getRepeats().stream().forEach(a -> a.makeAppointments(data.getAppointments())); // Make repeat appointments
-//        System.out.println(data.getAppointments().size());	    
-//        System.out.println(data.getRepeats().size());
-//        System.exit(0);;
+        
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
         mainLoader.setLocation(Main.class.getResource("view/Calendar.fxml"));

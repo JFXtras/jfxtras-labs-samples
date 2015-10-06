@@ -28,9 +28,9 @@ import jfxtras.labs.samples.repeatagenda.MyRepeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 
-public final class RepeatableAppointmentUtilities {
+public final class RepeatableUtilities {
     
-    private RepeatableAppointmentUtilities() {}
+    private RepeatableUtilities() {}
 
     /**
      * If repeat criteria has changed display this alert to find out how to apply changes (one, all or future)
@@ -231,7 +231,9 @@ public final class RepeatableAppointmentUtilities {
     {
         final ResourceBundle resources = Settings.resources;
         final Repeat repeat = appointment.getRepeat(); // repeat with new changes
+        System.out.println("repeat start " + repeat.getStartLocalDate() + " " + repeat.getStartLocalTime());
         final Repeat repeatOld = appointmentOld.getRepeat(); // repeat prior to changes
+//        System.out.println("repeatOld " + repeatOld + " " + appointmentOld);
         
         final boolean appointmentChanged = ! appointment.equals(appointmentOld);
         final boolean repeatChanged = (repeat == null) ? false : ! repeat.equals(repeatOld);
@@ -265,6 +267,7 @@ public final class RepeatableAppointmentUtilities {
 
         // FIND OUT WHICH TYPE OF APPOINTMENT IS BEING EDITED
         final AppointmentType appointmentType = makeAppointmentType(repeat, repeatOld);
+        System.out.println("appointmentType " + appointmentType);
         switch (appointmentType)
         {
         case INDIVIDUAL:
@@ -313,7 +316,7 @@ public final class RepeatableAppointmentUtilities {
           appointment.setRepeat(repeat);
           repeat.getAppointments().add(appointment);
           repeat.makeAppointments(appointments);
-          appointment.copyInto(repeat.getAppointmentData()); // copy any appointment changes (i.e. description, group, location, etc)
+          appointment.copyNonDateFieldsInto(repeat.getAppointmentData()); // copy any appointment changes (i.e. description, group, location, etc)
           repeats.add(repeat);
           appointment.setRepeatMade(true);
           writeAppointments = true;
@@ -343,10 +346,11 @@ public final class RepeatableAppointmentUtilities {
                 repeat.unbindAll();
                 if (appointment.isRepeatMade())
                 { // copy all appointment changes (i.e. description, group, location, etc)
-                    appointment.copyInto(repeat.getAppointmentData());
+                    appointment.copyNonDateFieldsInto(repeat.getAppointmentData());
                 } else { // copy non-unique appointment changes (i.e. description, group, location, etc)
 //                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
-                    repeat.copyAppointmentInto(appointment, appointmentOld);
+                    repeat.getAppointmentData().copyNonDateFieldsInto(appointment, appointmentOld);
+//                    repeat.copyAppointmentInto(appointment, appointmentOld);
 //                    appointment.copyInto(repeat.getAppointmentData(), appointmentOld);
                 }
                 switch (repeat.getIntervalUnit())
@@ -375,9 +379,9 @@ public final class RepeatableAppointmentUtilities {
                         final DayOfWeek dayOfWeekNew = appointment.getStartLocalDateTime().getDayOfWeek();
                         repeat.setDayOfWeek(dayOfWeekOld, false);
                         repeat.setDayOfWeek(dayOfWeekNew, true);
-                        boolean adjustStartDate = repeat.getStartLocalDate().equals(startDateOld);
-                        repeat.adjustDateTime(adjustStartDate, startTemporalAdjuster, endTemporalAdjuster);
                     }
+                    boolean adjustStartDate = dayShift == 0;
+                    repeat.adjustDateTime(adjustStartDate, startTemporalAdjuster, endTemporalAdjuster);
                 }
                 repeat.updateAppointments(appointments, appointment, appointmentOld
                         , startTemporalAdjuster, endTemporalAdjuster);
@@ -388,9 +392,10 @@ public final class RepeatableAppointmentUtilities {
                 // Copy changes to repeat  (i.e. description, group, location, etc)
                 if (appointment.isRepeatMade())
                 { // copy all appointment changes
-                    appointment.copyInto(repeat.getAppointmentData());
+                    appointment.copyNonDateFieldsInto(repeat.getAppointmentData());
                 } else { // copy non-unique appointment changes
-                    repeat.copyAppointmentInto(appointment, appointmentOld);
+                    repeat.getAppointmentData().copyNonDateFieldsInto(appointment, appointmentOld);
+//                    repeat.copyAppointmentInto(appointment, appointmentOld);
 //                    appointment.copyAppointmentInto(repeat.getAppointmentData(), appointmentOld);
                 }
                 
@@ -495,11 +500,11 @@ public final class RepeatableAppointmentUtilities {
             }
         } else
         {
-            if (((MyRepeat) repeat).hasKey()) // TODO - NEED TO REMOVE CAST TO MYREPEAT
+            if (repeat.isNew())
             {
-                return AppointmentType.WITH_EXISTING_REPEAT;
-            } else {
                 return AppointmentType.WITH_NEW_REPEAT;                
+            } else {
+                return AppointmentType.WITH_EXISTING_REPEAT;
             }
         }
     }

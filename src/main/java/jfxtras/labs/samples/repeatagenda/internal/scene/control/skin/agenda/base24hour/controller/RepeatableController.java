@@ -24,11 +24,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import jfxtras.labs.samples.repeatagenda.MyRepeat;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AlertsAndDialogs;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
 
 public class RepeatableController {
 
@@ -280,13 +280,14 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
         { // get existing repeat
             repeat = appointment.getRepeat();
         } else { // make new repeat
-            repeat = new Repeat();
+//            repeat = new Repeat();
+            repeat = RepeatFactory.newRepeat();
             repeat.setDefaults();
             appointment.copyInto(repeat);
         }
         setupAppointmentBindings();
         // TODO - REMOVE CAST TO MYREPEAT
-        if (! ((MyRepeat)repeat).hasKey()) startDatePicker.setDisable(true);
+//        if (! ((MyRepeat)repeat).hasKey()) startDatePicker.setDisable(true);
         
         // REPEATABLE CHECKBOX
         repeatableCheckBox.selectedProperty().addListener((observable, oldSelection, newSelection) ->
@@ -296,11 +297,13 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
                 repeat.getAppointments().add(appointment);
                 setupBindings();
                 repeatableGridPane.setDisable(false);
+                startDatePicker.setDisable(false);
             } else {
                 appointment.setRepeat(null);
                 repeat.getAppointments().remove(appointment);
                 removeBindings();
                 repeatableGridPane.setDisable(true);
+                startDatePicker.setDisable(true);
             }
         });
 

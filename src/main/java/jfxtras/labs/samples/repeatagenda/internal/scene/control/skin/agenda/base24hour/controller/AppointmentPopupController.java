@@ -14,7 +14,7 @@ import javafx.stage.Popup;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentMenu;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentUtilities;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.LayoutHelp;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointmentUtilities;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 
 /**
@@ -63,7 +63,7 @@ public class AppointmentPopupController {
 
     @FXML private void handleDeleteAppointment() throws ParserConfigurationException {
         popup.hide();
-        RepeatableAppointmentUtilities.deleteAppointments(layoutHelp.skinnable.appointments()
+        RepeatableUtilities.deleteAppointments(layoutHelp.skinnable.appointments()
                 , appointment
                 , layoutHelp.skinnable.repeats()
                 , resources);

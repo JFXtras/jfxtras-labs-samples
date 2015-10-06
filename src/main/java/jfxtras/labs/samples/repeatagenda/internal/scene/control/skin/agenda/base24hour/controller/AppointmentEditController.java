@@ -19,8 +19,8 @@ import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointmentUtilities;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointmentUtilities.WindowCloseType;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities.WindowCloseType;
 import jfxtras.scene.control.LocalDateTimeTextField;
 
 
@@ -42,6 +42,8 @@ public class AppointmentEditController {
     
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     
+//    @FXML private LocalDateTimeTextField startTextField;
+//    @FXML private LocalDateTimeTextField endTextField;
     @FXML private LocalDateTimeTextField startTextField;
     @FXML private LocalDateTimeTextField endTextField;
     @FXML private AppointmentGroupGridPane appointmentGroupGridPane;
@@ -78,7 +80,7 @@ public class AppointmentEditController {
         repeats = layoutHelp.skinnable.repeats();
         appointments = layoutHelp.skinnable.appointments();
 
-        appointmentOld = AppointmentFactory.newAppointment(appointment);               
+        appointmentOld = AppointmentFactory.newAppointment(appointment);
 
         repeatableController.setupData(appointment);
 
@@ -99,8 +101,8 @@ public class AppointmentEditController {
 
         //        startTextField.localDateTimeProperty().bindBidirectional(appointment.startLocalDateTimeProperty());
 //        startTextField.localDateTimeProperty().addListener(startDateListener);
-        startTextField.localDateTimeProperty().addListener((observable, oldValue, newValue)
-                -> appointment.setStartLocalDateTime(newValue));
+//        startTextField.localDateTimeProperty().addListener((observable, oldValue, newValue)
+//                -> appointment.setStartLocalDateTime(newValue));
 
         // END DATE TIME TEXT FIELD
         endTextField.setLocale(layoutHelp.skinnable.getLocale());
@@ -149,7 +151,7 @@ public class AppointmentEditController {
     // AFTER CLICK SAVE VERIFY REPEAT IS VALID, IF NOT PROMPT.
     @FXML private void handleCloseButton() {
 
-        final WindowCloseType result = RepeatableAppointmentUtilities.editAppointments(appointments
+        final WindowCloseType result = RepeatableUtilities.editAppointments(appointments
                         , appointment
                         , appointmentOld
                         , repeats);

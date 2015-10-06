@@ -39,7 +39,7 @@ public class MyRepeat extends Repeat {
     protected void setKey(Integer value) { key = value; } 
     public MyRepeat withKey(Integer value) { setKey(value); return this; }
     public boolean hasKey() { return (getKey() != null); } // new Repeat has no key
-
+        
     /**
      * Reads from a XML file a collection of all repeat rules, adds them to repeats
      * @param appointmentGroups 
@@ -69,8 +69,11 @@ public class MyRepeat extends Repeat {
                     try {
                         Integer myKey = keyIterator.next();
                         nextKey = Math.max(nextKey, myKey);
-                        MyRepeat myRepeat = new MyRepeat().unmarshal((Element) myNodeList.item(n), myKey);
-                        Integer i = myRepeat.getAppointmentData().getAppointmentGroupIndex();
+                        Repeat myRepeat = new MyRepeat().unmarshal((Element) myNodeList.item(n), myKey);
+                        int i = ((MyAppointment) myRepeat.getAppointmentData()).getAppointmentGroupIndex();
+//                        Integer i = myRepeat.getAppointmentData().getAppointmentGroup().getKey();
+//                        System.out.print(" appointment goup " + i);
+//                        Integer i = myRepeat.getAppointmentData().getAppointmentGroup().;
                         myRepeat.getAppointmentData().setAppointmentGroup(appointmentGroups.get(i));
                         repeats.add(myRepeat);
                     } catch (IllegalArgumentException e2) {
@@ -150,8 +153,11 @@ public class MyRepeat extends Repeat {
         
         Element appointmentElement = (Element) myElement.getElementsByTagName("appointment").item(0);   // must be only one appointment element
         Map<String, String> appointmentAttributes = DataUtilities.getAttributes(appointmentElement, "appointment");
-        AppointmentFactory.newAppointment().unmarshal(appointmentAttributes, "Repeat appointment settings");
-//        AppointmentFactory.returnRepeatable(appointmentData).unmarshal(appointmentAttributes, "Repeat appointment settings");
+        MyAppointment appointment = AppointmentFactory.newAppointment().unmarshal(appointmentAttributes, "Repeat appointment settings");
+        setAppointmentData(appointment);
+        int i = Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", "Repeat appointment settings"));
+// PROBLEM - I DON'T HAVE THE GROUPS HERE - HOW DO I CONNECT INDEX WITH GROUPS?
+        //        AppointmentFactory.returnRepeatable(appointmentData).unmarshal(appointmentAttributes, "Repeat appointment settings");
         return this;
     }
     

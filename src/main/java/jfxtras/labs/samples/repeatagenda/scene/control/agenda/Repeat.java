@@ -39,7 +39,6 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment
  */
 public class Repeat {
     
-//    private static int nextKey = 0;
     public boolean isEmpty() { return intervalUnit.getValue() == null; }
 
     public static Period repeatPeriod = Period.ofWeeks(1);
@@ -221,14 +220,15 @@ public class Repeat {
 
     private Appointment appointmentData = AppointmentFactory.newAppointment();
     public Appointment getAppointmentData() { return appointmentData; }
-    public Repeat withAppointmentData(Appointment appointment) { appointment.copyInto(appointment); return this; }
+    public void setAppointmentData(Appointment appointment) { appointmentData = appointment; }
+    public Repeat withAppointmentData(Appointment appointment) { appointment.copyNonDateFieldsInto(appointment); return this; }
 
     /** Appointments generated from this repeat rule.  Objects are a subset of appointments in main appointments list
      * used in the Agenda calendar.  Names myAppointments to differentiate it from main name appointments */
     final private Set<Appointment> myAppointments = new HashSet<Appointment>();
     public Set<Appointment> getAppointments() { return myAppointments; }
     public Repeat withAppointments(Set<Appointment> s) { getAppointments().addAll(s); return this; }
-
+    public boolean isNew() { return getAppointments().size() <= 1; }
     /**
      * Determines if repeat rules make sense (true) or can't define a series (false)
      * Need to generate string of repeat rule
@@ -464,7 +464,8 @@ public class Repeat {
                                 .withStartLocalDateTime(myStartDateTime)
                                 .withEndLocalDateTime(myEndDateTime)
                                 .withRepeat(this)
-                                .withRepeatMade(true);
+                                .withRepeatMade(true)
+                                .withAppointmentGroup(getAppointmentData().getAppointmentGroup());
                         return appt;
                     })
                     .iterator();                                                // make iterator
@@ -473,6 +474,7 @@ public class Repeat {
             { // Process new appointments
                 final Appointment a = i.next();
                 if (a.getStartLocalDateTime().toLocalDate().isAfter(myEndDate)) break; // exit loop when at end
+//                System.out.println("add " + a.getStartLocalDateTime());
                 appointments.add(a);                                                   // add appointments to main collection
                 getAppointments().add(a);                                              // add appointments to this repeat's collection
             }
@@ -495,12 +497,42 @@ public class Repeat {
         while (i.hasNext())
         {
             final Appointment a = i.next();
-            RepeatableAppointmentUtilities.removeOne(appointments, a);
-            RepeatableAppointmentUtilities.removeOne(getAppointments(), a);
+            RepeatableUtilities.removeOne(appointments, a);
+            RepeatableUtilities.removeOne(getAppointments(), a);
         }
         return this;
     }
 
+    
+//    /**
+//     * Copies appointment data from this objects appointmentData field into the appointmentData
+//     * argument unless the data in appointmentData is unique
+//     * 
+//     * @param appointmentData
+//     * @param appointmentOld
+//     * @return
+//     */
+//    public Appointment copyAppointmentInto(Appointment appointmentData, Appointment appointmentOld) {
+//    if (appointmentData.getAppointmentGroup().equals(appointmentOld.getAppointmentGroup())) {
+//        appointmentData.setAppointmentGroup(getAppointmentData().getAppointmentGroup());            
+//    }
+//    if (appointmentData.getDescription().equals(appointmentOld.getDescription())) {
+//        appointmentData.setDescription(getAppointmentData().getDescription());            
+//    }
+////  if (appointmentData.getLocationKey().equals(appointmentOld.getLocationKey())) {
+////      appointmentData.setLocationKey(getLocationKey());
+////  }
+////  if (appointmentData.getStaffKeys().equals(appointmentOld.getStaffKeys())) {
+////      appointmentData.getStaffKeys().addAll(getStaffKeys());
+////  }
+////  if (appointmentData.getStyleKey().equals(appointmentOld.getStyleKey())) {
+////      appointmentData.setStyleKey(getStyleKey());
+////  }
+//    if (appointmentData.getSummary().equals(appointmentOld.getSummary())) {
+//        appointmentData.setSummary(getAppointmentData().getSummary());
+//    }
+//    return appointmentData;
+//}
     
     /**
      * Modifies old dates and times by a start and end TemporalAdjuster in an attempt to convert invalid
@@ -536,44 +568,13 @@ public class Repeat {
                     a.setEndLocalDateTime(newEnd);
                     if (a.isRepeatMade())
                     { // copy all changed data
-                        getAppointmentData().copyInto(a);
+                        getAppointmentData().copyNonDateFieldsInto(a);
                     } else { // copy only non-unique data
-//                        getAppointmentData().copyInto(a, appointmentOld);
-                        this.copyAppointmentInto(a, appointmentOld);
+                        getAppointmentData().copyNonDateFieldsInto(a, appointmentOld);
                     }
                 });
         updateAppointments(appointments, appointment);
     }
-    
-    /**
-     * Copies appointment data from this objects appointmentData field into the appointmentData
-     * argument unless the data in appointmentData is unique
-     * 
-     * @param appointmentData
-     * @param appointmentOld
-     * @return
-     */
-    public Appointment copyAppointmentInto(Appointment appointmentData, Appointment appointmentOld) {
-    if (appointmentData.getAppointmentGroup().equals(appointmentOld.getAppointmentGroup())) {
-        appointmentData.setAppointmentGroup(getAppointmentData().getAppointmentGroup());            
-    }
-    if (appointmentData.getDescription().equals(appointmentOld.getDescription())) {
-        appointmentData.setDescription(getAppointmentData().getDescription());            
-    }
-//  if (appointmentData.getLocationKey().equals(appointmentOld.getLocationKey())) {
-//      appointmentData.setLocationKey(getLocationKey());
-//  }
-//  if (appointmentData.getStaffKeys().equals(appointmentOld.getStaffKeys())) {
-//      appointmentData.getStaffKeys().addAll(getStaffKeys());
-//  }
-//  if (appointmentData.getStyleKey().equals(appointmentOld.getStyleKey())) {
-//      appointmentData.setStyleKey(getStyleKey());
-//  }
-    if (appointmentData.getSummary().equals(appointmentOld.getSummary())) {
-        appointmentData.setSummary(getAppointmentData().getSummary());
-    }
-    return appointmentData;
-}
     
     /**
      * Updates repeat-rule appointments with new repeat rule from startDate on.
@@ -639,6 +640,7 @@ public class Repeat {
         {
 //            if (a.getStudentKeys().isEmpty())
 //            { // DELETE EXISTING INVALID APPOINTMENT
+            System.out.println("delete " + a.getStartLocalDateTime());
                 appointments.remove(a);
                 getAppointments().remove(a);
 //            } else { // LEAVE EXISTING APPOINTMENT BECAUSE HAS ATTENDANCE
@@ -676,7 +678,7 @@ public class Repeat {
             
             if (appointmentCounter == 1)
             {
-                RepeatableAppointmentUtilities.removeOne(repeats, this);
+                RepeatableUtilities.removeOne(repeats, this);
                 if (getAppointments().size() == 1)
                 {
                     Appointment myAppointment = getAppointments().iterator().next();
@@ -975,14 +977,14 @@ public class Repeat {
         repeat.setEndAfterEvents(getEndAfterEvents());
         repeat.setEndCriteria(getEndCriteria());
         repeat.setEndOnDate(getEndOnDate());
-        getAppointmentData().copyInto(repeat.getAppointmentData());
+        getAppointmentData().copyNonDateFieldsInto(repeat.getAppointmentData());
         getAppointments().stream()
                          .forEach(a -> repeat.getAppointments().add(a));
         return repeat;
     }
     
     Appointment copyInto(Appointment a) {
-        getAppointmentData().copyInto(a);
+        getAppointmentData().copyNonDateFieldsInto(a);
         LocalDate myDate = a.getStartLocalDateTime().toLocalDate();
         a.setStartLocalDateTime(myDate.atTime(this.getStartLocalTime()));
         a.setEndLocalDateTime(myDate.atTime(this.getEndLocalTime()));
@@ -1042,23 +1044,22 @@ public class Repeat {
     {
         adjustDateTime(true, startTemporalAdjuster, endTemporalAdjuster);
     }
-   
     
-    /**
-     * Returns new Repeat object with all fields copied from input parameter myRepeat
-     * 
-     * @param myRepeat
-     * @return
-     * @throws CloneNotSupportedException
-     */
-    public static Repeat copy(Repeat myRepeat)
-    {
-//        if(!(myRepeat instanceof Cloneable)) throw new CloneNotSupportedException("Invalid cloning");
-        Repeat copyRepeat = new Repeat(myRepeat);
-//        myRepeat.copyInto(copyRepeat);
-        myRepeat.getAppointmentData().copyInto(copyRepeat.getAppointmentData());
-        return copyRepeat;
-    }
+//    /**
+//     * Returns new Repeat object with all fields copied from input parameter myRepeat
+//     * 
+//     * @param myRepeat
+//     * @return
+//     * @throws CloneNotSupportedException
+//     */
+//    public static Repeat copy(Repeat myRepeat)
+//    {
+////        if(!(myRepeat instanceof Cloneable)) throw new CloneNotSupportedException("Invalid cloning");
+//        Repeat copyRepeat = new Repeat(myRepeat);
+////        myRepeat.copyInto(copyRepeat);
+//        myRepeat.getAppointmentData().copyInto(copyRepeat.getAppointmentData());
+//        return copyRepeat;
+//    }
 
     @Override   // requires checking object property and, if not null, checking of wrapped value
     public boolean equals(Object obj) {

@@ -46,9 +46,8 @@ import javafx.util.Callback;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentImplLocal;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointmentUtilities;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointmentUtilities.WindowCloseType;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities.WindowCloseType;
 import jfxtras.util.NodeUtil;
 
 abstract class AppointmentAbstractPane extends Pane {
@@ -194,7 +193,8 @@ abstract class AppointmentAbstractPane extends Pane {
 					layoutHelp.dragPane.getChildren().add(endTimeText);
 				}
 				// we use a clone for calculating the current time during the drag
-				appointmentForDrag = new AppointmentImplLocal();
+//				appointmentForDrag = new AppointmentImplLocal();
+                appointmentForDrag = AppointmentFactory.newAppointment();
 			}
 			
 			// move the drag rectangle
@@ -260,13 +260,12 @@ abstract class AppointmentAbstractPane extends Pane {
 				handleDrag(appointment, dragPickupDateTime, dragDropDateTime);					
 				
                 // Record drag-and-drop appointment edit - by David Bal
-                WindowCloseType changeMade = RepeatableAppointmentUtilities.editAppointments
+                WindowCloseType changeMade = RepeatableUtilities.editAppointments
                         ( layoutHelp.skinnable.appointments()
                         , appointment
                         , appointmentOld
                         , layoutHelp.skinnable.repeats());
                 if (changeMade != WindowCloseType.CLOSE_WITH_CHANGE) appointmentOld.copyInto(appointment);
-
 				
 				// relayout whole week
 				layoutHelp.skin.setupAppointments();

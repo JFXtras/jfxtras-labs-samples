@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointmentUtilities.RepeatChange;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities.RepeatChange;
 
 public final class Settings {
     
@@ -60,9 +60,9 @@ public final class Settings {
         REPEAT_INTERVALS_SINGULAR.put(IntervalUnit.MONTHLY, resourcesIn.getString("month"));
         REPEAT_INTERVALS_SINGULAR.put(IntervalUnit.YEARLY, resourcesIn.getString("year"));
 
-        REPEAT_CHANGE_CHOICES.put(RepeatableAppointmentUtilities.RepeatChange.ONE, resources.getString("dialog.repeat.change.one"));
-        REPEAT_CHANGE_CHOICES.put(RepeatableAppointmentUtilities.RepeatChange.ALL, resources.getString("dialog.repeat.change.all"));
-        REPEAT_CHANGE_CHOICES.put(RepeatableAppointmentUtilities.RepeatChange.FUTURE, resources.getString("dialog.repeat.change.future"));
+        REPEAT_CHANGE_CHOICES.put(RepeatableUtilities.RepeatChange.ONE, resources.getString("dialog.repeat.change.one"));
+        REPEAT_CHANGE_CHOICES.put(RepeatableUtilities.RepeatChange.ALL, resources.getString("dialog.repeat.change.all"));
+        REPEAT_CHANGE_CHOICES.put(RepeatableUtilities.RepeatChange.FUTURE, resources.getString("dialog.repeat.change.future"));
         
     }
 
