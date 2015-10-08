@@ -41,7 +41,7 @@ public class Main extends Application {
 	    RepeatTest r = new RepeatTest();
 //	    r.test1();
 //	    System.out.println(appointmentGroups.size());
-	    r.canListWeeklyFixed2();
+	    r.makeAppointmentsMonthlyFixed();
 	    System.exit(0);
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);

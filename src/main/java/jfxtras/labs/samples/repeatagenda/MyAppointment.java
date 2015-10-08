@@ -164,7 +164,16 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
     public void setEndLocalDateTime(LocalDateTime value) { endLocalDateTime.setValue(value); }
     public MyAppointment withEndLocalDateTime(LocalDateTime value) { setEndLocalDateTime(value); return this; } 
     
-//    /** Location: */
+    @Override
+    public boolean equals(Object obj) {
+        Appointment testObj = (Appointment) obj;
+        return super.equals(obj)
+            && getStartLocalDateTime().equals(testObj.getStartLocalDateTime())
+            && getEndLocalDateTime().equals(testObj.getEndLocalDateTime())
+            && getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
+    }        
+    
+    //    /** Location: */
 //    // I'M NOT USING THESE
 //    public ObjectProperty<String> locationProperty() { return locationObjectProperty; }
 //    final private ObjectProperty<String> locationObjectProperty = new SimpleObjectProperty<String>(this, "location");

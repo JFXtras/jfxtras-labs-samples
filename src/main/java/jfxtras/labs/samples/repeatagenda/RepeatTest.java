@@ -10,14 +10,16 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 
 
 public class RepeatTest extends RepeatTestAbstract {
 
     /**
-     * Tests NextAppointment method to determine if it can return the startDate for any 
-     * earlier date.
+     * Tests nextValidDate and NextAppointment TemporalAdjuster method to determine if
+     * correct next appointment dates are returned
      */
     // Variable date tests - based on LocalDate.now()
     @Test
@@ -264,13 +266,55 @@ public class RepeatTest extends RepeatTestAbstract {
     
     // List of dates tests
     @Test
+    public void canListDailyFixed()
+    {
+        Repeat r = getRepeatDailyFixed();
+        List<LocalDate> madeDates = r.validDateStreamWithEnd()
+            .collect(Collectors.toList());
+        List<LocalDate> expectedDates = new ArrayList<LocalDate>(Arrays.asList(
+                LocalDate.of(2015, 10, 7)
+              , LocalDate.of(2015, 10, 10)
+              , LocalDate.of(2015, 10, 13)
+              , LocalDate.of(2015, 10, 16)
+              , LocalDate.of(2015, 10, 19)
+              , LocalDate.of(2015, 10, 22)
+              , LocalDate.of(2015, 10, 25)
+              , LocalDate.of(2015, 10, 28)
+              , LocalDate.of(2015, 10, 31)
+              , LocalDate.of(2015, 11, 3)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    @Test
+    public void canListWeeklyFixed()
+    {
+        Repeat r = getRepeatWeeklyFixed();
+        List<LocalDate> madeDates = r.validDateStreamEndless()
+            .limit(10)
+            .collect(Collectors.toList());
+        List<LocalDate> expectedDates = new ArrayList<LocalDate>(Arrays.asList(
+                LocalDate.of(2015, 10, 7)
+              , LocalDate.of(2015, 10, 9)
+              , LocalDate.of(2015, 10, 14)
+              , LocalDate.of(2015, 10, 16)
+              , LocalDate.of(2015, 10, 21)
+              , LocalDate.of(2015, 10, 23)
+              , LocalDate.of(2015, 10, 28)
+              , LocalDate.of(2015, 10, 30)
+              , LocalDate.of(2015, 11, 4)
+              , LocalDate.of(2015, 11, 6)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    
+    @Test
     public void canListWeeklyFixed2()
     {
         Repeat r = getRepeatWeeklyFixed2();
-        List<LocalDate> madeDates = r.validDateStream()
+        List<LocalDate> madeDates = r.validDateStreamEndless()
             .limit(r.getEndAfterEvents())
             .collect(Collectors.toList());
-        madeDates.stream().forEach(System.out::println);
+//        madeDates.stream().forEach(System.out::println);
         List<LocalDate> expectedDates = new ArrayList<LocalDate>(Arrays.asList(
                 LocalDate.of(2015, 10, 5)
               , LocalDate.of(2015, 10, 7)
@@ -323,6 +367,95 @@ public class RepeatTest extends RepeatTestAbstract {
               , LocalDate.of(2016, 5, 16)
               , LocalDate.of(2016, 5, 18)
                 ));
-        assertEquals(madeDates, expectedDates);
+        assertEquals(expectedDates, madeDates);
     }
+    @Test
+    public void canListMonthlyFixed()
+    {
+        Repeat r = getRepeatMonthlyFixed();
+        List<LocalDate> madeDates = r.validDateStreamWithEnd()
+            .collect(Collectors.toList());
+        List<LocalDate> expectedDates = new ArrayList<LocalDate>(Arrays.asList(
+                LocalDate.of(2015, 10, 7)
+              , LocalDate.of(2015, 11, 7)
+              , LocalDate.of(2015, 12, 7)
+              , LocalDate.of(2016, 1, 7)
+              , LocalDate.of(2016, 2, 7)
+              , LocalDate.of(2016, 3, 7)
+              , LocalDate.of(2016, 4, 7)
+              , LocalDate.of(2016, 5, 7)
+              , LocalDate.of(2016, 6, 7)
+              , LocalDate.of(2016, 7, 7)
+              , LocalDate.of(2016, 8, 7)
+              , LocalDate.of(2016, 9, 7)
+              , LocalDate.of(2016, 10, 7)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    @Test
+    public void canListMonthlyFixed2()
+    {
+        Repeat r = getRepeatMonthlyFixed2();
+        List<LocalDate> madeDates = r.validDateStreamWithEnd()
+            .collect(Collectors.toList());
+        List<LocalDate> expectedDates = new ArrayList<LocalDate>(Arrays.asList(
+                LocalDate.of(2015, 10, 15)
+              , LocalDate.of(2015, 11, 19)
+              , LocalDate.of(2015, 12, 17)
+              , LocalDate.of(2016, 1, 21)
+              , LocalDate.of(2016, 2, 18)
+              , LocalDate.of(2016, 3, 17)
+              , LocalDate.of(2016, 4, 21)
+              , LocalDate.of(2016, 5, 19)
+              , LocalDate.of(2016, 6, 16)
+              , LocalDate.of(2016, 7, 21)
+              , LocalDate.of(2016, 8, 18)
+              , LocalDate.of(2016, 9, 15)
+              , LocalDate.of(2016, 10, 20)
+                ));
+        assertEquals(expectedDates, madeDates);
+    }
+    @Test
+    public void canListYearlyFixed()
+    {
+        Repeat r = getRepeatYearlyFixed();
+        List<LocalDate> madeDates = r.validDateStreamEndless()
+            .limit(10)
+            .collect(Collectors.toList());
+        List<LocalDate> expectedDates = new ArrayList<LocalDate>(Arrays.asList(
+                LocalDate.of(2015, 10, 7)
+              , LocalDate.of(2016, 10, 7)
+              , LocalDate.of(2017, 10, 7)
+              , LocalDate.of(2018, 10, 7)
+              , LocalDate.of(2019, 10, 7)
+              , LocalDate.of(2020, 10, 7)
+              , LocalDate.of(2021, 10, 7)
+              , LocalDate.of(2022, 10, 7)
+              , LocalDate.of(2023, 10, 7)
+              , LocalDate.of(2024, 10, 7)
+              ));
+        assertEquals(expectedDates, madeDates);
+    }
+
+    // Make Appointments tests
+    @Test
+    public void makeAppointmentsMonthlyFixed()
+    {
+        Repeat repeat = getRepeatMonthlyFixed();
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        LocalDate startDate = LocalDate.of(2015, 11, 1);
+        LocalDate endDate = LocalDate.of(2015, 11, 7);
+        repeat.makeAppointments(appointments, startDate, endDate);
+        Appointment madeAppointment = (appointments.size() == 1) ? appointments.get(0) : null;
+        Appointment expectedAppointment = AppointmentFactory.newAppointment()
+                .withStartLocalDateTime(LocalDate.of(2015, 11, 7).atTime(8, 45))
+                .withEndLocalDateTime(LocalDate.of(2015, 11, 7).atTime(10, 15))
+                .withAppointmentGroup(appointmentGroups.get(9))
+                .withSummary("Monthly Appointment Fixed")
+                .withRepeatMade(true)
+                .withRepeat(repeat);
+        assertEquals(expectedAppointment, madeAppointment);     
+    }
+
+    
 }

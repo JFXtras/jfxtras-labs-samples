@@ -531,9 +531,6 @@ public class Agenda extends Control
             setEndZonedDateTime(v == null ? null : ZonedDateTime.of(v, ZoneId.systemDefault()));
         }
         
-        @Override   // requires checking object property and, if not null, checking of wrapped value
-        boolean equals(Object obj);
-
         /**
          * Copies all fields into parameter appointment
          * 
@@ -581,24 +578,6 @@ public class Agenda extends Control
             return appointment;
         }
         
-//        /**
-//         *  Copy's current object's fields into passed parameter
-//         *  
-//         */
-//        default Repeat copyInto(Repeat repeat) {
-//            copyNonDateFieldsInto(repeat.getAppointmentData());
-//            repeat.setStartLocalDate(getStartLocalDateTime().toLocalDate());
-//            repeat.setStartLocalTime(getStartLocalDateTime().toLocalTime());
-//            repeat.setEndLocalTime(getEndLocalDateTime().toLocalTime());
-//            DayOfWeek d = getStartLocalDateTime().getDayOfWeek();
-//            repeat.setDayOfWeek(d, true);
-//            return repeat;
-//        }
-        
-//        Appointment copyInto(Appointment copyInto);
-//        Repeat copyInto(Repeat repeat); // handled by temporaladjusters
-//        Repeat copyInto(Repeat repeat, TemporalAdjuster startTemporalAdjuster, TemporalAdjuster endTemporalAdjuster);
-
     }
 	
 	/**
@@ -658,9 +637,27 @@ public class Agenda extends Control
 		public void setAppointmentGroup(AppointmentGroup value) { appointmentGroupObjectProperty.setValue(value); }
 		public T withAppointmentGroup(AppointmentGroup value) { setAppointmentGroup(value); return (T)this; }
 
-//        private int appointmentGroupIndex;
-//        public Integer getAppointmentGroupIndex() { return appointmentGroupIndex; }
-//        public void setAppointmentGroupIndex(Integer i) { appointmentGroupIndex = i; }
+      @Override
+      public boolean equals(Object obj) {
+          Appointment testObj = (Appointment) obj;
+
+          if (obj == this) return true;
+          if((obj == null) || (obj.getClass() != getClass())) {
+              return false;
+          }
+
+          boolean descriptionEquals = (getDescription() == null)
+                  ? (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
+          boolean locationEquals = (getLocation() == null)
+                  ? (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
+          boolean summaryEquals = (getSummary() == null)
+                  ? (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
+                  System.out.println(getSummary() + " " + testObj.getSummary());
+          boolean repeatEquals = (getRepeat() == null)
+                  ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
+          System.out.println(descriptionEquals+ " " + locationEquals+ " " + summaryEquals+ " " + repeatEquals);
+          return descriptionEquals && locationEquals && summaryEquals && repeatEquals;
+      }
 	}
 	
 	/**

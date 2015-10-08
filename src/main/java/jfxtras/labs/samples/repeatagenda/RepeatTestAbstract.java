@@ -82,7 +82,7 @@ public abstract class RepeatTestAbstract {
     {
         Appointment a = new MyAppointment()
                 .withAppointmentGroup(appointmentGroups.get(15))
-                .withSummary("Daily Appointment Variable");
+                .withSummary("Daily Appointment Fixed");
         return new MyRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 7))
                 .withStartLocalTime(LocalTime.of(8, 45))
@@ -114,7 +114,7 @@ public abstract class RepeatTestAbstract {
     {
         Appointment a1 = new MyAppointment()
                 .withAppointmentGroup(appointmentGroups.get(3))
-                .withSummary("Weekly Appointment Fixed");
+                .withSummary("Weekly Appointment Fixed2");
         return new MyRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 5))
                 .withStartLocalTime(LocalTime.of(8, 45))
@@ -133,7 +133,7 @@ public abstract class RepeatTestAbstract {
     {
         Appointment a2 = new MyAppointment()
                 .withAppointmentGroup(appointmentGroups.get(9))
-                .withSummary("Monthly Appointment Variable");
+                .withSummary("Monthly Appointment Fixed");
         return new MyRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 7))
                 .withStartLocalTime(LocalTime.of(8, 45))
@@ -149,15 +149,29 @@ public abstract class RepeatTestAbstract {
     {
         Appointment a2 = new MyAppointment()
                 .withAppointmentGroup(appointmentGroups.get(9))
-                .withSummary("Monthly Appointment Variable");
+                .withSummary("Monthly Appointment Fixed2");
         return new MyRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 15))
                 .withStartLocalTime(LocalTime.of(8, 45))
                 .withEndLocalTime(LocalTime.of(10, 15))
                 .withEndCriteria(EndCriteria.ON)
-                .withEndOnDate(LocalDate.of(2016, 10, 15))
+                .withEndOnDate(LocalDate.of(2016, 10, 20))
                 .withIntervalUnit(IntervalUnit.MONTHLY)
                 .withMonthlyRepeat(MonthlyRepeat.DAY_OF_WEEK)
+                .withAppointmentData(a2);
+    }
+
+    public Repeat getRepeatYearlyFixed()
+    {
+        Appointment a2 = new MyAppointment()
+                .withAppointmentGroup(appointmentGroups.get(22))
+                .withSummary("Yearly Appointment Fixed");
+        return new MyRepeat()
+                .withStartLocalDate(LocalDate.of(2015, 10, 7))
+                .withStartLocalTime(LocalTime.of(8, 45))
+                .withEndLocalTime(LocalTime.of(10, 15))
+                .withEndCriteria(EndCriteria.NEVER)
+                .withIntervalUnit(IntervalUnit.YEARLY)
                 .withAppointmentData(a2);
     }
 }

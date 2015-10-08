@@ -97,7 +97,7 @@ public class CalendarController {
             data.getRepeats().stream().forEach(a -> a.getAppointments().clear());
             data.getRepeats().stream().forEach(a -> a
                     .makeAppointments(data.getAppointments(), startDate, endDate) // Make repeat appointments inside range
-                    .removeAppointments(data.getAppointments()));                 // remove outside range appointments
+                    .removeOutsideRangeAppointments(data.getAppointments()));                 // remove outside range appointments
             return null; // return argument for the Callback
         });
         
