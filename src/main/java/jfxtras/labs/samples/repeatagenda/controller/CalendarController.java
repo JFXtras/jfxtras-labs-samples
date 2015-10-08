@@ -30,6 +30,7 @@ import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.Agen
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepeat;
@@ -139,15 +140,15 @@ public class CalendarController {
         
         if (data.getAppointments().isEmpty())
         { // add example appointment if none read in from file
-            data.getAppointments().add(new MyAppointment()
-                    .withStartLocalDateTime(LocalDateTime.now())
-                    .withEndLocalDateTime(LocalDateTime.now().plusHours(1))
-                    .withSummary("example")
-                    .withAppointmentGroup(agenda.appointmentGroups().get(0)));
+//            data.getAppointments().add(new MyAppointment()
+//                    .withStartLocalDateTime(LocalDateTime.now())
+//                    .withEndLocalDateTime(LocalDateTime.now().plusHours(1))
+//                    .withSummary("example")
+//                    .withAppointmentGroup(agenda.appointmentGroups().get(0)));
         }
         agenda.setAppointments(data.getAppointments());
 
-        if (data.getRepeats().isEmpty())
+//        if (data.getRepeats().isEmpty())
         { // add Repeats if none read in from file
             Appointment a1 = new MyAppointment()
                     .withAppointmentGroup(agenda.appointmentGroups().get(5))
@@ -181,17 +182,17 @@ public class CalendarController {
                     .withStartLocalTime(LocalTime.now().plusHours(4))
                     .withEndLocalTime(LocalTime.now().plusHours(7))
                     .withEndCriteria(EndCriteria.AFTER)
-                    .withEndAfterEvents(5)
                     .withIntervalUnit(IntervalUnit.DAILY)
                     .withRepeatFrequency(2)
+                    .withEndAfterEvents(5)
                     .withAppointmentData(a3));
-//            Repeat r = data.getRepeats().iterator().next();
-//          System.out.println(r.getAppointmentData().getAppointmentGroup());
+            Repeat r = data.getRepeats().iterator().next();
+          System.out.println(r.getAppointmentData().getAppointmentGroup());
             data.getRepeats().stream().forEach(a -> a.collectAppointments(data.getAppointments())); // add individual appointments that have repeat rules to their Repeat objects
             data.getRepeats().stream().forEach(a -> a.makeAppointments(data.getAppointments())); // Make repeat appointments
 //            data.getAppointments().stream().forEach(a -> System.out.println(a.getAppointmentGroup()));
-//            System.out.println("here " + data.getAppointments().size());
-//            System.exit(0);
+            System.out.println("here " + data.getAppointments().size());
+            System.exit(0);
         }
         agenda.setRepeats(data.getRepeats());
     }

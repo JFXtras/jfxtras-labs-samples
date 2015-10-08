@@ -19,12 +19,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import jfxtras.labs.samples.repeatagenda.controller.CalendarController;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentIO;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 
 public class Main extends Application {
 	
+    private static ObservableList<AppointmentGroup> appointmentGroups = Agenda.DEFAULT_APPOINTMENT_GROUPS;
+
     public MyData data = new MyData();  // All data - appointments, styles, members, etc.
     
     public static void main(String[] args) {
@@ -35,7 +38,11 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
 	    
 //	    System.out.println(data.getAppointmentGroups().size());
-	    
+	    RepeatTest r = new RepeatTest();
+//	    r.test1();
+//	    System.out.println(appointmentGroups.size());
+	    r.canListWeeklyFixed2();
+	    System.exit(0);
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);
         Settings.setup(resources);

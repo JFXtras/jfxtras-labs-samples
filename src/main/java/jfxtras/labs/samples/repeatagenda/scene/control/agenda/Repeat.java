@@ -123,6 +123,7 @@ public class Repeat {
                     .with(TemporalAdjusters.firstDayOfMonth())
                     .with(TemporalAdjusters.next(dayOfWeek));
             ordinal = 0;
+            if (dayOfWeek == myDay.getDayOfWeek()) ordinal++; // add one if first day of month is correct day of week
             while (! myDay.isAfter(getStartLocalDate()))
             { // set ordinal number for day-of-week repeat
                 ordinal++;
@@ -154,13 +155,25 @@ public class Repeat {
     public ObjectProperty<EndCriteria> endCriteriaProperty() { return endCriteria; }
     public EndCriteria getEndCriteria() { return endCriteria.getValue(); }
     public void setEndCriteria(EndCriteria endCriteria) { this.endCriteria.set(endCriteria); }
-    public Repeat withEndCriteria(EndCriteria endCriteria) { setEndCriteria(endCriteria); return this; }
+//    public Repeat withEndNever() { setEndCriteria(EndCriteria.NEVER); return this; }
+    public Repeat withEndCriteria(EndCriteria endCriteria){ setEndCriteria(endCriteria); return this; }
     
     final private IntegerProperty endAfterEvents = new SimpleIntegerProperty();
     public Integer getEndAfterEvents() { return endAfterEvents.getValue(); }
     public IntegerProperty endAfterEventsProperty() { return endAfterEvents; }
-    public void setEndAfterEvents(Integer endAfterEvents) { this.endAfterEvents.set(endAfterEvents); }
-    public Repeat withEndAfterEvents(Integer endAfterEvents) { setEndAfterEvents(endAfterEvents); return this; }
+    public void setEndAfterEvents(Integer endAfterEvents) { this.endAfterEvents.set(endAfterEvents); makeEndOnDateFromEndAfterEvents(); }
+    public Repeat withEndAfterEvents(Integer endAfterEvents)
+    {
+        if (getEndCriteria() != EndCriteria.AFTER
+                || getIntervalUnit() == null
+                || getRepeatFrequency() == null)
+        {
+            throw new InvalidParameterException
+            ("endAfterEvents must be set after EndCriteria is set to AFTER and intervalUnit and repeatFrequency are set");
+        }
+        setEndAfterEvents(endAfterEvents);
+        return this;
+    }
     /**
      * find end date from start date and number of events,  Value put into endOnDate.
      */
@@ -196,7 +209,12 @@ public class Repeat {
     public ObjectProperty<LocalDate> endOnDateProperty() { return endOnDate; }
     public LocalDate getEndOnDate() { return endOnDate.getValue(); }
     public void setEndOnDate(LocalDate endOnDate) { this.endOnDate.set(endOnDate); }
-    public Repeat withEndOnDate(LocalDate endOnDate) { setEndOnDate(endOnDate); return this; }
+    public Repeat withEndOnDate(LocalDate endOnDate)
+    {
+        if (getEndCriteria() != EndCriteria.ON) throw new InvalidParameterException("EndCriteria must be set to ON before endOnDate is set");
+        setEndOnDate(endOnDate);
+        return this;
+    }
     
     private Set<LocalDate> deletedDates = new HashSet<LocalDate>();
     public Set<LocalDate> getDeletedDates() { return deletedDates; }
@@ -299,8 +317,8 @@ public class Repeat {
      */
     public enum IntervalUnit
     {
-        DAILY(Period.ofDays(1))
-      , WEEKLY(Period.ofWeeks(1))
+        DAILY(Period.ofDays(1)) // value is adjustment subtracted from start date to allow NextAppointment to find start date
+      , WEEKLY(Period.ofDays(1)) // keep as Period.ofDays(1)
       , MONTHLY(Period.ofMonths(1))
       , YEARLY(Period.ofYears(1));
         
@@ -435,6 +453,7 @@ public class Repeat {
         this.endDate = endDate;
 
         LocalDate myStartDate = nextValidDateSlow(startDate.minusDays(1));
+        System.out.println("myStartDate " + myStartDate);
         this.startDate = startDate;
         if (! myStartDate.isAfter(myEndDate))
         { // create set of appointment dates already used, to be skipped in making more
@@ -688,12 +707,12 @@ public class Repeat {
     }
     
     /**
-     * Returns a stream of valid start dates.
+     * Returns a stream of valid start dates.  Ends when endOnDate is exceeded
      * I wonder if it could be done more efficiently without the iterator.
      * 
      * @return
      */
-    public Stream<LocalDate> startDateStream()
+    public Stream<LocalDate> validDateStreamWithEnd()
     {
         List<LocalDate> startDateList = new ArrayList<LocalDate>();
         final Iterator<LocalDate> i = Stream                                            // appointment iterator
@@ -707,6 +726,18 @@ public class Repeat {
             startDateList.add(s);
         }
         return startDateList.stream();
+    }
+
+    /**
+     * Returns a stream of valid start dates.
+     * 
+     * @return
+     */
+    public Stream<LocalDate> validDateStream()
+    {
+        return Stream
+            .iterate(getStartLocalDate(), (a) -> { return a.with(new NextAppointment()); }) // infinite stream of valid dates
+            .filter(a -> ! getDeletedDates().contains(a));                             // filter out deleted dates
     }
     
     /**
@@ -885,26 +916,45 @@ public class Repeat {
      */
     public LocalDate nextValidDateSlow(LocalDate inputDate)
     {
-        LocalDate firstMatchDate = getStartLocalDate()
-                .minus(getIntervalUnit().getValue())
-                .with(new NextAppointment());
-        final Iterator<LocalDate> i = Stream                                            // appointment iterator
+        if (inputDate.isBefore(getStartLocalDate())) return getStartLocalDate();
+        //LocalDate firstMatchDate = inputDate.minus(getIntervalUnit().getValue()).with(new NextAppointment());
+        LocalDate firstMatchDate = getStartLocalDate();
+        
+        //        LocalDate firstMatchDate = (inputDate.isBefore(getStartLocalDate()))
+//                ? getStartLocalDate().minus(getIntervalUnit().getValue()).with(new NextAppointment())
+//                : inputDate.minus(getIntervalUnit().getValue()).with(new NextAppointment());
+
+//        LocalDate firstMatchDate = (getStartLocalDate().minus(getIntervalUnit().getValue()));
+//        System.out.println("firstMatchDate1() " + getStartLocalDate());
+//        LocalDate firstMatchDate = adjustedInputDate.with(new NextAppointment());
+//        LocalDate firstMatchDate = getStartLocalDate()
+//                .minus(getIntervalUnit().getValue())
+//                .with(new NextAppointment());
+//      System.out.println("firstMatchDate1() " + firstMatchDate);
+//      System.out.println("firstMatchDate2() " + getStartLocalDate().minus(getIntervalUnit().getValue()));
+//      System.out.println("firstMatchDate3() " + firstMatchDate);
+
+      final Iterator<LocalDate> i = Stream                                            // appointment iterator
                 .iterate(firstMatchDate, (a) -> { return a.with(new NextAppointment()); }) // infinite stream of valid dates
                 .filter(a -> ! getDeletedDates().contains(a))                             // filter out deleted dates
                 .iterator();                                                            // make iterator
 
         while (i.hasNext())
         { // find date
-            final LocalDate s = i.next();
-            if (! s.isBefore(inputDate)) 
+            LocalDate s = i.next();
+//            System.out.println("firstMatchDate s() " + s);
+//            if (! s.isBefore(inputDate))
+            if (s.isAfter(inputDate))
             {
-                if (s.isAfter(getStartLocalDate()))
-                {
+//                System.out.println("firstMatchDate2() " + firstMatchDate);
+
+                //                if (s.isAfter(getStartLocalDate()))
+//                {
                     return s; // exit loop when beyond date without match                    
-                } else {
+ //               } else {
 //                    throw new InvalidParameterException("nextValidDate is before StartDate - fix algorithym");
-                    return s;
-                }
+ //                   return s;
+ //               }
             }
         }
         throw new InvalidParameterException("Can't find valid date starting at " + inputDate);
@@ -1100,7 +1150,7 @@ public class Repeat {
     }
     
     /**
-     * Adjust date to become next date based on the Repeat rule
+     * Adjust date to become next date based on the Repeat rule.  Needs a input temporal on a valid date.
      * 
      * @return
      */
@@ -1109,14 +1159,20 @@ public class Repeat {
         @Override
         public Temporal adjustInto(Temporal temporal)
         {
-            LocalDate inputDate = LocalDate.from(temporal);
+//            LocalDate inputDate = LocalDate.from(temporal);
             int maxI = getRepeatFrequency();
-            if (inputDate.isBefore(getStartLocalDate()))
-            { // start no earlier than one day before startLocatDate
-                Period p = Period.between(inputDate, getStartLocalDate().minusDays(1));
-                temporal = temporal.plus(p);
-                maxI = 1;
-            }
+            // TODO - PROBLEM WITH WEEKLY REPEAT INTERVAL
+            // ONLY REPEAT AFTER WEEK IS OVER
+            // RIGHT NOW IS SKIPPING EVENTS
+//            if (! inputDate.isAfter(getStartLocalDate()))
+//            { // start no earlier than one day before startLocatDate
+//                // BROKEN - DOESN'T WORK FOR MONTHLY
+//                    // NEEDS MORE TESTING
+////                Period p = Period.between(inputDate, getStartLocalDate().minusDays(1));
+////                temporal = temporal.plus(p);
+//                maxI = 1;
+//            }
+//            System.out.println("maxI " + maxI);
             for (int i=0; i<maxI; i++)
             { // loop that counts number of valid dates for total time interval (repeatFrequency)
                 temporal = temporal.with(new TemporalAdjuster()
@@ -1131,12 +1187,14 @@ public class Repeat {
                             return temporal.plus(Period.ofDays(1));
                         case WEEKLY:
                             final DayOfWeek d1 = inputDate.plusDays(1).getDayOfWeek();
+//                            System.out.println("d1 " + d1);
                             final Iterator<DayOfWeek> daysIterator = Stream
                                 .iterate(d1, (a) ->  a.plus(1))              // infinite stream of valid days of the week
                                 .limit(7)                                    // next valid day should be found within 7 days
                                 .iterator();
                             while (daysIterator.hasNext()) {
                                 DayOfWeek d = daysIterator.next();
+//                                System.out.println(d);
                                 if (getDayOfWeek(d)) return temporal.with(TemporalAdjusters.next(d));
                             }
                             return temporal; // only happens if no day of the week are selected (true)
@@ -1144,9 +1202,11 @@ public class Repeat {
                                 switch (getMonthlyRepeat())
                                 {
                                 case DAY_OF_MONTH:
+//                                    System.out.println(temporal.plus(Period.ofMonths(1)));
                                     return temporal.plus(Period.ofMonths(1));
                                 case DAY_OF_WEEK:
                                     DayOfWeek dayOfWeek = getStartLocalDate().getDayOfWeek();
+//                                    System.out.println("ordinal " + ordinal);
                                     return temporal.plus(Period.ofMonths(1))
                                             .with(TemporalAdjusters.dayOfWeekInMonth(ordinal, dayOfWeek));
                                 }
@@ -1162,4 +1222,10 @@ public class Repeat {
         return temporal;
         }
     }
+    
+    public void testNextAppointment()
+    {
+        
+    }
+    
 }

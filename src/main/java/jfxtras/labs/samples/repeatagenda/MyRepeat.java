@@ -278,7 +278,7 @@ public class MyRepeat extends Repeat {
                 break;
             case AFTER:
                 myElement.setAttribute("endAfterEvents", getEndAfterEvents().toString());
-                if (getEndOnDate() == null) makeEndOnDateFromEndAfterEvents();  // new AFTER repeat rules need end dates calculated.
+//                if (getEndOnDate() == null) makeEndOnDateFromEndAfterEvents();  // new AFTER repeat rules need end dates calculated.
                 // fall through
             case ON:
                 myElement.setAttribute("endOnDate", getEndOnDate().toString());

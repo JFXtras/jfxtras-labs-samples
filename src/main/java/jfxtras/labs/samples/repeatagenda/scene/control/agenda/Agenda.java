@@ -35,6 +35,7 @@ import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javafx.beans.property.BooleanProperty;
@@ -178,7 +179,7 @@ public class Agenda extends Control
 		DateTimeToCalendarHelper.syncLocalDateTime(displayedCalendarObjectProperty, displayedLocalDateTimeObjectProperty, localeObjectProperty);
 
 		// appointmentGroups
-		setAppointmentGroups(constructDefaultAppointmentGroups());
+		setAppointmentGroups(DEFAULT_APPOINTMENT_GROUPS);
 		
 		// appointments
 		constructAppointments();
@@ -239,23 +240,16 @@ public class Agenda extends Control
 	public ObservableList<AppointmentGroup> appointmentGroups() { return appointmentGroups; }
 	private ObservableList<AppointmentGroup> appointmentGroups =  javafx.collections.FXCollections.observableArrayList();
     public void setAppointmentGroups(ObservableList<AppointmentGroup> appointmentGroups) { this.appointmentGroups = appointmentGroups; }
-    public static ObservableList<AppointmentGroup> constructDefaultAppointmentGroups() {
-        // setup appointment groups as predefined in the CSS
-        ObservableList<AppointmentGroup> myAppointmentGroups =  javafx.collections.FXCollections.observableArrayList();
-        IntStream
-            .iterate(0, i -> i + 1)
-            .limit(24)
-            .forEach(i -> {
-               String id = "group" + (i < 10 ? "0" : "") + i;
-               AppointmentGroupImpl appointmentGroup = new Agenda.AppointmentGroupImpl()
-	               .withStyleClass("group" + i)
-	               .withKey(i)
-	               .withDescription(id);
-               myAppointmentGroups.add(appointmentGroup);
-            });
-    return myAppointmentGroups;
-    }
-
+    public final static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
+        = javafx.collections.FXCollections.observableArrayList(
+                IntStream
+                .range(0, 23)
+                .mapToObj(i -> new Agenda.AppointmentGroupImpl()
+                       .withStyleClass("group" + i)
+                       .withKey(i)
+                       .withDescription("group" + (i < 10 ? "0" : "") + i))
+                .collect(Collectors.toList()));
+    
 	/** Locale: the locale is used to determine first-day-of-week, weekday labels, etc */
 	public ObjectProperty<Locale> localeProperty() { return localeObjectProperty; }
 	final private ObjectProperty<Locale> localeObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());

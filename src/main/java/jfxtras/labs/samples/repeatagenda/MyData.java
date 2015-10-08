@@ -16,7 +16,7 @@ public final class MyData {
     public ObservableList<Appointment> getAppointments() { return appointments; }
     
 //    private final ObservableList<AppointmentGroup> appointmentGroups = FXCollections.observableArrayList();
-    private final ObservableList<AppointmentGroup> appointmentGroups = Agenda.constructDefaultAppointmentGroups();
+    private final ObservableList<AppointmentGroup> appointmentGroups = Agenda.DEFAULT_APPOINTMENT_GROUPS;
     public ObservableList<AppointmentGroup> getAppointmentGroups() { return appointmentGroups; }
     public void setAppointmentGroups( ObservableList<AppointmentGroup> list) { appointmentGroups.addAll(list); }
 

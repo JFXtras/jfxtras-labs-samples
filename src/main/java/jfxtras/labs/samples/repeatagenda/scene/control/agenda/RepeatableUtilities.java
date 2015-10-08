@@ -149,7 +149,7 @@ public final class RepeatableUtilities {
                 break;
             case ALL:
                 myFilter = (a) -> a.getRepeat() == repeat; // predicate to filter out all appointments with repeat
-                matchingAppointments = (int) repeat.startDateStream().count();
+                matchingAppointments = (int) repeat.validDateStreamWithEnd().count();
                 matchingAppointmentsString = (repeat.getEndCriteria() == EndCriteria.NEVER)
                         ? resources.getString("infinite") : Integer.toString(matchingAppointments);
                 if (confirmDelete(resources, matchingAppointmentsString))
@@ -167,7 +167,7 @@ public final class RepeatableUtilities {
                     return ((a.getRepeat() == repeat) && (myDate.isAfter(startDate) || myDate.equals(startDate)));
                 };
                 matchingAppointments = (int) repeat
-                        .startDateStream()
+                        .validDateStreamWithEnd()
                         .filter(a -> (a.isAfter(startDate) || a.equals(startDate)))
                         .count();
                 matchingAppointmentsString = (repeat.getEndCriteria() == EndCriteria.NEVER)
@@ -181,7 +181,7 @@ public final class RepeatableUtilities {
                         case NEVER: // convert to end ON
                             repeat.setEndCriteria(EndCriteria.ON);
                             repeat.setEndOnDate(startDate.minusDays(1));
-                            repeat.makeEndAfterEventsFromEndOnDate();
+//                            repeat.makeEndAfterEventsFromEndOnDate();
                             break;
                         case AFTER: // reduce quantity by deleted quantity
                             repeat.setEndAfterEvents(repeat.getEndAfterEvents() - deletedAppointments);
@@ -316,6 +316,8 @@ public final class RepeatableUtilities {
           repeat.unbindAll();
           appointment.setRepeat(repeat);
           repeat.getAppointments().add(appointment);
+//          System.out.println(repeat.getStartLocalDate());
+//          System.exit(0);
           repeat.makeAppointments(appointments);
           appointment.copyNonDateFieldsInto(repeat.getAppointmentData()); // copy any appointment changes (i.e. description, group, location, etc)
           repeats.add(repeat);
@@ -362,10 +364,10 @@ public final class RepeatableUtilities {
                     switch (repeat.getEndCriteria())
                     {
                     case AFTER:
-                        repeat.makeEndOnDateFromEndAfterEvents();
+//                        repeat.makeEndOnDateFromEndAfterEvents();
                         break;
                     case ON:
-                        repeat.makeEndAfterEventsFromEndOnDate();
+//                        repeat.makeEndAfterEventsFromEndOnDate();
                         break;
                     case NEVER:
                         break;
@@ -443,7 +445,7 @@ public final class RepeatableUtilities {
                     {
                     case AFTER:
                         repeat.setEndAfterEvents(counter);
-                        repeat.makeEndOnDateFromEndAfterEvents();
+//                        repeat.makeEndOnDateFromEndAfterEvents();
                         break;
                     case ON:
                         repeat.makeEndAfterEventsFromEndOnDate();

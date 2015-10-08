@@ -282,10 +282,14 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
             repeat = RepeatFactory.newRepeat();
             repeat.setDefaults();
             appointment.copyNonDateFieldsInto(repeat.getAppointmentData());
+            repeat.setStartLocalDate(appointment.getStartLocalDateTime().toLocalDate());
+            repeat.setStartLocalTime(appointment.getStartLocalDateTime().toLocalTime());
+            repeat.setEndLocalTime(appointment.getEndLocalDateTime().toLocalTime());
             DayOfWeek d = appointment.getStartLocalDateTime().getDayOfWeek();
             repeat.setDayOfWeek(d, true); // set default day of week for default Weekly appointment
         }
-//        setupAppointmentBindings();
+        
+        //        setupAppointmentBindings();
 
 //        if (repeat.getEndCriteria() == EndCriteria.AFTER)
 //        {
