@@ -82,7 +82,9 @@ public abstract class RepeatTestAbstract {
     {
         Appointment a = new MyAppointment()
                 .withAppointmentGroup(appointmentGroups.get(15))
-                .withSummary("Daily Appointment Fixed");
+                .withSummary("Daily Appointment Fixed")
+                .withStartLocalDateTime(LocalDate.of(2015, 10, 7).atTime(8, 45))
+                .withEndLocalDateTime(LocalDate.of(2015, 10, 7).atTime(10, 15));
         return new MyRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 7))
                 .withStartLocalTime(LocalTime.of(8, 45))
@@ -101,8 +103,8 @@ public abstract class RepeatTestAbstract {
                 .withSummary("Weekly Appointment Fixed");
         return new MyRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 7))
-                .withStartLocalTime(LocalTime.of(8, 45))
-                .withEndLocalTime(LocalTime.of(10, 15))
+                .withStartLocalTime(LocalTime.of(18, 0))
+                .withEndLocalTime(LocalTime.of(18, 45))
                 .withEndCriteria(EndCriteria.NEVER)
                 .withIntervalUnit(IntervalUnit.WEEKLY)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)

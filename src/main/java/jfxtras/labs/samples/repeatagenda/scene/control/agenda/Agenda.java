@@ -637,14 +637,14 @@ public class Agenda extends Control
 		public void setAppointmentGroup(AppointmentGroup value) { appointmentGroupObjectProperty.setValue(value); }
 		public T withAppointmentGroup(AppointmentGroup value) { setAppointmentGroup(value); return (T)this; }
 
+	  // equals needs to be overridden by any class implementing Appointment or extending AppointmentImplBase
       @Override
       public boolean equals(Object obj) {
-          Appointment testObj = (Appointment) obj;
-
           if (obj == this) return true;
           if((obj == null) || (obj.getClass() != getClass())) {
               return false;
           }
+          Appointment testObj = (Appointment) obj;
 
           boolean descriptionEquals = (getDescription() == null)
                   ? (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
@@ -652,10 +652,9 @@ public class Agenda extends Control
                   ? (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
           boolean summaryEquals = (getSummary() == null)
                   ? (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
-                  System.out.println(getSummary() + " " + testObj.getSummary());
           boolean repeatEquals = (getRepeat() == null)
                   ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
-          System.out.println(descriptionEquals+ " " + locationEquals+ " " + summaryEquals+ " " + repeatEquals);
+System.out.println(descriptionEquals + " " + locationEquals + " " + summaryEquals + " " + repeatEquals);
           return descriptionEquals && locationEquals && summaryEquals && repeatEquals;
       }
 	}

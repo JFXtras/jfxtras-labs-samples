@@ -238,12 +238,70 @@ public class Repeat {
     /** Appointments generated from this repeat rule.  Objects are a subset of appointments in main appointments list
      * used in the Agenda calendar.  Names myAppointments to differentiate it from main name appointments */
     final private Set<Appointment> myAppointments = new HashSet<Appointment>();
+//    private Set<Appointment> myAppointments;
     public Set<Appointment> getAppointments() { return myAppointments; }
-    public Repeat withAppointments(Set<Appointment> s) { getAppointments().addAll(s); return this; }
-    public boolean isNew() { return getAppointments().size() <= 1; }
+    public Repeat withAppointments(Collection<Appointment> s) { getAppointments().addAll(s); return this; }
+//    public Repeat withAppointments(Collection<Appointment> s) {myAppointments = new HashSet<Appointment>(s); return this; }
+//    public boolean isNew() { return getAppointments().size() <= 1; }
+    public boolean isNew() { 
+        System.out.println("getAppointmentData().getStartLocalDateTime() == null " + (getAppointmentData().getStartLocalDateTime() == null));
+        return getAppointmentData().getStartLocalDateTime() == null; }
+
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (obj == this) return true;
+//        if((obj == null) || (obj.getClass() != getClass())) {
+//            return false;
+//        }
+//        Appointment testObj = (Appointment) obj;
+//
+//        boolean descriptionEquals = (getDescription() == null)
+//                ? (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
+//        boolean locationEquals = (getLocation() == null)
+//                ? (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
+//        boolean summaryEquals = (getSummary() == null)
+//                ? (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
+//        boolean repeatEquals = (getRepeat() == null)
+//                ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
+//        return descriptionEquals && locationEquals && summaryEquals && repeatEquals;
+//    }
+
+    // equals needs to be overridden by any class extending Repeat
+    @Override
+    public boolean equals(Object obj) {
+        System.out.println("reepat equals");
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        Repeat testObj = (Repeat) obj;
+                
+//        boolean descriptionEquals = (getDescription() == null)
+//                ? (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
+//        boolean locationEquals = (getLocation() == null)
+//                ? (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
+//        boolean summaryEquals = (getSummary() == null)
+//                ? (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
+//        boolean repeatEquals = (getRepeat() == null)
+//                ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
+//        return descriptionEquals && locationEquals && summaryEquals && repeatEquals;
+
+        
+        return getEndAfterEvents().equals(testObj.getEndAfterEvents())
+            && getEndCriteria() == testObj.getEndCriteria()
+            && getIntervalUnit() == testObj.getIntervalUnit()
+            && isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth()) 
+            && isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
+            && getRepeatFrequency().equals(testObj.getRepeatFrequency())
+            && dayOfWeekMapEqual(testObj.getDayOfWeekMap());
+//            && myEquals(getStartLocalDate(), testObj.getStartLocalDate())
+//            && myEquals(getStartLocalTime(), (testObj.getStartLocalTime()));
+    }
+    
     /**
      * Determines if repeat rules make sense (true) or can't define a series (false)
      * Need to generate string of repeat rule
+     * TODO - add more features
      * 
      * @return
      */
@@ -489,30 +547,6 @@ public class Repeat {
                     .filter(a -> ! usedDates.contains(a))                       // filter out dates already used
                     .filter(a -> ! getDeletedDates().contains(a))               // filter out deleted dates
                     .map(a -> {                                                 // make new appointment
-
-//                      public AppointmentImplLocal(Repeat repeat, LocalDate date)
-//                      {
-//                          repeat.getAppointmentData().copyInto(this);
-
-//                      public Repeatable copyInto(Repeatable appointmentData) {
-//                          appointmentData.setAppointmentGroup(getAppointmentGroup());
-//                          appointmentData.setDescription(getDescription());
-////                          appointmentData.setLocationKey(getLocationKey());
-////                          appointmentData.getStaffKeys().addAll(getStaffKeys());
-////                          appointmentData.setStyleKey(getStyleKey());
-//                          appointmentData.setSummary(getSummary());
-//                          return appointmentData;
-//                      }
-                      
-//                          LocalDateTime myStartDateTime = date.atTime(repeat.getStartLocalTime());
-//                          LocalDateTime myEndDateTime = date.atTime(repeat.getEndLocalTime());
-//                          
-//                          this.withStartLocalDateTime(myStartDateTime)
-//                              .withEndLocalDateTime(myEndDateTime)
-//                              .withRepeat(repeat)
-//                              .withRepeatMade(true);
-//                      }
-                        
                         LocalDateTime myStartDateTime = a.atTime(getStartLocalTime());
                         LocalDateTime myEndDateTime = a.atTime(getEndLocalTime());
                         Appointment appt = AppointmentFactory
@@ -542,7 +576,7 @@ public class Repeat {
     }
     
     /**
-     * Removes appointments that were made by this repeat rule that are now outside the startDate and endDate
+     * Removes appointments that were made by this repeat rule and are now outside the startDate and endDate
      * values (startDate and endDate are private and set by calls to makeAppointments).  Removes appointments
      * from both the input parameter appointments and this repeat object's appointments collection as well.
      * 
@@ -1133,31 +1167,14 @@ public class Repeat {
 //        return copyRepeat;
 //    }
 
-    @Override   // requires checking object property and, if not null, checking of wrapped value
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        Repeat testObj = (Repeat) obj;
-                
-        return getEndAfterEvents().equals(testObj.getEndAfterEvents())
-            && (getEndCriteria() == testObj.getEndCriteria())
-            && (getIntervalUnit() == testObj.getIntervalUnit())
-            && isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth()) 
-            && isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
-            && getRepeatFrequency().equals(testObj.getRepeatFrequency())
-            && dayOfWeekMapEqual(testObj.getDayOfWeekMap())
-            && myEquals(getStartLocalDate(), testObj.getStartLocalDate())
-            && myEquals(getStartLocalTime(), (testObj.getStartLocalTime()));
-    }
 
-    private boolean myEquals(Object o1, Object o2)
-    {
-        if ((o1 == null) && (o2 == null)) return true; // both null
-        if (o1 == null || o2 == null) return false; // one null
-        return o1.equals(o2);
-    }
+//
+//    private boolean myEquals(Object o1, Object o2)
+//    {
+//        if ((o1 == null) && (o2 == null)) return true; // both null
+//        if (o1 == null || o2 == null) return false; // one null
+//        return o1.equals(o2);
+//    }
 
 
     /**

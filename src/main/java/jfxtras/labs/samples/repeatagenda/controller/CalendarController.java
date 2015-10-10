@@ -29,6 +29,7 @@ import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.Agen
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.LocalDateTimeRange;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
@@ -82,7 +83,7 @@ public class CalendarController {
 //        }
 
         // accept new appointments
-        agenda.newAppointmentCallbackProperty().set(dateTimeRange -> AppointmentFactory.newAppointment()
+        agenda.newAppointmentCallbackProperty().set((LocalDateTimeRange dateTimeRange) -> AppointmentFactory.newAppointment()
             .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime())
             .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
             .withSummary("New")
@@ -191,8 +192,8 @@ public class CalendarController {
             data.getRepeats().stream().forEach(a -> a.collectAppointments(data.getAppointments())); // add individual appointments that have repeat rules to their Repeat objects
             data.getRepeats().stream().forEach(a -> a.makeAppointments(data.getAppointments())); // Make repeat appointments
 //            data.getAppointments().stream().forEach(a -> System.out.println(a.getAppointmentGroup()));
-            System.out.println("here " + data.getAppointments().size());
-            System.exit(0);
+//            System.out.println("here " + data.getAppointments().size());
+//            System.exit(0);
         }
         agenda.setRepeats(data.getRepeats());
     }
