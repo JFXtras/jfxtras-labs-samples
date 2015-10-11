@@ -222,6 +222,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
               , LocalDate.of(2015, 10, 28)
               , LocalDate.of(2015, 10, 31)
               , LocalDate.of(2015, 11, 3)
+              , LocalDate.of(2015, 11, 6)
                 ));
         assertEquals(expectedDates, madeDates);
     }

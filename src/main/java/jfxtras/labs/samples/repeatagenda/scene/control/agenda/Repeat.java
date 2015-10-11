@@ -269,23 +269,19 @@ public class Repeat {
     // equals needs to be overridden by any class extending Repeat
     @Override
     public boolean equals(Object obj) {
-        System.out.println("reepat equals");
         if (obj == this) return true;
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
         Repeat testObj = (Repeat) obj;
-                
-//        boolean descriptionEquals = (getDescription() == null)
-//                ? (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
-//        boolean locationEquals = (getLocation() == null)
-//                ? (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
-//        boolean summaryEquals = (getSummary() == null)
-//                ? (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
-//        boolean repeatEquals = (getRepeat() == null)
-//                ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
-//        return descriptionEquals && locationEquals && summaryEquals && repeatEquals;
 
+//        System.out.println(getEndAfterEvents() + " " + testObj.getEndAfterEvents());
+//        System.out.println( getEndAfterEvents().equals(testObj.getEndAfterEvents())
+//            + " " + (getEndCriteria() == testObj.getEndCriteria())
+//            + " " + isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth())
+//            + " " + isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
+//            + " " + getRepeatFrequency().equals(testObj.getRepeatFrequency())
+//            + " " + dayOfWeekMapEqual(testObj.getDayOfWeekMap()));
         
         return getEndAfterEvents().equals(testObj.getEndAfterEvents())
             && getEndCriteria() == testObj.getEndCriteria()

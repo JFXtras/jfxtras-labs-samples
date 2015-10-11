@@ -654,7 +654,7 @@ public class Agenda extends Control
                   ? (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
           boolean repeatEquals = (getRepeat() == null)
                   ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
-System.out.println(descriptionEquals + " " + locationEquals + " " + summaryEquals + " " + repeatEquals);
+//System.out.println(descriptionEquals + " " + locationEquals + " " + summaryEquals + " " + repeatEquals);
           return descriptionEquals && locationEquals && summaryEquals && repeatEquals;
       }
 	}

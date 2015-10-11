@@ -92,7 +92,7 @@ public abstract class RepeatTestAbstract {
                 .withIntervalUnit(IntervalUnit.DAILY)
                 .withRepeatFrequency(3)
                 .withEndCriteria(EndCriteria.AFTER)
-                .withEndAfterEvents(10)
+                .withEndAfterEvents(11)
                 .withAppointmentData(a);
     }
     

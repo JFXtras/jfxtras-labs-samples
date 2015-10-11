@@ -38,10 +38,10 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
 	    
 //	    System.out.println(data.getAppointmentGroups().size());
-	    RepeatableAppointmentEditTest r = new RepeatableAppointmentEditTest();
+	    RepeatEditTest r = new RepeatEditTest();
 //	    r.test1();
 //	    System.out.println(appointmentGroups.size());
-	    r.editRepeatableAppointmentsDaily();
+	    r.editAllDailyTimeAndDate();
 	    System.exit(0);
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);
