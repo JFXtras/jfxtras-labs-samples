@@ -10,10 +10,12 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepeat;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
 
 public abstract class RepeatTestAbstract {
 
@@ -32,7 +34,7 @@ public abstract class RepeatTestAbstract {
     
     public Repeat getRepeatWeekly()
     {
-        Appointment a1 = new MyAppointment()
+        Appointment a1 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(5))
                 .withSummary("Weekly Appointment Variable");
         return new MyRepeat()
@@ -48,7 +50,7 @@ public abstract class RepeatTestAbstract {
 
     public Repeat getRepeatMonthly()
     {
-        Appointment a2 = new MyAppointment()
+        Appointment a2 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Variable");
         return new MyRepeat()
@@ -64,7 +66,7 @@ public abstract class RepeatTestAbstract {
     
     public Repeat getRepeatDaily()
     {
-        Appointment a3 = new MyAppointment()
+        Appointment a3 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Variable");
         return new MyRepeat()
@@ -80,12 +82,12 @@ public abstract class RepeatTestAbstract {
 
     public Repeat getRepeatDailyFixed()
     {
-        Appointment a = new MyAppointment()
+        Appointment a = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(15))
-                .withSummary("Daily Appointment Fixed")
-                .withStartLocalDateTime(LocalDate.of(2015, 10, 7).atTime(8, 45))
-                .withEndLocalDateTime(LocalDate.of(2015, 10, 7).atTime(10, 15));
-        return new MyRepeat()
+                .withSummary("Daily Appointment Fixed");
+//                .withStartLocalDateTime(LocalDate.of(2015, 10, 7).atTime(8, 45))
+//                .withEndLocalDateTime(LocalDate.of(2015, 10, 7).atTime(10, 15));
+        return RepeatFactory.newRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 7))
                 .withStartLocalTime(LocalTime.of(8, 45))
                 .withEndLocalTime(LocalTime.of(10, 15))
@@ -98,10 +100,10 @@ public abstract class RepeatTestAbstract {
     
     public Repeat getRepeatWeeklyFixed()
     {
-        Appointment a1 = new MyAppointment()
+        Appointment a1 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed");
-        return new MyRepeat()
+        return RepeatFactory.newRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 7))
                 .withStartLocalTime(LocalTime.of(18, 0))
                 .withEndLocalTime(LocalTime.of(18, 45))
@@ -114,10 +116,10 @@ public abstract class RepeatTestAbstract {
     
     public Repeat getRepeatWeeklyFixed2()
     {
-        Appointment a1 = new MyAppointment()
+        Appointment a1 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed2");
-        return new MyRepeat()
+        return RepeatFactory.newRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 5))
                 .withStartLocalTime(LocalTime.of(8, 45))
                 .withEndLocalTime(LocalTime.of(10, 15))
@@ -133,10 +135,10 @@ public abstract class RepeatTestAbstract {
     
     public Repeat getRepeatMonthlyFixed()
     {
-        Appointment a2 = new MyAppointment()
+        Appointment a2 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Fixed");
-        return new MyRepeat()
+        return RepeatFactory.newRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 7))
                 .withStartLocalTime(LocalTime.of(8, 45))
                 .withEndLocalTime(LocalTime.of(10, 15))
@@ -149,10 +151,10 @@ public abstract class RepeatTestAbstract {
 
     public Repeat getRepeatMonthlyFixed2()
     {
-        Appointment a2 = new MyAppointment()
+        Appointment a2 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Fixed2");
-        return new MyRepeat()
+        return RepeatFactory.newRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 15))
                 .withStartLocalTime(LocalTime.of(8, 45))
                 .withEndLocalTime(LocalTime.of(10, 15))
@@ -165,10 +167,10 @@ public abstract class RepeatTestAbstract {
 
     public Repeat getRepeatYearlyFixed()
     {
-        Appointment a2 = new MyAppointment()
+        Appointment a2 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(22))
                 .withSummary("Yearly Appointment Fixed");
-        return new MyRepeat()
+        return RepeatFactory.newRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 7))
                 .withStartLocalTime(LocalTime.of(8, 45))
                 .withEndLocalTime(LocalTime.of(10, 15))

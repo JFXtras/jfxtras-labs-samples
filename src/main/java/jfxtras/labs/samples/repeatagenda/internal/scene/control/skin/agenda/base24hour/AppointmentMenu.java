@@ -124,17 +124,17 @@ public class AppointmentMenu extends Rectangle {
                     AppointmentIO.writeAppointmentGroups(layoutHelp.skinnable.appointmentGroups(), Settings.APPOINTMENT_GROUPS_FILE);
                 }
                 break;
-            default: // restore previous state
-                appointmentEditController.getAppointmentOld().copyInto(appointment);
-                if (appointmentEditController.getAppointmentOld().hasRepeat())
-                { // restore previous repeat
-                    appointment.getRepeat().unbindAll();
-                    appointmentEditController.getAppointmentOld().getRepeat().copyInto(appointment.getRepeat());
-                } else {
-                    System.out.println("null repeat");
-                    appointment.setRepeat(null);
-                }
-                break;
+//            default: // restore previous state
+//                appointmentEditController.getAppointmentOld().copyInto(appointment);
+//                if (appointmentEditController.getAppointmentOld().hasRepeat())
+//                { // restore previous repeat
+//                    appointment.getRepeat().unbindAll();
+//                    appointmentEditController.getAppointmentOld().getRepeat().copyInto(appointment.getRepeat());
+//                } else {
+//                    System.out.println("null repeat");
+//                    appointment.setRepeat(null);
+//                }
+//                break;
             }
             layoutHelp.skin.setupAppointments();    // refresh appointment graphics
         });

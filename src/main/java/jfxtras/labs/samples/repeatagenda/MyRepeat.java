@@ -37,10 +37,25 @@ public class MyRepeat extends Repeat {
     /** Unique number identifying this Repeat object. */
     private Integer key;
     public Integer getKey() { return key; }
-    protected void setKey(Integer value) { key = value; } 
+    void setKey(Integer value) { key = value; } 
     public MyRepeat withKey(Integer value) { setKey(value); return this; }
     public boolean hasKey() { return (getKey() != null); } // new Repeat has no key
-        
+
+    public MyRepeat() { }
+    
+    public MyRepeat(Repeat oldRepeat) {
+        if (oldRepeat != null) {
+            oldRepeat.copyInto(this);           
+        }
+    }
+    
+//    @Override
+//    public boolean equals(Object obj) {
+//        MyRepeat testObj = (MyRepeat) obj;
+//        System.out.println( "MyRepeat equals ");
+//        return super.equals(obj);
+//    }
+    
     /**
      * Reads from a XML file a collection of all repeat rules, adds them to repeats
      * @param appointmentGroups 

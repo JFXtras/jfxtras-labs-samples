@@ -448,6 +448,7 @@ public class Agenda extends Control
        void setRepeat(Repeat repeat);
        Repeat getRepeat();
        boolean hasRepeat();
+       boolean repeatFieldsEquals(Object obj);
 
        String getLocation(); // I'm not using
        void setLocation(String s);  // I'm not using
@@ -554,7 +555,7 @@ public class Agenda extends Control
             appointment.setAppointmentGroup(getAppointmentGroup());
             appointment.setDescription(getDescription());
             appointment.setSummary(getSummary());
-            appointment.setRepeat(getRepeat());
+            appointment.setRepeat(RepeatFactory.newRepeat(getRepeat()));
             return appointment;
         }
         
@@ -652,11 +653,22 @@ public class Agenda extends Control
                   ? (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
           boolean summaryEquals = (getSummary() == null)
                   ? (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
-          boolean repeatEquals = (getRepeat() == null)
-                  ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
-//System.out.println(descriptionEquals + " " + locationEquals + " " + summaryEquals + " " + repeatEquals);
-          return descriptionEquals && locationEquals && summaryEquals && repeatEquals;
+//          boolean repeatEquals = (getRepeat() == null)
+//                  ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
+          boolean appointmentGroupEquals = (getAppointmentGroup() == null)
+                  ? (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());              
+//System.out.println("agenda " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
+//System.out.println("getAppointmentGroup " + getAppointmentGroup().getKey() + " " + testObj.getAppointmentGroup().getKey());
+          return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals;
       }
+      
+      /** Checks if fields relevant for the repeat rule (non-time fields) are equal. */
+      // needs to be overridden by any class implementing Appointment or extending AppointmentImplBase
+      // Note: Location field is a problem - I think it should be removed.
+      public boolean repeatFieldsEquals(Object obj) {
+          return equals(obj);
+      }
+      
 	}
 	
 	/**

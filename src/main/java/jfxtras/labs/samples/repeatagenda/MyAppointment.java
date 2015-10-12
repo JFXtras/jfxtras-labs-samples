@@ -166,12 +166,27 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
     
     @Override
     public boolean equals(Object obj) {
-        Appointment testObj = (Appointment) obj;
+        MyAppointment testObj = (MyAppointment) obj;
+        
+//        System.out.println( "myappointment equals " +          getStartLocalDateTime() + " " + (testObj.getStartLocalDateTime())
+//            + " " + getEndLocalDateTime().equals(testObj.getEndLocalDateTime())
+//            + " " + getStartLocalDateTime().equals(testObj.getStartLocalDateTime()));
+        
         return super.equals(obj)
             && getStartLocalDateTime().equals(testObj.getStartLocalDateTime())
             && getEndLocalDateTime().equals(testObj.getEndLocalDateTime())
             && getStartLocalDateTime().equals(testObj.getStartLocalDateTime());
-    }        
+    }
+    
+    @Override
+    public boolean repeatFieldsEquals(Object obj) {
+        System.out.println("MyAppointment repeatFieldsEquals " );
+        MyAppointment testObj = (MyAppointment) obj;
+        boolean studentKeysEquals = (getStudentKeys() == null)
+                ? (testObj.getStudentKeys() == null) : getStudentKeys().equals(testObj.getStudentKeys());
+//        boolean studentKeysEquals = getStudentKeys().equals(testObj.getStudentKeys());
+        return super.equals(obj) && studentKeysEquals;
+    }
     
     //    /** Location: */
 //    // I'M NOT USING THESE
@@ -181,7 +196,7 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
 //    public void setLocation(String value) { locationObjectProperty.setValue(value); }
 //    public MyAppointment withLocation(String value) { setLocation(value); return this; } 
     
-    public MyAppointment() { }
+    public MyAppointment() { } // use factory to make new objects
     
     /**
      * Copy constructor

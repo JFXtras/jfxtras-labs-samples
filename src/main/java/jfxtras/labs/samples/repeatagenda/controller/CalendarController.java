@@ -21,9 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
-import jfxtras.labs.samples.repeatagenda.MyAppointment;
 import jfxtras.labs.samples.repeatagenda.MyData;
-import jfxtras.labs.samples.repeatagenda.MyRepeat;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaWeekSkin;
@@ -35,6 +33,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepeat;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
 import jfxtras.scene.control.LocalDatePicker;
 
 
@@ -151,10 +150,10 @@ public class CalendarController {
 
 //        if (data.getRepeats().isEmpty())
         { // add Repeats if none read in from file
-            Appointment a1 = new MyAppointment()
+            Appointment a1 = AppointmentFactory.newAppointment()
                     .withAppointmentGroup(agenda.appointmentGroups().get(5))
                     .withSummary("Weekly Appointment");
-            data.getRepeats().add(new MyRepeat()
+            data.getRepeats().add(RepeatFactory.newRepeat()
                     .withStartLocalDate(LocalDate.now())
                     .withStartLocalTime(LocalTime.now().plusHours(3))
                     .withEndLocalTime(LocalTime.now().plusHours(5))
@@ -163,10 +162,10 @@ public class CalendarController {
                     .withDayOfWeek(LocalDate.now().getDayOfWeek(), true)
                     .withDayOfWeek(LocalDate.now().plusDays(2).getDayOfWeek(), true)
                     .withAppointmentData(a1));
-            Appointment a2 = new MyAppointment()
+            Appointment a2 = AppointmentFactory.newAppointment()
                     .withAppointmentGroup(agenda.appointmentGroups().get(9))
                     .withSummary("Monthly Appointment");
-            data.getRepeats().add(new MyRepeat()
+            data.getRepeats().add(RepeatFactory.newRepeat()
                     .withStartLocalDate(LocalDate.now().minusDays(1))
                     .withStartLocalTime(LocalTime.now().minusHours(5))
                     .withEndLocalTime(LocalTime.now().minusHours(3))
@@ -175,10 +174,10 @@ public class CalendarController {
                     .withIntervalUnit(IntervalUnit.MONTHLY)
                     .withMonthlyRepeat(MonthlyRepeat.DAY_OF_MONTH)
                     .withAppointmentData(a2));
-            Appointment a3 = new MyAppointment()
+            Appointment a3 = AppointmentFactory.newAppointment()
                     .withAppointmentGroup(agenda.appointmentGroups().get(15))
                     .withSummary("Daily Appointment");
-            data.getRepeats().add(new MyRepeat()
+            data.getRepeats().add(RepeatFactory.newRepeat()
                     .withStartLocalDate(LocalDate.now().minusDays(2))
                     .withStartLocalTime(LocalTime.now().plusHours(4))
                     .withEndLocalTime(LocalTime.now().plusHours(7))

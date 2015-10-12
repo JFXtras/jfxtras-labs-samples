@@ -40,7 +40,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment
  *  
  * @author David Bal
  */
-public class Repeat {
+public abstract class Repeat {
     
     public boolean isEmpty() { return intervalUnit.getValue() == null; }
 
@@ -72,7 +72,7 @@ public class Repeat {
     final private Map<DayOfWeek, BooleanProperty> dayOfWeekMap = Arrays // Initialized map of all days of the week, each BooleanProperty is false
             .stream(DayOfWeek.values())
             .collect(Collectors.toMap(k -> k, v -> new SimpleBooleanProperty(false)));
-    protected Map<DayOfWeek, BooleanProperty> getDayOfWeekMap() { return dayOfWeekMap; }
+    public Map<DayOfWeek, BooleanProperty> getDayOfWeekMap() { return dayOfWeekMap; }
     public void setDayOfWeek(DayOfWeek d, boolean value) { getDayOfWeekMap().get(d).set(value); }
     public boolean getDayOfWeek(DayOfWeek d) { return getDayOfWeekMap().get(d).get(); }
     public BooleanProperty getDayOfWeekProperty(DayOfWeek d) { return getDayOfWeekMap().get(d); }
@@ -243,77 +243,16 @@ public class Repeat {
     public Repeat withAppointments(Collection<Appointment> s) { getAppointments().addAll(s); return this; }
 //    public Repeat withAppointments(Collection<Appointment> s) {myAppointments = new HashSet<Appointment>(s); return this; }
 //    public boolean isNew() { return getAppointments().size() <= 1; }
-    public boolean isNew() { 
-        System.out.println("getAppointmentData().getStartLocalDateTime() == null " + (getAppointmentData().getStartLocalDateTime() == null));
-        return getAppointmentData().getStartLocalDateTime() == null; }
 
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj == this) return true;
-//        if((obj == null) || (obj.getClass() != getClass())) {
-//            return false;
-//        }
-//        Appointment testObj = (Appointment) obj;
-//
-//        boolean descriptionEquals = (getDescription() == null)
-//                ? (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
-//        boolean locationEquals = (getLocation() == null)
-//                ? (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
-//        boolean summaryEquals = (getSummary() == null)
-//                ? (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
-//        boolean repeatEquals = (getRepeat() == null)
-//                ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
-//        return descriptionEquals && locationEquals && summaryEquals && repeatEquals;
-//    }
-
-    // equals needs to be overridden by any class extending Repeat
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if((obj == null) || (obj.getClass() != getClass())) {
-            return false;
-        }
-        Repeat testObj = (Repeat) obj;
-
-//        System.out.println(getEndAfterEvents() + " " + testObj.getEndAfterEvents());
-//        System.out.println( getEndAfterEvents().equals(testObj.getEndAfterEvents())
-//            + " " + (getEndCriteria() == testObj.getEndCriteria())
-//            + " " + isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth())
-//            + " " + isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
-//            + " " + getRepeatFrequency().equals(testObj.getRepeatFrequency())
-//            + " " + dayOfWeekMapEqual(testObj.getDayOfWeekMap()));
-        
-        return getEndAfterEvents().equals(testObj.getEndAfterEvents())
-            && getEndCriteria() == testObj.getEndCriteria()
-            && getIntervalUnit() == testObj.getIntervalUnit()
-            && isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth()) 
-            && isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
-            && getRepeatFrequency().equals(testObj.getRepeatFrequency())
-            && dayOfWeekMapEqual(testObj.getDayOfWeekMap());
-//            && myEquals(getStartLocalDate(), testObj.getStartLocalDate())
-//            && myEquals(getStartLocalTime(), (testObj.getStartLocalTime()));
+//    private boolean isNew = true; // new Repeat objects start set as new
+    public boolean isNew() { // return isNew(); 
+//        System.out.println("getAppointmentData().getStartLocalDateTime() == null " + (getAppointmentData().getStartLocalDateTime() == null) + " " + getAppointments().size());
+//  return getAppointmentData().getStartLocalDateTime() == null;
+        return getAppointments().size() == 0;
     }
-    
-    /**
-     * Determines if repeat rules make sense (true) or can't define a series (false)
-     * Need to generate string of repeat rule
-     * TODO - add more features
-     * 
-     * @return
-     */
-    public boolean isValid()
-    {
-        if (getIntervalUnit() == IntervalUnit.WEEKLY) {
-            if (! isWeeklyValid()) return false;
-        } else if (getIntervalUnit() == IntervalUnit.MONTHLY) {
-            if (! isMonthlyValid()) return false;
-        }
-        return true;
-    }
-    
 
     /**
-     * Default constructor
+     * Default constructor (private, so use factory)
      */
     public Repeat() { }
     
@@ -344,6 +283,74 @@ public class Repeat {
             oldRepeat.copyInto(this);           
         }
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        System.out.println("repeat equals " + (obj == this) + " " + (obj == null));
+        if (obj == this) return true;
+        if((obj == null) || (obj.getClass() != getClass())) {
+            return false;
+        }
+        Repeat testObj = (Repeat) obj;
+
+        boolean daysOfWeekEquals = true;
+        Iterator<Entry<DayOfWeek, BooleanProperty>> dayOfWeekIterator = getDayOfWeekMap().entrySet().iterator();
+        Iterator<Entry<DayOfWeek, BooleanProperty>> dayOfWeekIteratorTest = testObj.getDayOfWeekMap().entrySet().iterator();
+        while (dayOfWeekIterator.hasNext())
+        {
+            boolean dayOfWeek = dayOfWeekIterator.next().getValue().get();
+            boolean testDayOfWeek = dayOfWeekIteratorTest.next().getValue().get();
+            System.out.println("match " + dayOfWeek + " " + testDayOfWeek);
+            if (dayOfWeek != testDayOfWeek)
+            {
+                daysOfWeekEquals = false;
+                break;
+            }
+        }
+        
+//        getDayOfWeekMap().entrySet().stream().forEach(a -> System.out.println(a.getValue().get()));
+//        System.out.println("repeat ");
+//        testObj.getDayOfWeekMap().entrySet().stream().forEach(a -> System.out.println(a.getValue().get()));
+//
+//        System.out.println("end result " + daysOfWeekEquals);
+//        
+        System.out.println("repeat " + getEndAfterEvents().equals(testObj.getEndAfterEvents())
+            + " " + (getEndCriteria() == testObj.getEndCriteria())
+            + " " + isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth())
+            + " " + isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
+            + " " + getRepeatFrequency().equals(testObj.getRepeatFrequency())
+//            + " " + dayOfWeekMapEqual(testObj.getDayOfWeekMap())
+            + " " + getAppointmentData().repeatFieldsEquals(testObj.getAppointmentData())
+            + " " + daysOfWeekEquals);
+
+        return getEndAfterEvents().equals(testObj.getEndAfterEvents())
+            && getEndCriteria() == testObj.getEndCriteria()
+            && getIntervalUnit() == testObj.getIntervalUnit()
+            && isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth()) 
+            && isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
+            && getRepeatFrequency().equals(testObj.getRepeatFrequency())
+//            && dayOfWeekMapEqual(testObj.getDayOfWeekMap())
+            && getAppointmentData().repeatFieldsEquals(testObj.getAppointmentData())
+            && daysOfWeekEquals;
+    }
+    
+    /**
+     * Determines if repeat rules make sense (true) or can't define a series (false)
+     * Need to generate string of repeat rule
+     * TODO - add more features
+     * 
+     * @return
+     */
+    public boolean isValid()
+    {
+        if (getIntervalUnit() == IntervalUnit.WEEKLY) {
+            if (! isWeeklyValid()) return false;
+        } else if (getIntervalUnit() == IntervalUnit.MONTHLY) {
+            if (! isMonthlyValid()) return false;
+        }
+        return true;
+    }
+    
     
     /**
      * Default settings for a new Repeat rule, set after repeatable checkBox is checked.
@@ -566,6 +573,7 @@ public class Repeat {
                 appointments.add(a);                                                   // add appointments to main collection
                 getAppointments().add(a);                                              // add appointments to this repeat's collection
             }
+//            isNew = false; // when makeAppointments is run first time set isNew to false
         }
         
         return this;
@@ -1076,12 +1084,11 @@ public class Repeat {
         repeat.setStartLocalDate(getStartLocalDate());
         repeat.setStartLocalTime(getStartLocalTime());
         repeat.setEndLocalTime(getEndLocalTime());
-        repeat.setEndAfterEvents(getEndAfterEvents());
+        if (getEndCriteria() == EndCriteria.AFTER) repeat.setEndAfterEvents(getEndAfterEvents());
         repeat.setEndCriteria(getEndCriteria());
         repeat.setEndOnDate(getEndOnDate());
         getAppointmentData().copyNonDateFieldsInto(repeat.getAppointmentData());
-        getAppointments().stream()
-                         .forEach(a -> repeat.getAppointments().add(a));
+        getAppointments().stream().forEach(a -> repeat.getAppointments().add(a));
         return repeat;
     }
     

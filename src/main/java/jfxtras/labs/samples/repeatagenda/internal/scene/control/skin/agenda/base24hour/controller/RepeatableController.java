@@ -311,13 +311,13 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
         {
             if (newSelection) {
                 appointment.setRepeat(repeat);
-                repeat.getAppointments().add(appointment);
+//                repeat.getAppointments().add(appointment);
                 setupBindings();
                 repeatableGridPane.setDisable(false);
                 startDatePicker.setDisable(false);
             } else {
                 appointment.setRepeat(null);
-                repeat.getAppointments().remove(appointment);
+//                repeat.getAppointments().remove(appointment);
                 removeBindings();
                 repeatableGridPane.setDisable(true);
                 startDatePicker.setDisable(true);

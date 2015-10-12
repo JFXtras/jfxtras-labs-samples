@@ -41,7 +41,7 @@ public class Main extends Application {
 	    RepeatEditTest r = new RepeatEditTest();
 //	    r.test1();
 //	    System.out.println(appointmentGroups.size());
-	    r.editAllDailyTimeAndDate();
+	    r.editCancelWeeklyTimeAndDate();
 	    System.exit(0);
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);
