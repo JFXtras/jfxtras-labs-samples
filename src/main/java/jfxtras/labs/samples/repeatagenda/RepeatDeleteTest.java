@@ -99,4 +99,39 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
                 .withRepeat(repeat);
         assertEquals(expectedAppointment2, editedAppointment2); // Check to see if repeat-generated appointment changed correctly
     }
+
+    /**
+     * Tests deleting one appointment from a repeat rule
+     * @throws ParserConfigurationException 
+     */
+    @Test
+    public void deleteAllWeeklyTimeAndDate() throws ParserConfigurationException
+    {
+        Repeat repeat = getRepeatWeeklyFixed2();
+        Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
+        Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
+        LocalDate startDate = LocalDate.of(2015, 11, 1);
+        LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
+        repeat.makeAppointments(appointments, startDate, endDate);
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
+        assertEquals(3, appointments.size()); // check number of appointments
+
+        // select appointment and apply changes (should be undone with cancel)
+        Appointment selectedAppointment = appointmentIterator.next();
+        
+        WindowCloseType windowCloseType = RepeatableUtilities.deleteAppointments(
+                appointments
+              , selectedAppointment
+              , repeats
+              , a -> RepeatChange.ALL // delete one appointment
+              , a -> true             // Are you sure - true
+              , null
+              , null);
+        assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
+        assertEquals(0, appointments.size()); // check number of appointments
+        assertEquals(0, repeats.size()); // check number of repeats
+
+        System.out.println(repeat);
+    }
+
 }

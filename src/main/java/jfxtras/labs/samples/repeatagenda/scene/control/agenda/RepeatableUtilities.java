@@ -499,7 +499,9 @@ public final class RepeatableUtilities {
                     case NEVER:
                         break;
                     }
+                    System.out.println("before update " + appointments.size());
                     repeatOld.updateAppointments(appointments, appointment);
+                    System.out.println("after update " + appointments.size());
                     break;
                 case WEEKLY:
                     if (dayShift != 0)

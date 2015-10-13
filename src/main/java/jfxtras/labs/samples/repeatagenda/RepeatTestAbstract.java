@@ -89,8 +89,6 @@ public abstract class RepeatTestAbstract {
         Appointment a = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
-//                .withStartLocalDateTime(LocalDate.of(2015, 10, 7).atTime(8, 45))
-//                .withEndLocalDateTime(LocalDate.of(2015, 10, 7).atTime(10, 15));
         return RepeatFactory.newRepeat()
                 .withStartLocalDate(LocalDate.of(2015, 10, 7))
                 .withStartLocalTime(LocalTime.of(8, 45))
