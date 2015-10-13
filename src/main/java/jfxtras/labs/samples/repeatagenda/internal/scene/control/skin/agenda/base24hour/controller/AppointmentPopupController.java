@@ -14,8 +14,8 @@ import javafx.stage.Popup;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentMenu;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentUtilities;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.LayoutHelp;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
 
 /**
  * @author David Bal
@@ -65,8 +65,7 @@ public class AppointmentPopupController {
         popup.hide();
         RepeatableUtilities.deleteAppointments(layoutHelp.skinnable.appointments()
                 , appointment
-                , layoutHelp.skinnable.repeats()
-                , resources);
+                , layoutHelp.skinnable.repeats());
         layoutHelp.skin.setupAppointments();    // refresh appointment graphics
     }
     

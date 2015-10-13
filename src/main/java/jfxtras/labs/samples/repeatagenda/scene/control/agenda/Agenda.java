@@ -542,6 +542,17 @@ public class Agenda extends Control
             appointment.setEndLocalDateTime(getEndLocalDateTime());
             appointment.setStartLocalDateTime(getStartLocalDateTime());
             copyNonDateFieldsInto(appointment);
+//            Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
+//                    .stream(DayOfWeek.values())
+//                    .limit(7)
+//                    .iterator();
+//                while (dayOfWeekIterator.hasNext())
+//                {
+//                    DayOfWeek key = dayOfWeekIterator.next();
+//                    boolean b1 = this.getRepeat().getDayOfWeekMap().get(key).get();
+//                    boolean b2 = appointment.getRepeat().getDayOfWeekMap().get(key).get();
+//                    System.out.println("copied day of week2 " + key + " " + b1 + " " + b2);
+//                }
             return appointment;
         }
         
@@ -555,12 +566,23 @@ public class Agenda extends Control
             appointment.setAppointmentGroup(getAppointmentGroup());
             appointment.setDescription(getDescription());
             appointment.setSummary(getSummary());
-            appointment.setRepeat(RepeatFactory.newRepeat(getRepeat()));
+//            boolean b1 = getRepeat() == null;
+//            boolean b2 = appointment.getRepeat() == null;
+//            System.out.println("repeats " + b1 + " " + b2);
+//            if (getRepeat() == null) return appointment;
+//            if (appointment.getRepeat() == null)
+//            {
+//                appointment.setRepeat(RepeatFactory.newRepeat(getRepeat()));
+//            } else
+//            {
+//                getRepeat().copyInto(appointment.getRepeat());
+//            }
             return appointment;
         }
         
         /**
          * Copies this Appointment non-time fields into parameter appointment
+         * Used when some of fields are unique and should not be copied.
          * 
          * @param appointment
          * @return
@@ -575,7 +597,7 @@ public class Agenda extends Control
             if (appointment.getSummary().equals(appointmentOld.getSummary())) {
                 appointment.setSummary(getSummary());
             }
-            appointment.setRepeat(getRepeat());
+            getRepeat().copyInto(appointment.getRepeat());
             return appointment;
         }
         
@@ -657,8 +679,7 @@ public class Agenda extends Control
 //                  ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
           boolean appointmentGroupEquals = (getAppointmentGroup() == null)
                   ? (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());              
-//System.out.println("agenda " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
-//System.out.println("getAppointmentGroup " + getAppointmentGroup().getKey() + " " + testObj.getAppointmentGroup().getKey());
+          // System.out.println("agenda " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
           return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals;
       }
       

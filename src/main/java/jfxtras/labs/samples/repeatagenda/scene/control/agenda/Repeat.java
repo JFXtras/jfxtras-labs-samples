@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -78,19 +77,19 @@ public abstract class Repeat {
     public BooleanProperty getDayOfWeekProperty(DayOfWeek d) { return getDayOfWeekMap().get(d); }
     public Repeat withDayOfWeek(DayOfWeek d, boolean value) { setDayOfWeek(d, value); return this; }
     private boolean dayOfWeekMapEqual(Map<DayOfWeek, BooleanProperty> dayOfWeekMap2) {
-        Iterator<Entry<DayOfWeek, BooleanProperty>> i1 = getDayOfWeekMap().entrySet().stream().iterator();
-        Iterator<Entry<DayOfWeek, BooleanProperty>> i2 = dayOfWeekMap2.entrySet().stream().iterator();
-        boolean dayOfWeekEqual = true;
-        while (i1.hasNext())
+        Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
+            .stream(DayOfWeek.values())
+            .limit(7)
+            .iterator();
+        while (dayOfWeekIterator.hasNext())
         {
-            boolean b1 = i1.next().getValue().get();
-            boolean b2 = i2.next().getValue().get();
-            if (b1 != b2) {
-                dayOfWeekEqual = false;
-                break;
-            }
+            DayOfWeek key = dayOfWeekIterator.next();
+            boolean b1 = getDayOfWeekMap().get(key).get();
+            boolean b2 = dayOfWeekMap2.get(key).get();
+//            System.out.println("match " + b1 + " " + b2);
+            if (b1 != b2) return false;
         }
-        return dayOfWeekEqual;
+        return true;
     }
      
     final private BooleanProperty repeatDayOfMonth = new SimpleBooleanProperty(true); // default option
@@ -252,24 +251,25 @@ public abstract class Repeat {
     }
 
     /**
-     * Default constructor (private, so use factory)
+     * Default constructor
      */
     public Repeat() { }
     
-    /**
-     * Copy constructor that makes a new object with the parts from an Appointment copied
-     * 
-     * @param appointment
-     * @return
-     * @throws CloneNotSupportedException
-     */
-    public Repeat(Appointment appointment) {
-        this.withStartLocalDate(appointment.getStartLocalDateTime().toLocalDate())
-            .withStartLocalTime(appointment.getStartLocalDateTime().toLocalTime())
-            .withEndLocalTime(appointment.getEndLocalDateTime().toLocalTime())
-            .withAppointmentData(appointment)
-            .withDayOfWeek(appointment.getStartLocalDateTime().toLocalDate().getDayOfWeek(), true);
-    }
+//    /**
+//     * Copy constructor that makes a new object with the parts from an Appointment copied
+//     * TODO - SHOULD THIS BE REMOVED?
+//     * 
+//     * @param appointment
+//     * @return
+//     * @throws CloneNotSupportedException
+//     */
+//    public Repeat(Appointment appointment) {
+//        this.withStartLocalDate(appointment.getStartLocalDateTime().toLocalDate())
+//            .withStartLocalTime(appointment.getStartLocalDateTime().toLocalTime())
+//            .withEndLocalTime(appointment.getEndLocalDateTime().toLocalTime())
+//            .withAppointmentData(appointment)
+//            .withDayOfWeek(appointment.getStartLocalDateTime().toLocalDate().getDayOfWeek(), true);
+//    }
     
     /**
      * Copy constructor that makes a new object with the parts from an Appointment copied
@@ -280,48 +280,76 @@ public abstract class Repeat {
      */
     public Repeat(Repeat oldRepeat) {
         if (oldRepeat != null) {
-            oldRepeat.copyInto(this);           
+            oldRepeat.copyInto(this);
         }
     }
+
+    /**
+     * Copy's current object's fields into passed parameter
+     * 
+     * @param repeat
+     * @return
+     * @throws CloneNotSupportedException
+     */
+    public Repeat copyInto(Repeat repeat) {
+        repeat.setIntervalUnit(getIntervalUnit());
+        repeat.setRepeatDayOfMonth(isRepeatDayOfMonth());
+        repeat.setRepeatDayOfWeek(isRepeatDayOfWeek());
+        repeat.setRepeatFrequency(getRepeatFrequency());
+        getDayOfWeekMap().entrySet()
+                         .stream()
+                         .forEach(a -> {
+                             DayOfWeek d = a.getKey();
+                             boolean value = a.getValue().get();
+                             repeat.setDayOfWeek(d, value);   
+                         });
+        repeat.setDeletedDates(getDeletedDates());
+        repeat.setStartLocalDate(getStartLocalDate());
+        repeat.setStartLocalTime(getStartLocalTime());
+        repeat.setEndLocalTime(getEndLocalTime());
+        if (getEndCriteria() == EndCriteria.AFTER) repeat.setEndAfterEvents(getEndAfterEvents());
+        repeat.setEndCriteria(getEndCriteria());
+        repeat.setEndOnDate(getEndOnDate());
+//        getAppointmentData().copyNonDateFieldsInto(repeat.getAppointmentData());
+        getAppointments().stream().forEach(a -> repeat.getAppointments().add(a));
+        return repeat;
+    }
+    
+//    Appointment copyInto(Appointment a) {
+//        getAppointmentData().copyNonDateFieldsInto(a);
+//        LocalDate myDate = a.getStartLocalDateTime().toLocalDate();
+//        a.setStartLocalDateTime(myDate.atTime(this.getStartLocalTime()));
+//        a.setEndLocalDateTime(myDate.atTime(this.getEndLocalTime()));
+//        return a;
+//    }
     
     @Override
     public boolean equals(Object obj) {
-        System.out.println("repeat equals " + (obj == this) + " " + (obj == null));
+//        System.out.println("repeat equals " + (obj == this) + " " + (obj == null));
         if (obj == this) return true;
         if((obj == null) || (obj.getClass() != getClass())) {
             return false;
         }
         Repeat testObj = (Repeat) obj;
 
-        boolean daysOfWeekEquals = true;
-        Iterator<Entry<DayOfWeek, BooleanProperty>> dayOfWeekIterator = getDayOfWeekMap().entrySet().iterator();
-        Iterator<Entry<DayOfWeek, BooleanProperty>> dayOfWeekIteratorTest = testObj.getDayOfWeekMap().entrySet().iterator();
-        while (dayOfWeekIterator.hasNext())
-        {
-            boolean dayOfWeek = dayOfWeekIterator.next().getValue().get();
-            boolean testDayOfWeek = dayOfWeekIteratorTest.next().getValue().get();
-            System.out.println("match " + dayOfWeek + " " + testDayOfWeek);
-            if (dayOfWeek != testDayOfWeek)
-            {
-                daysOfWeekEquals = false;
-                break;
-            }
-        }
-        
-//        getDayOfWeekMap().entrySet().stream().forEach(a -> System.out.println(a.getValue().get()));
-//        System.out.println("repeat ");
-//        testObj.getDayOfWeekMap().entrySet().stream().forEach(a -> System.out.println(a.getValue().get()));
-//
-//        System.out.println("end result " + daysOfWeekEquals);
-//        
-        System.out.println("repeat " + getEndAfterEvents().equals(testObj.getEndAfterEvents())
-            + " " + (getEndCriteria() == testObj.getEndCriteria())
-            + " " + isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth())
-            + " " + isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
-            + " " + getRepeatFrequency().equals(testObj.getRepeatFrequency())
-//            + " " + dayOfWeekMapEqual(testObj.getDayOfWeekMap())
-            + " " + getAppointmentData().repeatFieldsEquals(testObj.getAppointmentData())
-            + " " + daysOfWeekEquals);
+//      Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
+//          .stream(DayOfWeek.values())
+//          .limit(7)
+//          .iterator();
+//      while (dayOfWeekIterator.hasNext())
+//      {
+//          DayOfWeek key = dayOfWeekIterator.next();
+//          boolean b1 = getDayOfWeekMap().get(key).get();
+//          boolean b2 = testObj.getDayOfWeekMap().get(key).get();
+//          System.out.println("day of week " + key + " " + b1 + " " + b2);
+//      }
+//        System.out.println("repeat " + getEndAfterEvents().equals(testObj.getEndAfterEvents())
+//            + " " + (getEndCriteria() == testObj.getEndCriteria())
+//            + " " + isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth())
+//            + " " + isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
+//            + " " + getRepeatFrequency().equals(testObj.getRepeatFrequency())
+//            + " " + getAppointmentData().repeatFieldsEquals(testObj.getAppointmentData())
+//            + " " + dayOfWeekMapEqual(testObj.getDayOfWeekMap()));
 
         return getEndAfterEvents().equals(testObj.getEndAfterEvents())
             && getEndCriteria() == testObj.getEndCriteria()
@@ -329,9 +357,8 @@ public abstract class Repeat {
             && isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth()) 
             && isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
             && getRepeatFrequency().equals(testObj.getRepeatFrequency())
-//            && dayOfWeekMapEqual(testObj.getDayOfWeekMap())
             && getAppointmentData().repeatFieldsEquals(testObj.getAppointmentData())
-            && daysOfWeekEquals;
+            && dayOfWeekMapEqual(testObj.getDayOfWeekMap());
     }
     
     /**
@@ -744,7 +771,7 @@ public abstract class Repeat {
         {
 //            if (a.getStudentKeys().isEmpty())
 //            { // DELETE EXISTING INVALID APPOINTMENT
-            System.out.println("delete " + a.getStartLocalDateTime());
+//            System.out.println("delete " + a.getStartLocalDateTime());
                 appointments.remove(a);
                 getAppointments().remove(a);
 //            } else { // LEAVE EXISTING APPOINTMENT BECAUSE HAS ATTENDANCE
@@ -775,6 +802,7 @@ public abstract class Repeat {
             while (i.hasNext())
             { // find date
                 final LocalDate s = i.next();
+//                System.out.println("getEndOnDate() " + getEndOnDate() + " " + getEndCriteria());
                 if (s.isAfter(getEndOnDate())) break; // exit loop when beyond date without match
                 if (appointmentCounter > 1) break;
                 appointmentCounter++;
@@ -1058,46 +1086,6 @@ public abstract class Repeat {
   
           getAppointments().stream()
                            .forEach(a -> a.setRepeat(this));
-    }
-    
-
-    /**
-     * Copy's current object's fields into passed parameter
-     * 
-     * @param repeat
-     * @return
-     * @throws CloneNotSupportedException
-     */
-    public Repeat copyInto(Repeat repeat) {
-        repeat.setIntervalUnit(getIntervalUnit());
-        repeat.setRepeatDayOfMonth(isRepeatDayOfMonth());
-        repeat.setRepeatDayOfWeek(isRepeatDayOfWeek());
-        repeat.setRepeatFrequency(getRepeatFrequency());
-        getDayOfWeekMap().entrySet()
-                              .stream()
-                              .forEach(a -> {
-                                  DayOfWeek d = a.getKey();
-                                  boolean value = a.getValue().get();
-                                  repeat.setDayOfWeek(d, value);   
-                              });
-        repeat.setDeletedDates(getDeletedDates());
-        repeat.setStartLocalDate(getStartLocalDate());
-        repeat.setStartLocalTime(getStartLocalTime());
-        repeat.setEndLocalTime(getEndLocalTime());
-        if (getEndCriteria() == EndCriteria.AFTER) repeat.setEndAfterEvents(getEndAfterEvents());
-        repeat.setEndCriteria(getEndCriteria());
-        repeat.setEndOnDate(getEndOnDate());
-        getAppointmentData().copyNonDateFieldsInto(repeat.getAppointmentData());
-        getAppointments().stream().forEach(a -> repeat.getAppointments().add(a));
-        return repeat;
-    }
-    
-    Appointment copyInto(Appointment a) {
-        getAppointmentData().copyNonDateFieldsInto(a);
-        LocalDate myDate = a.getStartLocalDateTime().toLocalDate();
-        a.setStartLocalDateTime(myDate.atTime(this.getStartLocalTime()));
-        a.setEndLocalDateTime(myDate.atTime(this.getEndLocalTime()));
-        return a;
     }
     
     /**

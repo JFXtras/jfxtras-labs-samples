@@ -40,6 +40,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.DataUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 
 public class MyAppointment extends AppointmentImplBase<MyAppointment> implements Appointment {
@@ -180,7 +181,7 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
     
     @Override
     public boolean repeatFieldsEquals(Object obj) {
-        System.out.println("MyAppointment repeatFieldsEquals " );
+//        System.out.println("MyAppointment repeatFieldsEquals " );
         MyAppointment testObj = (MyAppointment) obj;
         boolean studentKeysEquals = (getStudentKeys() == null)
                 ? (testObj.getStudentKeys() == null) : getStudentKeys().equals(testObj.getStudentKeys());
@@ -204,6 +205,7 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
      * @param appointment
      */
     public MyAppointment(Appointment appointment) {
+        setRepeat(RepeatFactory.newRepeat(appointment.getRepeat()));
         appointment.copyInto(this);
     }
     
@@ -370,7 +372,7 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
     
     
     /**
-     * extracts this class's fields from map of attributes
+     * Unmarshalls a MyAppointment object from a Map<String,String> of appointmentAttributes
      * @param myKey 
      */
     public Appointment unmarshal(Map<String, String> appointmentAttributes, Integer expectedKey, String errorMessage)

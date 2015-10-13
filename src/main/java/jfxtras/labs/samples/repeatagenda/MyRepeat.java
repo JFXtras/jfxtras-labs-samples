@@ -45,16 +45,28 @@ public class MyRepeat extends Repeat {
     
     public MyRepeat(Repeat oldRepeat) {
         if (oldRepeat != null) {
-            oldRepeat.copyInto(this);           
+            // Copy any MyRepeat specific fields first
+            oldRepeat.copyInto(this);
+
+//            Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
+//                    .stream(DayOfWeek.values())
+//                    .limit(7)
+//                    .iterator();
+//            while (dayOfWeekIterator.hasNext())
+//            {
+//                DayOfWeek key = dayOfWeekIterator.next();
+//                boolean b1 = this.getDayOfWeekMap().get(key).get();
+//                System.out.println("copied day of week " + key + " " + b1);
+//            }
         }
     }
     
-//    @Override
-//    public boolean equals(Object obj) {
-//        MyRepeat testObj = (MyRepeat) obj;
-//        System.out.println( "MyRepeat equals ");
-//        return super.equals(obj);
-//    }
+    @Override
+    public boolean equals(Object obj) {
+        MyRepeat testObj = (MyRepeat) obj;
+        // Add any equal tests for MyRepeat fields
+        return super.equals(obj);
+    }
     
     /**
      * Reads from a XML file a collection of all repeat rules, adds them to repeats

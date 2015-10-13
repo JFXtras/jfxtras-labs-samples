@@ -3,6 +3,7 @@ package jfxtras.labs.samples.repeatagenda;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -18,9 +19,12 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepe
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
 
 public abstract class RepeatTestAbstract {
-
-//    private static ObservableList<AppointmentGroup> appointmentGroups = Agenda.DEFAULT_APPOINTMENT_GROUPS;
-
+    
+    // Comparator for tree sort
+    private final Comparator<Appointment> appointmentComparator = (a1, a2)
+            -> a1.getStartLocalDateTime().compareTo(a2.getStartLocalDateTime());
+    public final Comparator<Appointment> getAppointmentComparator() { return appointmentComparator; }
+    
     public final static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
     = javafx.collections.FXCollections.observableArrayList(
             IntStream
