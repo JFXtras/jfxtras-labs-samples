@@ -417,7 +417,7 @@ public final class RepeatableUtilities {
                         break;
                     }
 //                    System.out.println("before " + repeat.getStartLocalDate() + " " + repeat.getStartLocalTime());
-                    repeat.adjustDateTime(startTemporalAdjuster, endTemporalAdjuster);
+                    repeat.adjustDateTime(true, startTemporalAdjuster, endTemporalAdjuster);
 //                    System.out.println("after " + repeat.getStartLocalDate() + " " + repeat.getStartLocalTime());
                     break;
                 case WEEKLY:
@@ -429,16 +429,21 @@ public final class RepeatableUtilities {
                         repeat.setDayOfWeek(dayOfWeekOld, false);
                         repeat.setDayOfWeek(dayOfWeekNew, true);
                     }
-                    boolean adjustStartDate = dayShift == 0;
+//                    boolean adjustStartDate = dayShift == 0;
+                    boolean adjustStartDate = startDate.equals(repeat.getStartLocalDate());
+//                    System.out.println("startDateOld " + startDateOld + " " + startDate);
                     repeat.adjustDateTime(adjustStartDate, startTemporalAdjuster, endTemporalAdjuster);
                 }
+                System.out.println("size1 " + appointments.size());
                 repeat.updateAppointments(appointments, appointment, appointmentOld
                         , startTemporalAdjuster, endTemporalAdjuster);
+                System.out.println("size2 " + appointments.size());
                 writeRepeats = true;
                 break;
             case FUTURE:
                 repeat.unbindAll();
                 // Copy changes to repeat  (i.e. description, group, location, etc)
+                repeat.setStartLocalDate(startDate);
                 if (appointment.isRepeatMade())
                 { // copy all appointment changes
                     appointment.copyNonDateFieldsInto(repeat.getAppointmentData());
@@ -480,28 +485,38 @@ public final class RepeatableUtilities {
                 
                 // Modify start and end date for repeat and repeatOld.  Adjust IntervalUnit specific data
                 repeatOld.setEndCriteria(EndCriteria.ON);
-                repeatOld.setEndOnDate(startDate.minusDays(1));
+                repeatOld.setEndAfterEvents(null); // criteria changed to ON so null endAfterEvents
+                repeatOld.setEndOnDate(startDate.minusDays(1)); //TODO - NEED TO SET TO LAST VALID DATE
+                repeatOld.setEndOnDate(repeatOld.previousValidDate(startDateOld));
+                boolean adjustStartDate;
                 switch (repeat.getIntervalUnit())
                 {
                 case DAILY: // fall through
                 case MONTHLY: // fall through
                 case YEARLY:
-                    repeat.adjustDateTime(startTemporalAdjuster, endTemporalAdjuster);
-                    switch (repeat.getEndCriteria())
-                    {
-                    case AFTER:
-                        repeat.setEndAfterEvents(counter);
-//                        repeat.makeEndOnDateFromEndAfterEvents();
-                        break;
-                    case ON:
-                        repeat.makeEndAfterEventsFromEndOnDate();
-                        break;
-                    case NEVER:
-                        break;
-                    }
-                    System.out.println("before update " + appointments.size());
+//                    adjustStartDate = startDate.equals(repeat.getStartLocalDate());
+                    repeat.adjustDateTime(false, startTemporalAdjuster, endTemporalAdjuster);
+                    if (repeat.getEndCriteria() != EndCriteria.NEVER) repeat.makeEndAfterEventsFromEndOnDate();
+//                    switch (repeat.getEndCriteria())
+//                    {
+//                    case AFTER:
+////                        repeat.setEndAfterEvents(counter);
+////                        repeat.makeEndOnDateFromEndAfterEvents();
+//                        repeat.makeEndAfterEventsFromEndOnDate();
+//                        break;
+//                    case ON:
+//                        repeat.makeEndAfterEventsFromEndOnDate();
+//                        break;
+//                    case NEVER:
+//                        break;
+//                    }
+//                    System.out.println("start list");
+//                    appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//                    System.out.println("before update " + appointments.size());
                     repeatOld.updateAppointments(appointments, appointment);
-                    System.out.println("after update " + appointments.size());
+//                    appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//                    System.out.println("after update " + appointments.size());
+//                    System.out.println(repeat);
                     break;
                 case WEEKLY:
                     if (dayShift != 0)
@@ -511,11 +526,18 @@ public final class RepeatableUtilities {
                         repeat.setDayOfWeek(dayOfWeekOld, false);
                         repeat.setDayOfWeek(dayOfWeekNew, true);
                     }
-                    repeat.adjustDateTime(startTemporalAdjuster, endTemporalAdjuster);
+//                    adjustStartDate = startDate.equals(repeat.getStartLocalDate());
+                    repeat.adjustDateTime(false, startTemporalAdjuster, endTemporalAdjuster);
                 }
+                if (repeat.getEndCriteria() != EndCriteria.NEVER) repeat.makeEndAfterEventsFromEndOnDate();
                 repeat.updateAppointments(appointments, appointment, appointmentOld
                         , startTemporalAdjuster, endTemporalAdjuster);
                 repeats.add(repeatOld);
+//                appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+//                System.out.println("after update2 " + appointments.size());
+//                System.out.println("repeatOld.getEndOnDate() " + repeatOld.getEndOnDate() + " " + repeatOld.getStartLocalDate());
+//                System.out.println("repeat.getEndOnDate() " + repeat.getEndOnDate() + " " + repeat.getStartLocalDate());
+//              System.exit(0);                
                 writeRepeats = true;
                 if (repeatOld.oneAppointmentToIndividual(repeats, appointments)) writeAppointments = true;  // Check if any repeats have only one appointment and should become individual
                 break;

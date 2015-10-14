@@ -185,7 +185,6 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
         MyAppointment testObj = (MyAppointment) obj;
         boolean studentKeysEquals = (getStudentKeys() == null)
                 ? (testObj.getStudentKeys() == null) : getStudentKeys().equals(testObj.getStudentKeys());
-//        boolean studentKeysEquals = getStudentKeys().equals(testObj.getStudentKeys());
         return super.equals(obj) && studentKeysEquals;
     }
     

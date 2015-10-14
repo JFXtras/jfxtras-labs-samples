@@ -679,7 +679,7 @@ public class Agenda extends Control
 //                  ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
           boolean appointmentGroupEquals = (getAppointmentGroup() == null)
                   ? (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());              
-          // System.out.println("agenda " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
+           System.out.println("agenda " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
           return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals;
       }
       
