@@ -189,7 +189,7 @@ public class CalendarController {
             Repeat r = data.getRepeats().iterator().next();
           System.out.println(r.getAppointmentData().getAppointmentGroup());
             data.getRepeats().stream().forEach(a -> a.collectAppointments(data.getAppointments())); // add individual appointments that have repeat rules to their Repeat objects
-            data.getRepeats().stream().forEach(a -> a.makeAppointments(data.getAppointments())); // Make repeat appointments
+            data.getRepeats().stream().forEach(a -> a.makeAppointments(data.getAppointments(), startDate, endDate)); // Make repeat appointments
 //            data.getAppointments().stream().forEach(a -> System.out.println(a.getAppointmentGroup()));
 //            System.out.println("here " + data.getAppointments().size());
 //            System.exit(0);

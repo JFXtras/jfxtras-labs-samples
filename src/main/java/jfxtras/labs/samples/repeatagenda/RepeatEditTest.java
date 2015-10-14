@@ -642,10 +642,6 @@ public class RepeatEditTest extends RepeatTestAbstract {
               , null
               , null);
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
-//        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
-//        System.out.println(repeat);
-//        System.out.println("repeat.getEndOnDate() " + repeat.getEndOnDate() + " " + repeat.getStartLocalDate());
-//        System.exit(0);
         assertEquals(3, appointments.size()); // check number of appointments
 
         // Check Repeat (with changes)
@@ -719,6 +715,6 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withRepeatMade(true)
                 .withRepeat(repeat);
         assertEquals(expectedAppointment3, editedAppointment3); // Check to see if repeat-generated appointment changed correctly
-
     }
+
 }

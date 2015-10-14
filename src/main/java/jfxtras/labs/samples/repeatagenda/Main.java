@@ -3,6 +3,7 @@ package jfxtras.labs.samples.repeatagenda;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -76,7 +77,7 @@ public class Main extends Application {
         AppointmentFactory.readFromFile(appointmentsPath, data.getAppointmentGroups(), data.getAppointments());
 //        MyAppointment.readFromFile(appointmentsPath.toFile(), appointmentGroups, data.getAppointments());
         data.getRepeats().stream().forEach(a -> a.collectAppointments(data.getAppointments())); // add individual appointments that have repeat rules to their Repeat objects
-        data.getRepeats().stream().forEach(a -> a.makeAppointments(data.getAppointments())); // Make repeat appointments
+        data.getRepeats().stream().forEach(a -> a.makeAppointments(data.getAppointments(), LocalDate.now().minusWeeks(1), LocalDate.now().plusWeeks(1))); // Make repeat appointments (using default of one week before and one week after today - TODO - get dates from Agenda and make exact initial appointments)
  
         // TODO - ADD SOME HARD CODED REPEATS AND APPOINTMENTS IF NONE FROM FILE
         

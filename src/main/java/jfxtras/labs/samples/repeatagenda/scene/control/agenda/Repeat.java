@@ -541,18 +541,33 @@ public abstract class Repeat {
      * @param appointments
      * @return
      */
-    public Repeat makeAppointments(Collection<Appointment> appointments)
-    {
-//        if (startDate == null) startDate = LocalDate.now().minusWeeks(1);
-//        if (endDate == null) endDate = LocalDate.now().plusWeeks(1);
-        return makeAppointments(appointments, startDate, endDate);
-    }
+//    public Repeat makeAppointments(Collection<Appointment> appointments)
+//    {
+////        if (startDate == null) startDate = LocalDate.now().minusWeeks(1);
+////        if (endDate == null) endDate = LocalDate.now().plusWeeks(1);
+//        return makeAppointments(appointments, startDate, endDate);
+//    }
 
     /**
      * Make appointments that should exist between startDate and endDate based on Repeat rules.
      * Adds those appointments to the input parameter appointments Collection.
      * Doesn't make Appointment for dates that are already represented as individual appointments
      * as specified in usedDates.
+     * Uses startDate and endDate set from previous makeAppointments or updateAppointments calls
+     * 
+     * @param appointments
+     * @return
+     */
+    public Repeat makeAppointments(Collection<Appointment> appointments)
+    {
+        return makeAppointments(appointments, startDate, endDate); // use current startDate and endDate
+    }
+    /**
+     * Make appointments that should exist between startDate and endDate based on Repeat rules.
+     * Adds those appointments to the input parameter appointments Collection.
+     * Doesn't make Appointment for dates that are already represented as individual appointments
+     * as specified in usedDates.
+     * sets startDate and endDate to private fields
      * 
      * @param appointments
      * @param startDate
@@ -622,6 +637,29 @@ public abstract class Repeat {
      * Removes appointments that were made by this repeat rule and are now outside the startDate and endDate
      * values (startDate and endDate are private and set by calls to makeAppointments).  Removes appointments
      * from both the input parameter appointments and this repeat object's appointments collection as well.
+     * Sets private fields startDate and endDate with parameters.
+     * 
+     * @param appointments
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public Repeat removeOutsideRangeAppointments(Collection<Appointment> appointments
+            , LocalDate startDate
+            , LocalDate endDate)
+    {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        return removeOutsideRangeAppointments(appointments);
+    }
+    /**
+     * Used for removing repeat-generated appointments that are no longer in range for the display of Agenda.
+     * Removes appointments that were made by this repeat rule and are now outside the startDate and endDate
+     * values (startDate and endDate are private and set by calls to makeAppointments).  Removes appointments
+     * from both the input parameter appointments and this repeat object's appointments collection as well.
+     * 
+     * Uses private fields startDate and endDate for date ranges.  Must be previously set from a makeAppointments,
+     * updateAppointments, or removeOutsideRangeAppointments call with those parameters present.
      * 
      * @param appointments
      * @return
@@ -720,8 +758,8 @@ public abstract class Repeat {
     }
     
     /**
-     * Updates repeat-rule appointments with new repeat rule from startDate on.
-     * Deletes repeat-rule generated appointments that don't meet the current repeat rule.
+     * Used when editing a repeating appointment.  Updates repeat-rule appointments with new repeat rule from
+     * startDate on.  Deletes repeat-rule generated appointments that don't meet the current repeat rule.
      * Changes the attached Repeat for non-repeat generated appointments that are now invalid to null (prevents them
      * from being deleted)
      * Adds new repeat-rule appointments as needed
@@ -730,8 +768,10 @@ public abstract class Repeat {
      * @param appointment: already modified appointment
      * @return
      */
-    public void updateAppointments(Collection<Appointment> appointments, Appointment appointment)
+    public void updateAppointments(Collection<Appointment> appointments
+            , Appointment appointment)
     {
+        // Identify invalid repeat appointments
         final LocalDateTime firstDateTime = getStartLocalDate().atTime(getStartLocalTime());
         final Iterator<LocalDateTime> validDateTimeIterator = Stream                      // iterator
                 .iterate(firstDateTime, (d) -> { return d.with(new NextAppointment()); }) // generate infinite stream of valid dates
@@ -788,7 +828,7 @@ public abstract class Repeat {
 //                getAppointmentData().copyInto(a);
 //            }
         }
-        makeAppointments(appointments, startDate, endDate); // add any new appointments needed
+        makeAppointments(appointments); // add any new appointments needed
         
         if (writeAppointmentsNeeded || writeAppointmentsNeeded2) AppointmentFactory.writeToFile(appointments);
     }

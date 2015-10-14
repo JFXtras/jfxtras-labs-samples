@@ -81,7 +81,7 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         Appointment expectedAppointment1 = AppointmentFactory.newAppointment()
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 16).atTime(18, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 16).atTime(18, 45))
-                .withAppointmentGroup(appointmentGroups.get(9))
+                .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed")
                 .withRepeatMade(true)
                 .withRepeat(repeat);
@@ -91,10 +91,65 @@ public class RepeatMakeAppointmentsTest extends RepeatTestAbstract {
         Appointment expectedAppointment2 = AppointmentFactory.newAppointment()
                 .withStartLocalDateTime(LocalDate.of(2015, 12, 18).atTime(18, 0))
                 .withEndLocalDateTime(LocalDate.of(2015, 12, 18).atTime(18, 45))
-                .withAppointmentGroup(appointmentGroups.get(9))
+                .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed")
                 .withRepeatMade(true)
                 .withRepeat(repeat);
         assertEquals(expectedAppointment2, madeAppointment2);     
+    }
+    
+    /**
+     * Tests changing start and end date to see appointments get deleted and restored
+     * Also confirms doesn't make appointments when outside repeat rule range
+     */
+    @Test
+    public void makeAppointmentsMonthly3()
+    {
+        Repeat repeat = getRepeatMonthlyFixed2();
+        List<Appointment> appointments = new ArrayList<Appointment>();
+        LocalDate startDate = LocalDate.of(2015, 12, 13);
+        LocalDate endDate = LocalDate.of(2015, 12, 19);
+        repeat.makeAppointments(appointments, startDate, endDate);
+        Appointment madeAppointment = (appointments.size() == 1) ? appointments.get(0) : null;
+        Appointment expectedAppointment = AppointmentFactory.newAppointment()
+                .withStartLocalDateTime(LocalDate.of(2015, 12, 17).atTime(8, 45))
+                .withEndLocalDateTime(LocalDate.of(2015, 12, 17).atTime(10, 15))
+                .withAppointmentGroup(appointmentGroups.get(9))
+                .withSummary("Monthly Appointment Fixed2")
+                .withRepeatMade(true)
+                .withRepeat(repeat);
+        assertEquals(expectedAppointment, madeAppointment);
+        
+        startDate = LocalDate.of(2015, 12, 6);
+        endDate = LocalDate.of(2015, 12, 12);
+        repeat.removeOutsideRangeAppointments(appointments, startDate, endDate);
+        assertEquals(0, appointments.size());
+
+        startDate = LocalDate.of(2016, 1, 17);
+        endDate = LocalDate.of(2016, 1, 23);
+        repeat.makeAppointments(appointments, startDate, endDate);
+        assertEquals(1, appointments.size());
+        
+        Appointment madeAppointment2 = appointments.get(0);
+        Appointment expectedAppointment2 = AppointmentFactory.newAppointment()
+                .withStartLocalDateTime(LocalDate.of(2016, 1, 21).atTime(8, 45))
+                .withEndLocalDateTime(LocalDate.of(2016, 1, 21).atTime(10, 15))
+                .withAppointmentGroup(appointmentGroups.get(9))
+                .withSummary("Monthly Appointment Fixed2")
+                .withRepeatMade(true)
+                .withRepeat(repeat);
+        assertEquals(expectedAppointment2, madeAppointment2); // Check to see if repeat-generated appointment changed correctly
+        
+        startDate = LocalDate.of(2015, 9, 1); // test dates before startDate to confirm doesn't make appointments
+        endDate = LocalDate.of(2015, 9, 30);
+        repeat.removeOutsideRangeAppointments(appointments, startDate, endDate);
+        repeat.makeAppointments(appointments, startDate, endDate);
+        assertEquals(0, appointments.size());
+
+        startDate = LocalDate.of(2017, 9, 1); // test dates after endDate to confirm doesn't make appointments
+        endDate = LocalDate.of(2017, 9, 30);
+        repeat.removeOutsideRangeAppointments(appointments, startDate, endDate);
+        repeat.makeAppointments(appointments, startDate, endDate);
+        assertEquals(0, appointments.size());
     }
 }

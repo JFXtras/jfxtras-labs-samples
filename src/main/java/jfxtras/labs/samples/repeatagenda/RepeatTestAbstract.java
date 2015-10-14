@@ -151,7 +151,7 @@ public abstract class RepeatTestAbstract {
                 .withAppointmentData(a2);
     }
 
-    public Repeat getRepeatMonthlyFixed2()
+    public Repeat getRepeatMonthlyFixed2() // repeat every third Thursday
     {
         Appointment a2 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(9))
@@ -166,7 +166,7 @@ public abstract class RepeatTestAbstract {
                 .withMonthlyRepeat(MonthlyRepeat.DAY_OF_WEEK)
                 .withAppointmentData(a2);
     }
-
+    
     public Repeat getRepeatYearlyFixed()
     {
         Appointment a2 = AppointmentFactory.newAppointment()
