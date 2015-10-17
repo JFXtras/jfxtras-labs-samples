@@ -6,14 +6,16 @@ import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
 
 public final class MyData {
 	    
-    private final ObservableList<Appointment> appointments = FXCollections.observableArrayList();
-    public ObservableList<Appointment> getAppointments() { return appointments; }
+   private final ObservableList<RepeatableAppointment> appointments = FXCollections.observableArrayList();
+   public ObservableList<RepeatableAppointment> getAppointments() { return appointments; }
+   //    private final ObservableList<T> appointments = FXCollections.observableArrayList();
+//    public ObservableList<T> getAppointments() { return appointments; }
     
 //    private final ObservableList<AppointmentGroup> appointmentGroups = FXCollections.observableArrayList();
     private final ObservableList<AppointmentGroup> appointmentGroups = Agenda.DEFAULT_APPOINTMENT_GROUPS;

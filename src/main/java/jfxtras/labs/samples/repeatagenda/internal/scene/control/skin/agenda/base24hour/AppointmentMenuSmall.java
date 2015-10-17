@@ -89,11 +89,12 @@ public class AppointmentMenuSmall extends Rectangle {
 	 */
 	void showMenu(MouseEvent mouseEvent) {
 		// has the client done his own popup?
-		Callback<Appointment, Void> lEditCallback = layoutHelp.skinnable.getEditAppointmentCallback();
-		if (lEditCallback != null) {
-			lEditCallback.call(appointment);
-			return;
-		}
+        Callback<Appointment, Void> lEditCallback = layoutHelp.skinnable.getEditAppointmentCallback();
+        if (lEditCallback != null) {
+//            AppointmentEditData data = new AppointmentEditData(appointment, layoutHelp, pane);
+            lEditCallback.call(appointment);
+            return;
+        }
 
 		// only if not already showing
 		if (popup != null && popup.isShowing()) {
@@ -151,7 +152,7 @@ public class AppointmentMenuSmall extends Rectangle {
         lVBox.getChildren().add(styleBox);
 		
         final AppointmentGroupGridPane appointmentGroupGridPane
-            = new AppointmentGroupGridPane(appointment, layoutHelp);
+            = new AppointmentGroupGridPane(appointment, layoutHelp.skinnable.appointmentGroups());
         lVBox.getChildren().add(appointmentGroupGridPane);
         
 		Button saveButton = new Button(Settings.resources.getString("button.save"));
@@ -199,7 +200,7 @@ public class AppointmentMenuSmall extends Rectangle {
 		closeIconImageView.setOnMouseClicked( (mouseEvent2) -> {
 			popup.hide();
 			int s = layoutHelp.skinnable.appointments().size();
-	        ListIterator<Appointment> i = layoutHelp.skinnable.appointments().listIterator(s);
+	        ListIterator<? extends Appointment> i = layoutHelp.skinnable.appointments().listIterator(s);
             while (i.hasPrevious()) {
                 Appointment a = i.previous();
                 if (a == appointment) {

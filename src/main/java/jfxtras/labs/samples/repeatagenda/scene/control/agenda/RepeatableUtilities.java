@@ -120,15 +120,16 @@ public final class RepeatableUtilities {
      * @throws ParserConfigurationException 
      */
     public static WindowCloseType deleteAppointments(Collection<Appointment> appointments
-            , Appointment appointment
+            , Appointment appointmentInput
             , Collection<Repeat> repeats
             , Callback<RepeatChange[], RepeatChange> changeDialogCallback
             , Callback<String, Boolean> confirmDeleteCallback
-            , Callback<Collection<Appointment>, Void> writeAppointmentsCallback
+            , Callback<Collection<RepeatableAppointment>, Void> writeAppointmentsCallback
             , Callback<Collection<Repeat>, Void> writeRepeatsCallback) throws ParserConfigurationException
     {
+        RepeatableAppointment appointment = (RepeatableAppointment) appointmentInput;
         ResourceBundle resources = Settings.resources;
-        final Repeat repeat = appointment.getRepeat();
+        final Repeat repeat = (appointment instanceof RepeatableAppointment) ? ((RepeatableAppointment) appointment).getRepeat() : null;
         final AppointmentType appointmentType = (repeat == null)
                 ? AppointmentType.INDIVIDUAL : AppointmentType.WITH_EXISTING_REPEAT;
         boolean writeAppointments = false;
@@ -181,13 +182,21 @@ public final class RepeatableUtilities {
                 }
                 break;
             case ALL:
-                myFilter = (a) -> a.getRepeat() == repeat; // predicate to filter out all appointments with repeat
+//                myFilter = (a) -> a.getRepeat() == repeat; // predicate to filter out all appointments with repeat
+                myFilter = (a) -> {
+                    RepeatableAppointment a2 = (RepeatableAppointment) a;
+                    return a2.getRepeat() == repeat; // predicate to filter out all appointments with repeat
+                };
                 matchingAppointments = (int) repeat.validDateStreamWithEnd().count();
                 matchingAppointmentsString = (repeat.getEndCriteria() == EndCriteria.NEVER)
                         ? resources.getString("infinite") : Integer.toString(matchingAppointments);
                 if (confirmDeleteCallback.call(matchingAppointmentsString))
                 {
                     appointments.removeIf(myFilter);
+//                    appointments.stream()
+//                        .forEach(a -> {
+//                            RepeatableAppoitment a2 = 
+//                        });
                     deletedAppointments = matchingAppointments;
                     repeats.remove(repeat);
                     writeRepeats = true;
@@ -197,7 +206,8 @@ public final class RepeatableUtilities {
                 myFilter = (a) ->
                 { // predicate to filter out all appointments with repeat and are equal or after startDate
                     LocalDate myDate = a.getStartLocalDateTime().toLocalDate();
-                    return ((a.getRepeat() == repeat) && (myDate.isAfter(startDate) || myDate.equals(startDate)));
+                    RepeatableAppointment a2 = (RepeatableAppointment) a;
+                    return ((a2.getRepeat() == repeat) && (myDate.isAfter(startDate) || myDate.equals(startDate)));
                 };
                 matchingAppointments = (int) repeat
                         .validDateStreamWithEnd()
@@ -240,8 +250,8 @@ public final class RepeatableUtilities {
         }
         
         // Write changes that occurred
-        if (writeAppointments && (writeAppointmentsCallback != null)) writeAppointmentsCallback.call(appointments); // write appointment changes
-        if (writeRepeats && (writeRepeatsCallback != null)) writeRepeatsCallback.call(repeats);                     // write repeat changes
+//        if (writeAppointments && (writeAppointmentsCallback != null)) writeAppointmentsCallback.call(appointments); // write appointment changes
+//        if (writeRepeats && (writeRepeatsCallback != null)) writeRepeatsCallback.call(repeats);                     // write repeat changes
         
         return (writeAppointments || writeRepeats) ? WindowCloseType.CLOSE_WITH_CHANGE : WindowCloseType.CLOSE_WITHOUT_CHANGE;
     }
@@ -264,13 +274,15 @@ public final class RepeatableUtilities {
     // Works for by drag-and-drop on the agenda and for editing from AppointmentEditController
     public static WindowCloseType editAppointments(
               Collection<Appointment> appointments
-            , Appointment appointment
-            , Appointment appointmentOld
+            , Appointment appointmentInput
+            , Appointment appointmentOldInput
             , Collection<Repeat> repeats
             , Callback<RepeatChange[], RepeatChange> changeDialogCallback
-            , Callback<Collection<Appointment>, Void> writeAppointmentsCallback
+            , Callback<Collection<RepeatableAppointment>, Void> writeAppointmentsCallback
             , Callback<Collection<Repeat>, Void> writeRepeatsCallback)
     {
+        RepeatableAppointment appointment = (RepeatableAppointment) appointmentInput;
+        RepeatableAppointment appointmentOld = (RepeatableAppointment) appointmentOldInput;
         final ResourceBundle resources = Settings.resources;
         final Repeat repeat = appointment.getRepeat(); // repeat with new changes
 //        System.out.println("repeat start " + repeat.getStartLocalTime());
@@ -360,7 +372,8 @@ public final class RepeatableUtilities {
           repeat.getAppointments().add(appointment);
 //          System.out.println(repeat.getStartLocalDate());
 //          System.exit(0);
-          repeat.makeAppointments(appointments);
+          Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments();
+          appointments.addAll(newAppointments);
           appointment.copyNonDateFieldsInto(repeat.getAppointmentData()); // copy any appointment changes (i.e. description, group, location, etc)
           repeats.add(repeat);
           appointment.setRepeatMade(true);
@@ -434,10 +447,10 @@ public final class RepeatableUtilities {
 //                    System.out.println("startDateOld " + startDateOld + " " + startDate);
                     repeat.adjustDateTime(adjustStartDate, startTemporalAdjuster, endTemporalAdjuster);
                 }
-                System.out.println("size1 " + appointments.size());
+//                System.out.println("size1 " + appointments.size());
                 repeat.updateAppointments(appointments, appointment, appointmentOld
                         , startTemporalAdjuster, endTemporalAdjuster);
-                System.out.println("size2 " + appointments.size());
+//                System.out.println("size2 " + appointments.size());
                 writeRepeats = true;
                 break;
             case FUTURE:
@@ -469,11 +482,11 @@ public final class RepeatableUtilities {
                 
                 // Split appointments between repeat and repeatOld
                 repeatOld.getAppointments().clear();
-                Iterator<Appointment> appointmentIterator = repeat.getAppointments().iterator();
+                Iterator<RepeatableAppointment> appointmentIterator = repeat.getAppointments().iterator();
                 int counter = 0;
                 while (appointmentIterator.hasNext())
                 {
-                    Appointment a = appointmentIterator.next();
+                    RepeatableAppointment a = appointmentIterator.next();
                     if (a.getStartLocalDateTime().toLocalDate().isBefore(startDate))
                     {
                         appointmentIterator.remove();
@@ -569,15 +582,17 @@ public final class RepeatableUtilities {
 //        System.out.println(writeAppointments +  " " + writeRepeats);
 //        if (writeAppointments) AppointmentFactory.writeToFile(appointments);
 //        if (writeRepeats) MyRepeat.writeToFile(repeats);
-        if (writeAppointments && (writeAppointmentsCallback != null)) writeAppointmentsCallback.call(appointments); // write appointment changes
-        if (writeRepeats && (writeRepeatsCallback != null)) writeRepeatsCallback.call(repeats);                     // write repeat changes
+
+//        if (writeAppointments && (writeAppointmentsCallback != null)) writeAppointmentsCallback.call(appointments); // write appointment changes
+//        if (writeRepeats && (writeRepeatsCallback != null)) writeRepeatsCallback.call(repeats);                     // write repeat changes
 
         return (writeAppointments || writeRepeats) ? WindowCloseType.CLOSE_WITH_CHANGE : WindowCloseType.CLOSE_WITHOUT_CHANGE;
         
     }
 
     /**
-     * Edit appointment with default callbacks
+     * Edit repeatable appointment.
+     * Uses default callbacks for dialog, write appointments and write repeats
      * 
      * @param appointments
      * @param appointment
@@ -587,8 +602,8 @@ public final class RepeatableUtilities {
      */
     public static WindowCloseType editAppointments(
               Collection<Appointment> appointments
-            , Appointment appointment
-            , Appointment appointmentOld
+            , RepeatableAppointment appointment
+            , RepeatableAppointment appointmentOld
             , Collection<Repeat> repeats)
     {
         return editAppointments(

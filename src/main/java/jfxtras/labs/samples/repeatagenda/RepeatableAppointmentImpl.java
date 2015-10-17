@@ -28,22 +28,21 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentImplBase;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.DataUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointmentImplBase;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 
-public class MyAppointment extends AppointmentImplBase<MyAppointment> implements Appointment {
+public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<RepeatableAppointmentImpl> implements RepeatableAppointment {
 
 //    /** WholeDay: */
 //    public BooleanProperty wholeDayProperty() { return wholeDayObjectProperty; }
@@ -80,29 +79,30 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
 //    public void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups) { setAppointmentGroup(appointmentGroups.get(appointmentGroupIndex));  }
 //   
     private static int nextKey = 0;
-    private static Map<Integer, MyRepeat> repeatMap = new HashMap<Integer, MyRepeat>(); // private map of repeats used to match Repeat objects to appointments
+    private static Map<Integer, MyRepeat> repeatIntegerKeyMap = new HashMap<Integer, MyRepeat>(); // private map of repeats used to match Repeat objects to appointments
     /** create map of Repeat objects and repeat keys.  Its used to find Repeat objects to attach to Appointment objects.
      * Only used when setting up appointments from file */
     protected static void setupRepeats(Set<Repeat> set)
     {
         Set<MyRepeat> myRepeats
             = set.stream().map(a -> (MyRepeat) a).collect(Collectors.toSet());
-        repeatMap = myRepeats.stream()
+        repeatIntegerKeyMap = myRepeats.stream()
                            .collect(Collectors.toMap(a -> a.getKey(), a -> a));
     }
+    private Repeat myRepeat;
 
     /** Unique appointment key */
     private Integer key;
     public Integer getKey() { return key; }
     public void setKey(Integer value) { key = value; }
     public boolean hasKey() { return key != null; }
-    public MyAppointment withKey(Integer value) { setKey(value); return this; }
+    public RepeatableAppointmentImpl withKey(Integer value) { setKey(value); return this; }
     
     /** StudentKeys: */
     final private ObservableList<Integer> studentKeys = FXCollections.observableArrayList();
     public List<Integer> getStudentKeys() { return studentKeys; }
     public void setStudentKeys(List<Integer> value) { studentKeys.setAll(value); }
-    public MyAppointment withStudentKeys(List<Integer> value) { setStudentKeys(value); return this; }
+    public RepeatableAppointmentImpl withStudentKeys(List<Integer> value) { setStudentKeys(value); return this; }
     public ObservableList<Integer> studentKeysProperty() { return studentKeys; }
 
 //    /** StaffKeys: */
@@ -132,22 +132,22 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
     private void setRepeatKey(Integer value) { repeatKey = value; }
     private boolean hasRepeatKey() { return getRepeatKey() != null; }
     
-    /** Repeat rules, null if an individual appointment */
-    private Repeat repeat;
-    public void setRepeat(Repeat repeat) { this.repeat = repeat; }
-    public Repeat getRepeat() { return repeat; }
-    public boolean hasRepeat() { return repeat != null; }
-    public MyAppointment withRepeat(Repeat value) { setRepeat(value); return this; }
-
-    /**
-     * true = a temporary appointment created by a repeat rule
-     * false = a permanent appointment stored on disk
-     */
-    final private BooleanProperty repeatMade = new SimpleBooleanProperty(this, "repeatMade", false);
-    public BooleanProperty repeatMadeProperty() { return repeatMade; }
-    public boolean isRepeatMade() { return repeatMade.getValue(); }
-    public void setRepeatMade(boolean b) {repeatMade.set(b); }
-    public MyAppointment withRepeatMade(boolean b) {repeatMade.set(b); return this; }
+//    /** Repeat rules, null if an individual appointment */
+//    private Repeat repeat;
+//    public void setRepeat(Repeat repeat) { this.repeat = repeat; }
+//    public Repeat getRepeat() { return repeat; }
+//    public boolean hasRepeat() { return repeat != null; }
+//    public MyAppointment withRepeat(Repeat value) { setRepeat(value); return this; }
+//
+//    /**
+//     * true = a temporary appointment created by a repeat rule
+//     * false = a permanent appointment stored on disk
+//     */
+//    final private BooleanProperty repeatMade = new SimpleBooleanProperty(this, "repeatMade", false);
+//    public BooleanProperty repeatMadeProperty() { return repeatMade; }
+//    public boolean isRepeatMade() { return repeatMade.getValue(); }
+//    public void setRepeatMade(boolean b) {repeatMade.set(b); }
+//    public MyAppointment withRepeatMade(boolean b) {repeatMade.set(b); return this; }
     
     private static Map<Integer, Integer> appointmentGroupCount = new HashMap<Integer, Integer>();
     
@@ -156,18 +156,18 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
     final private ObjectProperty<LocalDateTime> startLocalDateTime = new SimpleObjectProperty<LocalDateTime>(this, "startDateTime");
     public LocalDateTime getStartLocalDateTime() { return startLocalDateTime.getValue(); }
     public void setStartLocalDateTime(LocalDateTime value) { startLocalDateTime.setValue(value); }
-    public MyAppointment withStartLocalDateTime(LocalDateTime value) { setStartLocalDateTime(value); return this; }
+    public RepeatableAppointmentImpl withStartLocalDateTime(LocalDateTime value) { setStartLocalDateTime(value); return this; }
     
     /** EndDateTime: */
     public ObjectProperty<LocalDateTime> endLocalDateTimeProperty() { return endLocalDateTime; }
     protected final ObjectProperty<LocalDateTime> endLocalDateTime = new SimpleObjectProperty<LocalDateTime>(this, "endDateTime");
     public LocalDateTime getEndLocalDateTime() { return endLocalDateTime.getValue(); }
     public void setEndLocalDateTime(LocalDateTime value) { endLocalDateTime.setValue(value); }
-    public MyAppointment withEndLocalDateTime(LocalDateTime value) { setEndLocalDateTime(value); return this; } 
+    public RepeatableAppointmentImpl withEndLocalDateTime(LocalDateTime value) { setEndLocalDateTime(value); return this; } 
     
     @Override
     public boolean equals(Object obj) {
-        MyAppointment testObj = (MyAppointment) obj;
+        RepeatableAppointmentImpl testObj = (RepeatableAppointmentImpl) obj;
         
 //        System.out.println( "myappointment equals " +          getStartLocalDateTime() + " " + (testObj.getStartLocalDateTime())
 //            + " " + getEndLocalDateTime().equals(testObj.getEndLocalDateTime())
@@ -182,7 +182,7 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
     @Override
     public boolean repeatFieldsEquals(Object obj) {
 //        System.out.println("MyAppointment repeatFieldsEquals " );
-        MyAppointment testObj = (MyAppointment) obj;
+        RepeatableAppointmentImpl testObj = (RepeatableAppointmentImpl) obj;
         boolean studentKeysEquals = (getStudentKeys() == null)
                 ? (testObj.getStudentKeys() == null) : getStudentKeys().equals(testObj.getStudentKeys());
         return super.equals(obj) && studentKeysEquals;
@@ -196,19 +196,22 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
 //    public void setLocation(String value) { locationObjectProperty.setValue(value); }
 //    public MyAppointment withLocation(String value) { setLocation(value); return this; } 
     
-    public MyAppointment() { } // use factory to make new objects
+    public RepeatableAppointmentImpl() { } // use factory to make new objects
     
     /**
      * Copy constructor
      * 
      * @param appointment
      */
-    public MyAppointment(Appointment appointment) {
+    public RepeatableAppointmentImpl(RepeatableAppointment appointment)
+    {
         setRepeat(RepeatFactory.newRepeat(appointment.getRepeat()));
+//        MyRepeat newRepeat = RepeatFactory.newRepeat(repeatMap.get(appointment));
+//        repeatMap.put(this, newRepeat);
         appointment.copyInto(this);
     }
     
-    public static void writeToFile(Collection<Appointment> appointments, Path file)
+    public static void writeToFile(Collection<RepeatableAppointment> appointments, Path file)
     {
         // XML document
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -226,15 +229,20 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
         // Appointments
         for (Appointment myAppointment : appointments)
         {
-            if (myAppointment.isRepeatMade()) continue; // skip appointments that are made by repeat rules
+            if (myAppointment instanceof RepeatableAppointment)
+            {
+                RepeatableAppointment repeatableAppointment = (RepeatableAppointment) myAppointment;
+                if (repeatableAppointment.isRepeatMade()) continue; // skip appointments that are made by repeat rules
+            }
             Element appointmentElement = doc.createElement("appointment");
+//            Repeat repeat = repeatMap.get(myAppointment);
             AppointmentFactory.returnConcreteAppointment(myAppointment).marshal(appointmentElement);
             rootElement.appendChild(appointmentElement);
         }
 
-        Set<MyAppointment> myAppointments = appointments
+        Set<RepeatableAppointmentImpl> myAppointments = appointments
                 .stream()
-                .map(a -> (MyAppointment) a)
+                .map(a -> (RepeatableAppointmentImpl) a)
                 .collect(Collectors.toSet());
         String repeatKeys = myAppointments
                 .stream()
@@ -288,6 +296,7 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
         if (getKey() == null) setKey(nextKey++); // if it has no key (meaning its new) give it the next one
         myElement.setAttribute("key", getKey().toString());
         myElement.setAttribute("repeatKey", (getRepeat() == null) ? "" : ((MyRepeat) getRepeat()).getKey().toString());
+//        myElement.setAttribute("repeatKey", (repeat == null) ? "" : ((MyRepeat) repeat).getKey().toString());
         final String s = getStudentKeys().stream()
                                          .map(a -> a.toString())
                                          .collect(Collectors.joining(" "));
@@ -310,9 +319,9 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
      * @throws SAXException
      * @throws IOException
      */
-    public static Collection<Appointment> readFromFile(File file
+    public static Collection<RepeatableAppointment> readFromFile(File file
             , ObservableList<AppointmentGroup> appointmentGroups
-            , Collection<Appointment> appointments)
+            , Collection<RepeatableAppointment> appointments)
             throws ParserConfigurationException, SAXException 
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -340,9 +349,9 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
                 appointmentAttributes = (HashMap<String, String>) DataUtilities.getAttributes(appointmentNode, "appointment");
                 String appointmentName = DataUtilities.myGet(appointmentAttributes, "summary", file.toString());
                 String errorMessage = ", file: " + file + " summary: " + appointmentName;
-                Appointment anAppointment = AppointmentFactory.newAppointment()
+                RepeatableAppointment anAppointment = AppointmentFactory.newAppointment()
                         .unmarshal(appointmentAttributes, expectedKey, errorMessage);
-                Integer i = ((MyAppointment) anAppointment).getAppointmentGroupIndex();
+                Integer i = ((RepeatableAppointmentImpl) anAppointment).getAppointmentGroupIndex();
 //              System.out.println("getAppointmentGroupIndex " + i);
                 anAppointment.setAppointmentGroup(appointmentGroups.get(i));
                 appointments.add(anAppointment);
@@ -354,7 +363,7 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
     /**
      * Unmarshal only repeatable fields
      */
-    public MyAppointment unmarshal(Map<String, String> appointmentAttributes, String errorMessage)
+    public RepeatableAppointmentImpl unmarshal(Map<String, String> appointmentAttributes, String errorMessage)
     {
         setDescription(DataUtilities.myGet(appointmentAttributes, "description", errorMessage));
         setAppointmentGroupIndex(Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", errorMessage)));
@@ -374,7 +383,10 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
      * Unmarshalls a MyAppointment object from a Map<String,String> of appointmentAttributes
      * @param myKey 
      */
-    public Appointment unmarshal(Map<String, String> appointmentAttributes, Integer expectedKey, String errorMessage)
+    public RepeatableAppointment unmarshal(Map<String, String> appointmentAttributes
+//            , Map<Appointment, Repeat> repeatMap
+            , Integer expectedKey
+            , String errorMessage)
     {
         unmarshal(appointmentAttributes, errorMessage);
   
@@ -385,7 +397,8 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
 //                    + " Expected appointment key = " + expectedKey + ". Using expected appointment key.", new IllegalArgumentException());
         }
         nextKey = Math.max(nextKey, getKey()) + 1;
-        if (hasRepeatKey()) setRepeat(repeatMap.get(getRepeatKey()));
+        if (hasRepeatKey()) this.myRepeat = (repeatIntegerKeyMap.get(getRepeatKey()));
+//        if (hasRepeatKey()) setRepeat(repeatMap.get(getRepeatKey()));
         setStudentKeys(DataUtilities.myGetList(appointmentAttributes, "studentKeys", errorMessage));
 
         
@@ -394,10 +407,10 @@ public class MyAppointment extends AppointmentImplBase<MyAppointment> implements
       return this;
     }
     @Override
-    public Appointment copyNonDateFieldsInto(Appointment appointment) {
-        List<Integer> s = ((MyAppointment) appointment).getStudentKeys();
+    public RepeatableAppointment copyNonDateFieldsInto(RepeatableAppointment appointment) {
+        List<Integer> s = ((RepeatableAppointmentImpl) appointment).getStudentKeys();
         getStudentKeys().addAll(s);
-        return Appointment.super.copyNonDateFieldsInto(appointment);
+        return RepeatableAppointment.super.copyNonDateFieldsInto(appointment);
     }
 
 }

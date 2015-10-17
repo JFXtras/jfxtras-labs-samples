@@ -63,6 +63,7 @@ public class AppointmentPopupController {
 
     @FXML private void handleDeleteAppointment() throws ParserConfigurationException {
         popup.hide();
+//        RepeatableUtilities.deleteAppointments(layoutHelp.skinnable.appointments()
         RepeatableUtilities.deleteAppointments(layoutHelp.skinnable.appointments()
                 , appointment
                 , layoutHelp.skinnable.repeats());

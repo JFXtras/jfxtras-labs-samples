@@ -8,6 +8,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -15,6 +16,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -25,15 +27,16 @@ import jfxtras.labs.samples.repeatagenda.MyData;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaWeekSkin;
+import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.RepeatMenuStage;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.LocalDateTimeRange;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
 import jfxtras.scene.control.LocalDatePicker;
 
 
@@ -47,7 +50,8 @@ public class CalendarController {
 
     private MyData data;
 
-     private Agenda agenda = new Agenda();
+     public Agenda agenda = new Agenda();
+     private RepeatMenuStage repeatMenu;
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private BorderPane agendaBorderPane;
 
@@ -89,17 +93,45 @@ public class CalendarController {
             .withDescription("")
             .withAppointmentGroup(agenda.appointmentGroups().get(0)));
 
-        // create new repeat-made appointments when the range changes
+//        agenda.setEditAppointmentCallback((AppointmentEditData a) -> {
+//            System.out.println("start edit callback");
+//            Stage stage = new RepeatMenu(a);
+//            stage.show();
+//            System.out.println("end edit callback");
+//            return null;
+//        });
+
+        agenda.setEditAppointmentCallback((Appointment a) -> {
+            System.out.println("start edit callback");
+            repeatMenu.setup(a);
+            repeatMenu.show();
+            System.out.println("end edit callback");
+            repeatMenu = new RepeatMenuStage(agenda.appointments(), agenda.repeats(), agenda.appointmentGroups(), null); // make new object when closed
+            return null;
+        });
+
+        
+        // manage repeat-made appointments when the range changes
         agenda.setLocalDateTimeRangeCallback(param -> {
             startDate = param.getStartLocalDateTime().toLocalDate();
             endDate = param.getEndLocalDateTime().toLocalDate();
-            data.getAppointments().removeIf(a -> a.isRepeatMade());
-            data.getRepeats().stream().forEach(a -> a.getAppointments().clear());
-            data.getRepeats().stream().forEach(a -> a
-                    .makeAppointments(data.getAppointments(), startDate, endDate) // Make repeat appointments inside range
-                    .removeOutsideRangeAppointments(data.getAppointments()));                 // remove outside range appointments
+//            System.out.println("dates changed " + startDate + " " + endDate);
+            agenda.appointments().removeIf(a -> ((RepeatableAppointment) a).isRepeatMade());
+            data.getRepeats().stream().forEach(r -> r.getAppointments().clear());
+            data.getRepeats().stream().forEach(r ->
+            { // Make new repeat-made appointments inside range
+                Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
+                agenda.appointments().addAll(newAppointments);
+//                System.out.println("newAppointments " + newAppointments.size());
+//                r.removeOutsideRangeAppointments(data.getAppointments());                 // remove outside range appointments
+            });
             return null; // return argument for the Callback
         });
+        
+        agenda.appointments().addListener((ListChangeListener.Change<? extends Appointment> change)
+                -> {
+System.out.println("appointment list changed");
+                });
         
         // action
         agenda.setActionCallback( (appointment) -> {
@@ -130,9 +162,12 @@ public class CalendarController {
             
     }
 
-    public void setupData(MyData data) {
+    public void setupData(MyData data, LocalDate startDate, LocalDate endDate) {
 
         this.data = data;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        repeatMenu = new RepeatMenuStage(agenda.appointments(), agenda.repeats(), agenda.appointmentGroups(), null);
         if (! data.getAppointmentGroups().isEmpty()) 
         { // overwrite default appointmentGroups with ones read from file if not empty
             agenda.setAppointmentGroups(data.getAppointmentGroups()); 
@@ -146,11 +181,18 @@ public class CalendarController {
 //                    .withSummary("example")
 //                    .withAppointmentGroup(agenda.appointmentGroups().get(0)));
         }
-        agenda.setAppointments(data.getAppointments());
+//        ObservableList<Appointment> castAppointments = javafx.collections.FXCollections.observableArrayList(data.getAppointments().stream().map(a -> (Appointment) a).collect(Collectors.toList()));
+//        agenda.setAppointments(castAppointments);
+//        System.out.println("data.getAppointments().size()) " + data.getAppointments().size());
+//      System.out.println("here " + data.getAppointments().size());
+//      System.exit(0);
+        
+//        agenda.setAppointments(data.getAppointments());
+        System.out.println("start appointment size " + data.getAppointments().size());
 
 //        if (data.getRepeats().isEmpty())
         { // add Repeats if none read in from file
-            Appointment a1 = AppointmentFactory.newAppointment()
+            RepeatableAppointment a1 = AppointmentFactory.newAppointment()
                     .withAppointmentGroup(agenda.appointmentGroups().get(5))
                     .withSummary("Weekly Appointment");
             data.getRepeats().add(RepeatFactory.newRepeat()
@@ -162,7 +204,7 @@ public class CalendarController {
                     .withDayOfWeek(LocalDate.now().getDayOfWeek(), true)
                     .withDayOfWeek(LocalDate.now().plusDays(2).getDayOfWeek(), true)
                     .withAppointmentData(a1));
-            Appointment a2 = AppointmentFactory.newAppointment()
+            RepeatableAppointment a2 = AppointmentFactory.newAppointment()
                     .withAppointmentGroup(agenda.appointmentGroups().get(9))
                     .withSummary("Monthly Appointment");
             data.getRepeats().add(RepeatFactory.newRepeat()
@@ -174,27 +216,38 @@ public class CalendarController {
                     .withIntervalUnit(IntervalUnit.MONTHLY)
                     .withMonthlyRepeat(MonthlyRepeat.DAY_OF_MONTH)
                     .withAppointmentData(a2));
-            Appointment a3 = AppointmentFactory.newAppointment()
+            RepeatableAppointment a3 = AppointmentFactory.newAppointment()
                     .withAppointmentGroup(agenda.appointmentGroups().get(15))
                     .withSummary("Daily Appointment");
             data.getRepeats().add(RepeatFactory.newRepeat()
                     .withStartLocalDate(LocalDate.now().minusDays(2))
-                    .withStartLocalTime(LocalTime.now().plusHours(4))
-                    .withEndLocalTime(LocalTime.now().plusHours(7))
+                    .withStartLocalTime(LocalTime.of(18, 00))
+                    .withEndLocalTime(LocalTime.of(19, 30))
                     .withEndCriteria(EndCriteria.AFTER)
                     .withIntervalUnit(IntervalUnit.DAILY)
                     .withRepeatFrequency(2)
                     .withEndAfterEvents(5)
                     .withAppointmentData(a3));
-            Repeat r = data.getRepeats().iterator().next();
-          System.out.println(r.getAppointmentData().getAppointmentGroup());
+//            Repeat r = data.getRepeats().iterator().next();
+//          System.out.println(r.getAppointmentData().getAppointmentGroup());
+//            System.out.println("start appointment size " + data.getAppointments().size());
             data.getRepeats().stream().forEach(a -> a.collectAppointments(data.getAppointments())); // add individual appointments that have repeat rules to their Repeat objects
-            data.getRepeats().stream().forEach(a -> a.makeAppointments(data.getAppointments(), startDate, endDate)); // Make repeat appointments
+            System.out.println("start appointment size " + data.getAppointments().size());
+            data.getRepeats().stream().forEach(r -> 
+            {
+                Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate); // Make repeat appointments   
+                data.getAppointments().addAll(newAppointments);
+                newAppointments.stream().forEach(b -> System.out.println(b.getStartLocalDateTime()));
+//                System.exit(0);
+                System.out.println("repeat appointment size " + newAppointments.size() + " " + r.getAppointmentData().getSummary() + " " + startDate + " " + endDate);
+            });
+            System.out.println("total appointment size " + data.getAppointments().size());
+//            agenda.appointments().addAll(data.getAppointments());
 //            data.getAppointments().stream().forEach(a -> System.out.println(a.getAppointmentGroup()));
 //            System.out.println("here " + data.getAppointments().size());
 //            System.exit(0);
         }
-        agenda.setRepeats(data.getRepeats());
+//        agenda.setRepeats(data.getRepeats());
     }
     
     @FXML private void handleDateIncrement() {

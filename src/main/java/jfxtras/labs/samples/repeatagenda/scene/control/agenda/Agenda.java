@@ -38,7 +38,6 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -52,6 +51,7 @@ import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.DateTimeToCalendarHelper;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaWeekSkin;
+import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.LayoutHelp;
 
 /**
  * = Agenda
@@ -236,6 +236,10 @@ public class Agenda extends Control
 		});
 	}
 	
+//    /** RepeatMap: Repeatable appointments as keys mapping to their matching repeat rules */
+//    private Map<Appointment, Repeat> repeatMap = new HashMap<Appointment, Repeat>();
+//    public Map<Appointment, Repeat> getRepeatMap() { return repeatMap; }
+    
 	/** AppointmentGroups: */
 	public ObservableList<AppointmentGroup> appointmentGroups() { return appointmentGroups; }
 	private ObservableList<AppointmentGroup> appointmentGroups =  javafx.collections.FXCollections.observableArrayList();
@@ -424,34 +428,27 @@ public class Agenda extends Control
         
         Boolean isWholeDay();
         void setWholeDay(Boolean b);
-//        BooleanProperty wholeDayProperty();
         
         String getSummary();
         void setSummary(String s);
-//        StringProperty summaryProperty();
         
         String getDescription();
         void setDescription(String s);
-//        StringProperty descriptionProperty();
+
+        String getLocation(); // I'm not using
+        void setLocation(String s);  // I'm not using
         
         AppointmentGroup getAppointmentGroup();
         void setAppointmentGroup(AppointmentGroup s);
-//        default void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups) { setAppointmentGroup(appointmentGroups.get(getAppointmentGroupIndex())); }
 
-//        Integer getAppointmentGroupIndex();
-//        void setAppointmentGroupIndex(Integer i);
+//       boolean isRepeatMade();
+//       void setRepeatMade(boolean b);
+//
+//       void setRepeat(Repeat repeat);
+//       Repeat getRepeat();
+//////       boolean hasRepeat();
+//       boolean repeatFieldsEquals(Object obj);
 
-       boolean isRepeatMade();    // true = made by repeat rule & shouldn't be saved, false = has unique info, should be saved
-//       BooleanProperty repeatMadeProperty();
-       void setRepeatMade(boolean b);
-
-       void setRepeat(Repeat repeat);
-       Repeat getRepeat();
-       boolean hasRepeat();
-       boolean repeatFieldsEquals(Object obj);
-
-       String getLocation(); // I'm not using
-       void setLocation(String s);  // I'm not using
        
         // my variables
 //        public final static int INITIAL_KEY = -1;
@@ -532,74 +529,75 @@ public class Agenda extends Control
             setEndZonedDateTime(v == null ? null : ZonedDateTime.of(v, ZoneId.systemDefault()));
         }
         
-        /**
-         * Copies all fields into parameter appointment
-         * 
-         * @param appointment
-         * @return
-         */
-        default Appointment copyInto(Appointment appointment) {
-            appointment.setEndLocalDateTime(getEndLocalDateTime());
-            appointment.setStartLocalDateTime(getStartLocalDateTime());
-            copyNonDateFieldsInto(appointment);
-//            Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
-//                    .stream(DayOfWeek.values())
-//                    .limit(7)
-//                    .iterator();
-//                while (dayOfWeekIterator.hasNext())
-//                {
-//                    DayOfWeek key = dayOfWeekIterator.next();
-//                    boolean b1 = this.getRepeat().getDayOfWeekMap().get(key).get();
-//                    boolean b2 = appointment.getRepeat().getDayOfWeekMap().get(key).get();
-//                    System.out.println("copied day of week2 " + key + " " + b1 + " " + b2);
-//                }
-            return appointment;
-        }
-        
-        /**
-         * Copies this Appointment non-time fields into parameter appointment
-         * 
-         * @param appointment
-         * @return
-         */
-        default Appointment copyNonDateFieldsInto(Appointment appointment) {
-            appointment.setAppointmentGroup(getAppointmentGroup());
-            appointment.setDescription(getDescription());
-            appointment.setSummary(getSummary());
-//            boolean b1 = getRepeat() == null;
-//            boolean b2 = appointment.getRepeat() == null;
-//            System.out.println("repeats " + b1 + " " + b2);
-//            if (getRepeat() == null) return appointment;
-//            if (appointment.getRepeat() == null)
-//            {
-//                appointment.setRepeat(RepeatFactory.newRepeat(getRepeat()));
-//            } else
-//            {
-//                getRepeat().copyInto(appointment.getRepeat());
+//        /**
+//         * Copies all fields into parameter appointment
+//         * 
+//         * @param appointment
+//         * @return
+//         */
+//        default Appointment copyInto(Appointment appointment) {
+//            appointment.setEndLocalDateTime(getEndLocalDateTime());
+//            appointment.setStartLocalDateTime(getStartLocalDateTime());
+//            copyNonDateFieldsInto(appointment);
+////            Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
+////                    .stream(DayOfWeek.values())
+////                    .limit(7)
+////                    .iterator();
+////                while (dayOfWeekIterator.hasNext())
+////                {
+////                    DayOfWeek key = dayOfWeekIterator.next();
+////                    boolean b1 = this.getRepeat().getDayOfWeekMap().get(key).get();
+////                    boolean b2 = appointment.getRepeat().getDayOfWeekMap().get(key).get();
+////                    System.out.println("copied day of week2 " + key + " " + b1 + " " + b2);
+////                }
+//            return appointment;
+//        }
+//        
+//        /**
+//         * Copies this Appointment non-time fields into parameter appointment
+//         * 
+//         * @param appointment
+//         * @return
+//         */
+//        default Appointment copyNonDateFieldsInto(Appointment appointment) {
+//            appointment.setAppointmentGroup(getAppointmentGroup());
+//            appointment.setDescription(getDescription());
+//            appointment.setSummary(getSummary());
+////            boolean b1 = getRepeat() == null;
+////            boolean b2 = appointment.getRepeat() == null;
+////            System.out.println("repeats " + b1 + " " + b2);
+////            if (getRepeat() == null) return appointment;
+////            if (appointment.getRepeat() == null)
+////            {
+////                appointment.setRepeat(RepeatFactory.newRepeat(getRepeat()));
+////            } else
+////            {
+////                getRepeat().copyInto(appointment.getRepeat());
+////            }
+//            return appointment;
+//        }
+//        
+//        /**
+//         * Copies this Appointment non-time fields into parameter appointment
+//         * Used when some of fields are unique and should not be copied.
+//         * 
+//         * @param appointment
+//         * @return
+//         */
+//        default Appointment copyNonDateFieldsInto(Appointment appointment, Appointment appointmentOld) {
+//            if (appointment.getAppointmentGroup().equals(appointmentOld.getAppointmentGroup())) {
+//                appointment.setAppointmentGroup(getAppointmentGroup());
 //            }
-            return appointment;
-        }
-        
-        /**
-         * Copies this Appointment non-time fields into parameter appointment
-         * Used when some of fields are unique and should not be copied.
-         * 
-         * @param appointment
-         * @return
-         */
-        default Appointment copyNonDateFieldsInto(Appointment appointment, Appointment appointmentOld) {
-            if (appointment.getAppointmentGroup().equals(appointmentOld.getAppointmentGroup())) {
-                appointment.setAppointmentGroup(getAppointmentGroup());
-            }
-            if (appointment.getDescription().equals(appointmentOld.getDescription())) {
-                appointment.setDescription(getDescription());
-            }
-            if (appointment.getSummary().equals(appointmentOld.getSummary())) {
-                appointment.setSummary(getSummary());
-            }
-            getRepeat().copyInto(appointment.getRepeat());
-            return appointment;
-        }
+//            if (appointment.getDescription().equals(appointmentOld.getDescription())) {
+//                appointment.setDescription(getDescription());
+//            }
+//            if (appointment.getSummary().equals(appointmentOld.getSummary())) {
+//                appointment.setSummary(getSummary());
+//            }
+//            getRepeat().copyInto(appointment.getRepeat());
+////            repeatMap.get(this).copyInto(repeatMap.get(appointment));
+//            return appointment;
+//        }
         
     }
 	
@@ -608,22 +606,22 @@ public class Agenda extends Control
 	 */
 	static public abstract class AppointmentImplBase<T> 
 	{
-	    /** Repeat rules, null if an individual appointment */
-	    private Repeat repeat;
-	    public void setRepeat(Repeat repeat) { this.repeat = repeat; }
-	    public Repeat getRepeat() { return repeat; }
-	    public boolean hasRepeat() { return repeat != null; }
-	    public T withRepeat(Repeat value) { setRepeat(value); return (T)this; }
+//	    /** Repeat rules, null if an individual appointment */
+//	    private Repeat repeat;
+//	    public void setRepeat(Repeat repeat) { this.repeat = repeat; }
+//	    public Repeat getRepeat() { return repeat; }
+////	    public boolean hasRepeat() { return repeat != null; }
+//	    public T withRepeat(Repeat value) { setRepeat(value); return (T)this; }
 	    
-	    /**
-	     * true = a temporary appointment created by a repeat rule
-	     * false = a permanent appointment
-	     */
-	    final private BooleanProperty repeatMade = new SimpleBooleanProperty(this, "repeatMade", false);
-	    public BooleanProperty repeatMadeProperty() { return repeatMade; }
-	    public boolean isRepeatMade() { return repeatMade.getValue(); }
-	    public void setRepeatMade(boolean b) {repeatMade.set(b); }
-	    public T withRepeatMade(boolean b) {repeatMade.set(b); return (T)this; }
+//	    /**
+//	     * true = a temporary appointment created by a repeat rule
+//	     * false = a individual permanent appointment
+//	     */
+//	    final private BooleanProperty repeatMade = new SimpleBooleanProperty(this, "repeatMade", false); // defaults to a individual permanent appointment
+//	    public BooleanProperty repeatMadeProperty() { return repeatMade; }
+//	    public boolean isRepeatMade() { return repeatMade.getValue(); }
+//	    public void setRepeatMade(boolean b) {repeatMade.set(b); }
+//	    public T withRepeatMade(boolean b) {repeatMade.set(b); return (T)this; }
 	    
 		/** WholeDay: */
 		public ObjectProperty<Boolean> wholeDayProperty() { return wholeDayObjectProperty; }
@@ -660,35 +658,35 @@ public class Agenda extends Control
 		public void setAppointmentGroup(AppointmentGroup value) { appointmentGroupObjectProperty.setValue(value); }
 		public T withAppointmentGroup(AppointmentGroup value) { setAppointmentGroup(value); return (T)this; }
 
-	  // equals needs to be overridden by any class implementing Appointment or extending AppointmentImplBase
-      @Override
-      public boolean equals(Object obj) {
-          if (obj == this) return true;
-          if((obj == null) || (obj.getClass() != getClass())) {
-              return false;
-          }
-          Appointment testObj = (Appointment) obj;
-
-          boolean descriptionEquals = (getDescription() == null)
-                  ? (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
-          boolean locationEquals = (getLocation() == null)
-                  ? (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
-          boolean summaryEquals = (getSummary() == null)
-                  ? (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
-//          boolean repeatEquals = (getRepeat() == null)
-//                  ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
-          boolean appointmentGroupEquals = (getAppointmentGroup() == null)
-                  ? (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());              
-           System.out.println("agenda " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
-          return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals;
-      }
-      
-      /** Checks if fields relevant for the repeat rule (non-time fields) are equal. */
-      // needs to be overridden by any class implementing Appointment or extending AppointmentImplBase
-      // Note: Location field is a problem - I think it should be removed.
-      public boolean repeatFieldsEquals(Object obj) {
-          return equals(obj);
-      }
+//	  // used for Assert methods in testing
+//      @Override
+//      public boolean equals(Object obj) {
+//          if (obj == this) return true;
+//          if((obj == null) || (obj.getClass() != getClass())) {
+//              return false;
+//          }
+//          Appointment testObj = (Appointment) obj;
+//
+//          boolean descriptionEquals = (getDescription() == null)
+//                  ? (testObj.getDescription() == null) : getDescription().equals(testObj.getDescription());
+//          boolean locationEquals = (getLocation() == null)
+//                  ? (testObj.getLocation() == null) : getLocation().equals(testObj.getLocation());
+//          boolean summaryEquals = (getSummary() == null)
+//                  ? (testObj.getSummary() == null) : getSummary().equals(testObj.getSummary());
+////          boolean repeatEquals = (getRepeat() == null)
+////                  ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
+//          boolean appointmentGroupEquals = (getAppointmentGroup() == null)
+//                  ? (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());              
+//           System.out.println("agenda " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
+//          return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals;
+//      }
+//      
+//      /** Checks if fields relevant for the repeat rule (non-time fields) are equal. */
+//      // needs to be overridden by any class implementing Appointment or extending AppointmentImplBase
+//      // Note: Location field is a problem - I think it should be removed.
+//      public boolean repeatFieldsEquals(Object obj) {
+//          return equals(obj);
+//      }
       
 	}
 	
@@ -801,6 +799,7 @@ public class Agenda extends Control
 		public String getStyleClass(); // this is the CSS class being assigned
 		public void setStyleClass(String s);
 		
+		// TODO - MOVE THESE TO THE IMPL
 		public int getKey();
 		public void setKey(int key);
 		public AppointmentGroupImpl withKey(int key);
@@ -860,5 +859,22 @@ public class Agenda extends Control
      */
     public void print(PrinterJob job) {
     	((AgendaSkin)getSkin()).print(job);
+    }
+    
+    /** Class to contain data for the appointment edit callback */
+    static public class AppointmentEditData
+    {
+        public Appointment appointment;
+        public Collection<Appointment> appointments;
+        public 
+//        public LayoutHelp layoutHelp;
+        public Pane pane;
+
+        public AppointmentEditData(Appointment appointment, LayoutHelp layoutHelp, Pane pane) {
+            this.appointment = appointment;
+            this.layoutHelp = layoutHelp;
+            this.pane = pane;
+        }
+
     }
 }

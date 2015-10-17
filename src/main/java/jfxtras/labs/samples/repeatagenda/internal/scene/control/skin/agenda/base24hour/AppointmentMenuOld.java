@@ -105,7 +105,8 @@ class AppointmentMenuOld extends Rectangle {
 		// has the client done his own popup?
 		Callback<Appointment, Void> lEditCallback = layoutHelp.skinnable.getEditAppointmentCallback();
 		if (lEditCallback != null) {
-			lEditCallback.call(appointment);
+//            AppointmentEditData data = new AppointmentEditData(appointment, layoutHelp, pane);
+            lEditCallback.call(appointment);
 			return;
 		}
 

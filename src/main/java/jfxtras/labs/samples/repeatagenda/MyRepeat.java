@@ -102,7 +102,7 @@ public class MyRepeat extends Repeat {
                         Integer myKey = keyIterator.next();
                         nextKey = Math.max(nextKey, myKey);
                         Repeat myRepeat = new MyRepeat().unmarshal((Element) myNodeList.item(n), myKey);
-                        int i = ((MyAppointment) myRepeat.getAppointmentData()).getAppointmentGroupIndex();
+                        int i = ((RepeatableAppointmentImpl) myRepeat.getAppointmentData()).getAppointmentGroupIndex();
 //                        System.out.println("i " + i);
 //                        Integer i = myRepeat.getAppointmentData().getAppointmentGroup().getKey();
 //                        Integer i = myRepeat.getAppointmentData().getAppointmentGroup().;
@@ -186,7 +186,7 @@ public class MyRepeat extends Repeat {
         
         Element appointmentElement = (Element) myElement.getElementsByTagName("appointment").item(0);   // must be only one appointment element
         Map<String, String> appointmentAttributes = DataUtilities.getAttributes(appointmentElement, "appointment");
-        MyAppointment appointment = AppointmentFactory.newAppointment().unmarshal(appointmentAttributes, "Repeat appointment settings");
+        RepeatableAppointmentImpl appointment = AppointmentFactory.newAppointment().unmarshal(appointmentAttributes, "Repeat appointment settings");
 //        System.out.println("appointment.getAppointmentGroupIndex() " + appointment.getAppointmentGroupIndex());
         setAppointmentData(appointment);
 //        int i = Integer.parseInt(DataUtilities.myGet(appointmentAttributes, "groupIndex", "Repeat appointment settings"));

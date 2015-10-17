@@ -25,14 +25,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AlertsAndDialogs;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
 
 public class RepeatableController {
 
-private Appointment appointment;
+private RepeatableAppointment appointment;
 private Repeat repeat;
 
 @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
@@ -271,10 +271,10 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
 }
 
 
-    public void setupData(Appointment appointment) {
+    public void setupData(RepeatableAppointment appointment) {
 
         this.appointment = appointment;
-        if (appointment.hasRepeat())
+        if (appointment.getRepeat() != null)
         { // get existing repeat
             repeat = appointment.getRepeat();
         } else { // make new repeat
@@ -325,7 +325,7 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
         });
 
         // Check repeatable box if appointment has a Repeat
-        repeatableCheckBox.selectedProperty().set(appointment.hasRepeat());        
+        repeatableCheckBox.selectedProperty().set(appointment.getRepeat() != null);        
     }
     
     private void setupBindings() {

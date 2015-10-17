@@ -32,6 +32,7 @@ package jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.bas
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.stream.Collectors;
 
 import javafx.collections.ListChangeListener;
 import javafx.collections.WeakListChangeListener;
@@ -46,6 +47,7 @@ import javafx.util.Callback;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities.WindowCloseType;
 import jfxtras.util.NodeUtil;
@@ -256,16 +258,16 @@ abstract class AppointmentAbstractPane extends Pane {
 			// determine start and end DateTime of the drag
 			LocalDateTime dragDropDateTime = layoutHelp.skin.convertClickInSceneToDateTime(mouseEvent.getSceneX(), mouseEvent.getSceneY());
 			if (dragDropDateTime != null) { // not dropped somewhere outside
-			    Appointment appointmentOld = AppointmentFactory.newAppointment(appointment);
+			    RepeatableAppointment appointmentOld = AppointmentFactory.newAppointment((RepeatableAppointment) appointment);
 				handleDrag(appointment, dragPickupDateTime, dragDropDateTime);					
 				
-                // Record drag-and-drop appointment edit - by David Bal
+                // Record drag-and-drop appointment edit - by David Bal - cast all appointments to RepeatableAppointments - temp fix
                 WindowCloseType changeMade = RepeatableUtilities.editAppointments
-                        ( layoutHelp.skinnable.appointments()
-                        , appointment
-                        , appointmentOld
+                        ( layoutHelp.skinnable.appointments().stream().map(a -> (RepeatableAppointment) a).collect(Collectors.toList())
+                        , (RepeatableAppointment) appointment
+                        , (RepeatableAppointment) appointmentOld
                         , layoutHelp.skinnable.repeats());
-                if (changeMade != WindowCloseType.CLOSE_WITH_CHANGE) appointmentOld.copyInto(appointment);
+                if (changeMade != WindowCloseType.CLOSE_WITH_CHANGE) appointmentOld.copyInto((RepeatableAppointment) appointment);
 				
 				// relayout whole week
 				layoutHelp.skin.setupAppointments();

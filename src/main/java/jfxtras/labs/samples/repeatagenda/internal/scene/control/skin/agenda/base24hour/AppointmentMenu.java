@@ -84,6 +84,7 @@ public class AppointmentMenu extends Rectangle {
 		// has the client done his own popup?
 		Callback<Appointment, Void> lEditCallback = layoutHelp.skinnable.getEditAppointmentCallback();
 		if (lEditCallback != null) {
+//		    AppointmentEditData data = new AppointmentEditData(appointment, layoutHelp, pane);
 			lEditCallback.call(appointment);
 			return;
 		}
@@ -103,7 +104,7 @@ public class AppointmentMenu extends Rectangle {
             e.printStackTrace();
         }
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
-        appointmentEditController.setupData(appointment, layoutHelp);
+        appointmentEditController.setupData(appointment, layoutHelp.skinnable.appointments(), layoutHelp.skinnable.repeats(), layoutHelp.skinnable.appointmentGroups());
         Scene scene2 = new Scene(appointmentMenu);
         
         // data element change bindings

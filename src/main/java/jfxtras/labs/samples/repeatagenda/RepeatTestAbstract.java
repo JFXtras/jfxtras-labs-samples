@@ -17,6 +17,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
 
 public abstract class RepeatTestAbstract {
     
@@ -38,7 +39,7 @@ public abstract class RepeatTestAbstract {
     
     public Repeat getRepeatWeekly()
     {
-        Appointment a1 = AppointmentFactory.newAppointment()
+        RepeatableAppointment a1 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(5))
                 .withSummary("Weekly Appointment Variable");
         return new MyRepeat()
@@ -54,7 +55,7 @@ public abstract class RepeatTestAbstract {
 
     public Repeat getRepeatMonthly()
     {
-        Appointment a2 = AppointmentFactory.newAppointment()
+        RepeatableAppointment a2 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Variable");
         return new MyRepeat()
@@ -70,7 +71,7 @@ public abstract class RepeatTestAbstract {
     
     public Repeat getRepeatDaily()
     {
-        Appointment a3 = AppointmentFactory.newAppointment()
+        RepeatableAppointment a3 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Variable");
         return new MyRepeat()
@@ -86,7 +87,7 @@ public abstract class RepeatTestAbstract {
 
     public Repeat getRepeatDailyFixed()
     {
-        Appointment a = AppointmentFactory.newAppointment()
+        RepeatableAppointment a = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
         return RepeatFactory.newRepeat()
@@ -102,7 +103,7 @@ public abstract class RepeatTestAbstract {
     
     public Repeat getRepeatWeeklyFixed()
     {
-        Appointment a1 = AppointmentFactory.newAppointment()
+        RepeatableAppointment a1 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed");
         return RepeatFactory.newRepeat()
@@ -118,7 +119,7 @@ public abstract class RepeatTestAbstract {
     
     public Repeat getRepeatWeeklyFixed2()
     {
-        Appointment a1 = AppointmentFactory.newAppointment()
+        RepeatableAppointment a1 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed2");
         return RepeatFactory.newRepeat()
@@ -137,7 +138,7 @@ public abstract class RepeatTestAbstract {
     
     public Repeat getRepeatMonthlyFixed()
     {
-        Appointment a2 = AppointmentFactory.newAppointment()
+        RepeatableAppointment a2 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Fixed");
         return RepeatFactory.newRepeat()
@@ -153,7 +154,7 @@ public abstract class RepeatTestAbstract {
 
     public Repeat getRepeatMonthlyFixed2() // repeat every third Thursday
     {
-        Appointment a2 = AppointmentFactory.newAppointment()
+        RepeatableAppointment a2 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Fixed2");
         return RepeatFactory.newRepeat()
@@ -169,7 +170,7 @@ public abstract class RepeatTestAbstract {
     
     public Repeat getRepeatYearlyFixed()
     {
-        Appointment a2 = AppointmentFactory.newAppointment()
+        RepeatableAppointment a2 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(22))
                 .withSummary("Yearly Appointment Fixed");
         return RepeatFactory.newRepeat()

@@ -3,13 +3,15 @@ package jfxtras.labs.samples.repeatagenda.scene.control.agenda;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
 import javafx.collections.ObservableList;
-import jfxtras.labs.samples.repeatagenda.MyAppointment;
+import jfxtras.labs.samples.repeatagenda.RepeatableAppointmentImpl;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -23,25 +25,36 @@ public final class AppointmentFactory {
     
     private AppointmentFactory() {}
 
-    public static MyAppointment newAppointment() {
-        return new MyAppointment();
+    public static RepeatableAppointmentImpl newAppointment() {
+        return new RepeatableAppointmentImpl();
     }
         
-    public static Appointment newAppointment(Appointment appointment) {
-        return new MyAppointment(appointment);
+    public static RepeatableAppointment newAppointment(RepeatableAppointment appointment) {
+        return new RepeatableAppointmentImpl(appointment);
     }
 
-    public static MyAppointment returnConcreteAppointment(Appointment myAppointment) {
-        return (MyAppointment) myAppointment;
+    public static RepeatableAppointmentImpl returnConcreteAppointment(Appointment myAppointment) {
+        return (RepeatableAppointmentImpl) myAppointment;
     }
 
 
     /**
      * writes appointmentList to file
      */
-    public static void writeToFile(Collection<Appointment> appointments) {
+    public static void writeToFile(Collection<RepeatableAppointment> appointments) {
 //        System.out.println("writeToFile");
-        MyAppointment.writeToFile(appointments, Settings.APPOINTMENTS_FILE);
+        RepeatableAppointmentImpl.writeToFile(appointments, Settings.APPOINTMENTS_FILE);
+    }
+
+    /**
+     * writes appointmentList to file - temporary work around for type problem
+     */
+    public static void writeToFile(List<? extends Appointment> appointments) {
+        List<RepeatableAppointment> appointments2 = appointments
+                .stream()
+                .map(a -> ((RepeatableAppointment) a)) // down cast all appointmetns to RepeatableAppointments
+                .collect(Collectors.toList());
+        RepeatableAppointmentImpl.writeToFile(appointments2, Settings.APPOINTMENTS_FILE);
     }
     
 
@@ -53,11 +66,13 @@ public final class AppointmentFactory {
      * @throws SAXException 
      * @throws ParserConfigurationException 
      */
-    public static Collection<Appointment> readFromFile(Path appointmentsPath, ObservableList<AppointmentGroup> appointmentGroups, Collection<Appointment> appointments)
+    public static Collection<RepeatableAppointment> readFromFile(Path appointmentsPath
+            , ObservableList<AppointmentGroup> appointmentGroups
+            , Collection<RepeatableAppointment> appointments)
             throws ParserConfigurationException, SAXException, IOException
     {
 //        System.out.println("readFromFile");
-        return MyAppointment.readFromFile(appointmentsPath.toFile(), appointmentGroups, appointments);
+        return RepeatableAppointmentImpl.readFromFile(appointmentsPath.toFile(), appointmentGroups, appointments);
     }
     
 //    public static void setupRepeats(Collection<MyRepeat> repeats) {

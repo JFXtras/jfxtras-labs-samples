@@ -228,22 +228,18 @@ public abstract class Repeat {
     public Repeat withDeletedDates(Set<LocalDate> dates) { setDeletedDates(dates); return this; }
     
     /** Appointment-specific data */
-//    private Repeatable appointmentData = AppointmentFactory.newAppointmentRepeatable();
-//    public Repeatable getAppointmentData() { return appointmentData; }
-//    public Repeat withAppointmentData(Repeatable appointment) { appointment.copyInto(appointment); return this; }
-
-    private Appointment appointmentData = AppointmentFactory.newAppointment();
-    public Appointment getAppointmentData() { return appointmentData; }
-    public void setAppointmentData(Appointment appointment) { appointmentData = appointment; }
-    public Repeat withAppointmentData(Appointment appointment) { setAppointmentData(appointment); return this; }
+    private RepeatableAppointment appointmentData = AppointmentFactory.newAppointment();
+    public RepeatableAppointment getAppointmentData() { return appointmentData; }
+    public void setAppointmentData(RepeatableAppointment appointment) { appointmentData = appointment; }
+    public Repeat withAppointmentData(RepeatableAppointment appointment) { setAppointmentData(appointment); return this; }
 //    public void setAppointmentData(Appointment appointment) { appointment.copyNonDateFieldsInto(appointmentData); }
 
     /** Appointments generated from this repeat rule.  Objects are a subset of appointments in main appointments list
      * used in the Agenda calendar.  Names myAppointments to differentiate it from main name appointments */
-    final private Set<Appointment> myAppointments = new HashSet<Appointment>();
+    final private Set<RepeatableAppointment> myAppointments = new HashSet<RepeatableAppointment>();
 //    private Set<Appointment> myAppointments;
-    public Set<Appointment> getAppointments() { return myAppointments; }
-    public Repeat withAppointments(Collection<Appointment> s) { getAppointments().addAll(s); return this; }
+    public Set<RepeatableAppointment> getAppointments() { return myAppointments; }
+    public Repeat withAppointments(Collection<RepeatableAppointment> s) { getAppointments().addAll(s); return this; }
 //    public Repeat withAppointments(Collection<Appointment> s) {myAppointments = new HashSet<Appointment>(s); return this; }
 //    public boolean isNew() { return getAppointments().size() <= 1; }
 
@@ -349,15 +345,16 @@ public abstract class Repeat {
 //          boolean b2 = testObj.getDayOfWeekMap().get(key).get();
 //          System.out.println("day of week " + key + " " + b1 + " " + b2);
 //      }
-        System.out.println(" getEndAfterEvents " + getEndAfterEvents() + " " + testObj.getEndAfterEvents());
-        System.out.println(this.getStartLocalDate() + " " + testObj.getStartLocalDate());
-        System.out.println("repeat " + getEndAfterEvents().equals(testObj.getEndAfterEvents())
-            + " " + (getEndCriteria() == testObj.getEndCriteria())
-            + " " + isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth())
-            + " " + isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
-            + " " + getRepeatFrequency().equals(testObj.getRepeatFrequency())
-            + " " + getAppointmentData().repeatFieldsEquals(testObj.getAppointmentData())
-            + " " + dayOfWeekMapEqual(testObj.getDayOfWeekMap()));
+
+//        System.out.println(" getEndAfterEvents " + getEndAfterEvents() + " " + testObj.getEndAfterEvents());
+//        System.out.println(this.getStartLocalDate() + " " + testObj.getStartLocalDate());
+//        System.out.println("repeat " + getEndAfterEvents().equals(testObj.getEndAfterEvents())
+//            + " " + (getEndCriteria() == testObj.getEndCriteria())
+//            + " " + isRepeatDayOfMonth().equals(testObj.isRepeatDayOfMonth())
+//            + " " + isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
+//            + " " + getRepeatFrequency().equals(testObj.getRepeatFrequency())
+//            + " " + getAppointmentData().repeatFieldsEquals(testObj.getAppointmentData())
+//            + " " + dayOfWeekMapEqual(testObj.getDayOfWeekMap()));
 
         return getEndAfterEvents().equals(testObj.getEndAfterEvents())
             && getEndCriteria() == testObj.getEndCriteria()
@@ -523,13 +520,17 @@ public abstract class Repeat {
 
     /**
      * Adds appointments as members of this repeat rule to myAppointments collection
+     * All appointments must be RepeatableAppointments or method will throw an exception.
      * 
      * @param appointments
      */
-    public void collectAppointments(Collection<Appointment> appointments) {
-        Set<Appointment> s = appointments.stream()
-                                         .filter(a -> a.hasRepeat())
+    public void collectAppointments(Collection<RepeatableAppointment> appointments) {
+        Set<RepeatableAppointment> s = appointments.stream()
+                                         .map(a -> (RepeatableAppointment) a)
+                                         .filter(a -> a.getRepeat() != null)
                                          .filter(a -> a.getRepeat().equals(this))
+//                                         .filter(a -> repeatMap.get(a) != null)
+//                                         .filter(a -> repeatMap.get(a).equals(this))
                                          .collect(Collectors.toSet());
         getAppointments().addAll(s);
     }
@@ -558,9 +559,9 @@ public abstract class Repeat {
      * @param appointments
      * @return
      */
-    public Repeat makeAppointments(Collection<Appointment> appointments)
+    public Collection<RepeatableAppointment> makeAppointments()
     {
-        return makeAppointments(appointments, startDate, endDate); // use current startDate and endDate
+        return makeAppointments(startDate, endDate); // use current startDate and endDate
     }
     /**
      * Make appointments that should exist between startDate and endDate based on Repeat rules.
@@ -574,8 +575,9 @@ public abstract class Repeat {
      * @param endDate
      * @return
      */
-    public Repeat makeAppointments(Collection<Appointment> appointments, LocalDate startDate, LocalDate endDate)
+    public Collection<RepeatableAppointment> makeAppointments(LocalDate startDate, LocalDate endDate)
     {
+        Set<RepeatableAppointment> appointments = new HashSet<RepeatableAppointment>();
         this.endDate = endDate;
         this.startDate = startDate;
 
@@ -583,29 +585,30 @@ public abstract class Repeat {
         if (getEndOnDate() == null) {
             myEndDate = endDate;
         } else {
+//            System.out.println(endDate + " " + getEndOnDate());
             myEndDate = (endDate.isBefore(getEndOnDate())) ? endDate : getEndOnDate();
         }
         LocalDate myStartDate = nextValidDateSlow(startDate.minusDays(1));
-        System.out.println("myStartDate " + myStartDate + " " + myEndDate);
-        System.out.println("StartDate " + startDate + " " + endDate + " " + this.getStartLocalDate() + " " +  getEndOnDate() );
+//        System.out.println("myStartDate " + myStartDate + " " + myEndDate);
+//        System.out.println("StartDate " + startDate + " " + endDate + " " + this.getStartLocalDate() + " " +  getEndOnDate() );
 
         if (! myStartDate.isAfter(myEndDate))
         { // create set of appointment dates already used, to be skipped in making more
-            System.out.println("make appointments");
+//            System.out.println("make appointments");
             final Set<LocalDate> usedDates = getAppointments()
                     .stream()
                     .map(a -> a.getStartLocalDateTime().toLocalDate())
-                    .peek(a -> System.out.println("used " + a))
+//                    .peek(a -> System.out.println("used " + a))
                     .collect(Collectors.toSet());
             
-            final Iterator<Appointment> i = Stream                              // appointment iterator
+            final Iterator<RepeatableAppointment> i = Stream                              // appointment iterator
                     .iterate(myStartDate, (a) -> a.with(new NextAppointment())) // infinite stream of valid dates
                     .filter(a -> ! usedDates.contains(a))                       // filter out dates already used
                     .filter(a -> ! getDeletedDates().contains(a))               // filter out deleted dates
                     .map(a -> {                                                 // make new appointment
                         LocalDateTime myStartDateTime = a.atTime(getStartLocalTime());
                         LocalDateTime myEndDateTime = a.atTime(getEndLocalTime());
-                        Appointment appt = AppointmentFactory
+                        RepeatableAppointment appt = AppointmentFactory
                                 .newAppointment()
                                 .withStartLocalDateTime(myStartDateTime)
                                 .withEndLocalDateTime(myEndDateTime)
@@ -614,23 +617,25 @@ public abstract class Repeat {
                                 .withAppointmentGroup(getAppointmentData().getAppointmentGroup())
                                 .withDescription(getAppointmentData().getDescription())
                                 .withSummary(getAppointmentData().getSummary());
+//                        repeatMap.put(appt, this);
                         return appt;
                     })
                     .iterator();                                                // make iterator
             
             while (i.hasNext())
             { // Process new appointments
-                final Appointment a = i.next();
-                System.out.println("times " + a.getStartLocalDateTime().toLocalDate() + " " + (myEndDate));
+                final RepeatableAppointment a = i.next();
+//                System.out.println("times " + a.getStartLocalDateTime().toLocalDate() + " " + (myEndDate));
                 if (a.getStartLocalDateTime().toLocalDate().isAfter(myEndDate)) break; // exit loop when at end
-                System.out.println("add " + a.getStartLocalDateTime());
+//                System.out.println("add " + a.getStartLocalDateTime());
+//                repeatMap.add(a, this);                                                // add appointment and repeat to repeatMap
                 appointments.add(a);                                                   // add appointments to main collection
                 getAppointments().add(a);                                              // add appointments to this repeat's collection
             }
 //            isNew = false; // when makeAppointments is run first time set isNew to false
         }
         
-        return this;
+        return appointments;
     }
     
     /**
@@ -644,7 +649,7 @@ public abstract class Repeat {
      * @param endDate
      * @return
      */
-    public Repeat removeOutsideRangeAppointments(Collection<Appointment> appointments
+    public Repeat removeOutsideRangeAppointments(Collection<RepeatableAppointment> appointments
             , LocalDate startDate
             , LocalDate endDate)
     {
@@ -664,9 +669,9 @@ public abstract class Repeat {
      * @param appointments
      * @return
      */
-    public Repeat removeOutsideRangeAppointments(Collection<Appointment> appointments)
+    public Repeat removeOutsideRangeAppointments(Collection<RepeatableAppointment> appointments)
     {
-        Iterator<Appointment> i = getAppointments().stream()
+        Iterator<RepeatableAppointment> i = getAppointments().stream()
             .filter(a -> {
                 boolean tooEarly = a.getStartLocalDateTime().toLocalDate().isBefore(startDate);
                 boolean tooLate = a.getStartLocalDateTime().toLocalDate().isAfter(endDate);
@@ -677,7 +682,7 @@ public abstract class Repeat {
         
         while (i.hasNext())
         {
-            final Appointment a = i.next();
+            final RepeatableAppointment a = i.next();
             RepeatableUtilities.removeOne(appointments, a);
             RepeatableUtilities.removeOne(getAppointments(), a);
         }
@@ -732,8 +737,8 @@ public abstract class Repeat {
      * @return
      */
     protected void updateAppointments(Collection<Appointment> appointments
-            , Appointment appointment
-            , Appointment appointmentOld
+            , RepeatableAppointment appointment
+            , RepeatableAppointment appointmentOld
             , TemporalAdjuster startTemporalAdjuster
             , TemporalAdjuster endTemporalAdjuster)
     {
@@ -769,14 +774,14 @@ public abstract class Repeat {
      * @return
      */
     public void updateAppointments(Collection<Appointment> appointments
-            , Appointment appointment)
+            , RepeatableAppointment appointment)
     {
         // Identify invalid repeat appointments
         final LocalDateTime firstDateTime = getStartLocalDate().atTime(getStartLocalTime());
         final Iterator<LocalDateTime> validDateTimeIterator = Stream                      // iterator
                 .iterate(firstDateTime, (d) -> { return d.with(new NextAppointment()); }) // generate infinite stream of valid dates
                 .iterator();                                                              // make iterator
-        final Iterator<Appointment> appointmentIterator = getAppointments()
+        final Iterator<RepeatableAppointment> appointmentIterator = getAppointments()
                 .stream() // appointments sorted by date
                 .sorted(Comparator.comparing(a -> a.getStartLocalDateTime()))
                 .iterator();
@@ -810,13 +815,15 @@ public abstract class Repeat {
                 .filter(a -> ! isValidAppointment(a.getStartLocalDateTime())) // invalid date time
                 .filter(a -> ! a.isRepeatMade())                              // is not repeat made
                 .peek(a -> a.setRepeat(null))                                 // reset Repeat to null (make moved appointments individual when date is now invalid due to repeat change)
+//                .peek(a -> repeatMap.remove(a))                                 // reset Repeat to null (make moved appointments individual when date is now invalid due to repeat change)
                 .anyMatch(a -> true);                                         // if any appointments past filters set flag to write appointments
 
         // Check for any appointments that have the Repeat, but are not repeat made.
         boolean writeAppointmentsNeeded2 = getAppointments()
                 .stream()
-                .anyMatch(a -> (a.hasRepeat()) && (! a.isRepeatMade()));
-
+                .anyMatch(a -> (a.getRepeat() != null) && (! a.isRepeatMade()));
+//                .anyMatch(a -> (repeatMap.get(a) != null) && (! a.isRepeatMade()));
+        
         for (Appointment a : invalidAppointments)
         {
 //            if (a.getStudentKeys().isEmpty())
@@ -828,9 +835,9 @@ public abstract class Repeat {
 //                getAppointmentData().copyInto(a);
 //            }
         }
-        makeAppointments(appointments); // add any new appointments needed
+        appointments.addAll(makeAppointments()); // add any new appointments needed
         
-        if (writeAppointmentsNeeded || writeAppointmentsNeeded2) AppointmentFactory.writeToFile(appointments);
+//        if (writeAppointmentsNeeded || writeAppointmentsNeeded2) AppointmentFactory.writeToFile(appointments); //  DO THIS ELSEWHERE WHEN I HAVE THE ACTUAL REPEATABLEAPPOINTMENT COLLECTION
     }
 
     /**
@@ -840,7 +847,8 @@ public abstract class Repeat {
      * @param appointments 
      * @return
      */
-    public boolean oneAppointmentToIndividual(Collection<Repeat> repeats, Collection<Appointment> appointments)
+    public boolean oneAppointmentToIndividual(Collection<Repeat> repeats
+            , Collection<Appointment> appointments)
     {
         if (getEndCriteria() != EndCriteria.NEVER)
         { // Count number of valid appointment start dates, stop when after end date or more than one appointment date
@@ -863,13 +871,14 @@ public abstract class Repeat {
                 RepeatableUtilities.removeOne(repeats, this);
                 if (getAppointments().size() == 1)
                 {
-                    Appointment myAppointment = getAppointments().iterator().next();
+                    RepeatableAppointment myAppointment = getAppointments().iterator().next();
                     myAppointment.setRepeatMade(false);
                     myAppointment.setRepeat(null);
+//                    repeatMap.remove(myAppointment);
                     getAppointments().clear();
                 } else if (getAppointments().size() == 0)
                 { // make individual appointment because it is not in current date range
-                    this.makeAppointments(appointments, getStartLocalDate(), getEndOnDate());
+                    appointments.addAll(makeAppointments(getStartLocalDate(), getEndOnDate()));
                     getAppointments().iterator().next().setRepeatMade(false);
                 }
                 return true;
@@ -1128,7 +1137,7 @@ public abstract class Repeat {
      * Removes the deleted dates and appointments outside the start and end dates
      * @param appointments 
      */
-    public void fixCollectionDates(Collection<Appointment> appointments)
+    public void fixCollectionDates(Collection<Appointment> appointments, Map<Appointment, Repeat> repeatMap)
     {
         // keep only deletedDates within start and end dates
         final Set<LocalDate> dates = getDeletedDates()
@@ -1140,7 +1149,7 @@ public abstract class Repeat {
         setDeletedDates(dates);                                  // keep new set
           
           // keep only appointments within start and end dates
-          Iterator<Appointment> i = getAppointments().iterator();
+          Iterator<RepeatableAppointment> i = getAppointments().iterator();
           while (i.hasNext())
           {
               Appointment a = i.next();
@@ -1152,7 +1161,8 @@ public abstract class Repeat {
           }
   
           getAppointments().stream()
-                           .forEach(a -> a.setRepeat(this));
+                  .forEach(a -> repeatMap.put(a, this));
+//                           .forEach(a -> a.setRepeat(this));
     }
 
 //    /**
