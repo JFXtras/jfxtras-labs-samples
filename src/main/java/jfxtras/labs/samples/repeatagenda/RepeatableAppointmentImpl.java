@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,15 +34,15 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.DataUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.AppointmentGroupImpl;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointmentImplBase;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
+import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<RepeatableAppointmentImpl> implements RepeatableAppointment {
 
@@ -227,7 +229,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         doc.appendChild(rootElement);
         
         // Appointments
-        for (Appointment myAppointment : appointments)
+        for (RepeatableAppointment myAppointment : appointments)
         {
             if (myAppointment instanceof RepeatableAppointment)
             {
@@ -285,8 +287,9 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         myElement.setAttribute("summary", getSummary());
         myElement.setAttribute("description", getDescription());
 //        myElement.setAttribute("locationKey", Integer.toString(getLocationKey()));
-//        System.out.println(getAppointmentGroup());
-        myElement.setAttribute("groupIndex", Integer.toString(getAppointmentGroup().getKey()));
+
+        // TODO - TRY TO REMOVE CAST TO AppointmentGroupImpl
+        myElement.setAttribute("groupIndex", Integer.toString(((AppointmentGroupImpl) getAppointmentGroup()).getKey()));
 //        final String s = getStaffKeys().stream()
 //                                 .map(a -> a.toString())
 //                                 .collect(Collectors.joining(" "));
@@ -411,6 +414,49 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         List<Integer> s = ((RepeatableAppointmentImpl) appointment).getStudentKeys();
         getStudentKeys().addAll(s);
         return RepeatableAppointment.super.copyNonDateFieldsInto(appointment);
+    }
+    
+    
+    // TODO - DO SOMETHING ABOUT THE BELOW STUBS
+    @Override
+    public Calendar getStartTime() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public void setStartTime(Calendar c) {
+        // TODO Auto-generated method stub
+        
+    }
+    @Override
+    public Calendar getEndTime() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public void setEndTime(Calendar c) {
+        // TODO Auto-generated method stub
+        
+    }
+    @Override
+    public ZonedDateTime getStartZonedDateTime() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public void setStartZonedDateTime(ZonedDateTime v) {
+        // TODO Auto-generated method stub
+        
+    }
+    @Override
+    public ZonedDateTime getEndZonedDateTime() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public void setEndZonedDateTime(ZonedDateTime v) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

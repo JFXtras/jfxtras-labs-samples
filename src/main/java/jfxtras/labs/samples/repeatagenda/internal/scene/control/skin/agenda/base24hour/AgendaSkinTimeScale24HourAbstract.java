@@ -59,14 +59,14 @@ import jfxtras.animation.Timer;
 import jfxtras.internal.scene.control.skin.DateTimeToCalendarHelper;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AllAppointments;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine;
 import jfxtras.util.NodeUtil;
 
 /**
  * @author Tom Eugelink
  */
 // TODO: number of call to determineDisplayedLocalDates, can we cache? 
-abstract public class AgendaSkinTimeScale24HourAbstract extends SkinBase<Agenda>
+abstract public class AgendaSkinTimeScale24HourAbstract extends SkinBase<AgendaMine>
 implements AgendaSkin
 {
 	// ==================================================================================================================
@@ -75,13 +75,13 @@ implements AgendaSkin
 	/**
 	 * 
 	 */
-	public AgendaSkinTimeScale24HourAbstract(Agenda control)
+	public AgendaSkinTimeScale24HourAbstract(AgendaMine control)
 	{
 		super(control);
 		this.control = control;
 		construct();
 	}
-	protected final Agenda control;
+	protected final AgendaMine control;
 
 	/**
 	 * Reconstruct the UI part
@@ -125,7 +125,7 @@ implements AgendaSkin
 		scrollWeekpaneToShowDisplayedTime();
 		setupAppointments();
 	};
-	private ListChangeListener<Agenda.Appointment> appointmentsListChangeListener = (changes) -> {
+	private ListChangeListener<AgendaMine.Appointment> appointmentsListChangeListener = (changes) -> {
 		setupAppointments();
 	};
 	
@@ -141,7 +141,7 @@ implements AgendaSkin
 		
 		// reset style classes
 		getSkinnable().getStyleClass().clear();
-		getSkinnable().getStyleClass().add(Agenda.class.getSimpleName());
+		getSkinnable().getStyleClass().add(AgendaMine.class.getSimpleName());
 
 		// continue
 		super.dispose();
@@ -172,11 +172,11 @@ implements AgendaSkin
 		LocalDate lStartLocalDate = lLocalDates.get(0);
 		LocalDate lEndLocalDate = lLocalDates.get(lLocalDates.size() - 1);
 		if (getSkinnable().getLocalDateTimeRangeCallback() != null) {
-			Agenda.LocalDateTimeRange lRange = new Agenda.LocalDateTimeRange(lStartLocalDate.atStartOfDay(), lEndLocalDate.atStartOfDay());
+			AgendaMine.LocalDateTimeRange lRange = new AgendaMine.LocalDateTimeRange(lStartLocalDate.atStartOfDay(), lEndLocalDate.atStartOfDay());
 			getSkinnable().getLocalDateTimeRangeCallback().call(lRange);
 		}
 		if (getSkinnable().getCalendarRangeCallback() != null) {
-			Agenda.CalendarRange lRange = new Agenda.CalendarRange( DateTimeToCalendarHelper.createCalendarFromLocalDate(lStartLocalDate, TimeZone.getDefault(), Locale.getDefault()), DateTimeToCalendarHelper.createCalendarFromLocalDate(lEndLocalDate, TimeZone.getDefault(), Locale.getDefault()));
+			AgendaMine.CalendarRange lRange = new AgendaMine.CalendarRange( DateTimeToCalendarHelper.createCalendarFromLocalDate(lStartLocalDate, TimeZone.getDefault(), Locale.getDefault()), DateTimeToCalendarHelper.createCalendarFromLocalDate(lEndLocalDate, TimeZone.getDefault(), Locale.getDefault()));
 			getSkinnable().getCalendarRangeCallback().call(lRange);
 		}
 	}
@@ -564,7 +564,7 @@ implements AgendaSkin
 		borderPane.setTop(weekHeaderPane);
 		
 		// style
-		borderPane.getStyleClass().add(Agenda.class.getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
+		borderPane.getStyleClass().add(AgendaMine.class.getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
 		borderPane.getStyleClass().add(getClass().getSimpleName()); // always add self as style class, because CSS should relate to the skin not the control		
 
 		// scale to match page

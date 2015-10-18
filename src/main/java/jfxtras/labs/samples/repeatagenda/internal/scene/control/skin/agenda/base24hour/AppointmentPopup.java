@@ -8,7 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Popup;
 import jfxtras.labs.samples.repeatagenda.Main;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.controller.AppointmentPopupController;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 import jfxtras.util.NodeUtil;
 

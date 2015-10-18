@@ -20,9 +20,9 @@ import org.xml.sax.SAXException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroupImpl;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.DataUtilities;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.AppointmentGroupImpl;
+import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 
 /**

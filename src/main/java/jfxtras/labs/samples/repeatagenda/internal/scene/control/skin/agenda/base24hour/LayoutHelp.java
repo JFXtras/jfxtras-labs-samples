@@ -49,14 +49,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.DragPane;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine;
 
 /**
  * This class is not a class but a data holder, a record, all fields are accessed directly.
  * Its methods are utility methods, which normally would be statics in a util class. 
  */
 public class LayoutHelp {
-	public LayoutHelp(Agenda skinnable, AgendaSkin skin) {
+	public LayoutHelp(AgendaMine skinnable, AgendaSkin skin) {
 		this.skinnable = skinnable;
 		this.skin = skin;
 		dragPane = new DragPane(this);
@@ -80,7 +80,7 @@ public class LayoutHelp {
 		// time column
 		timeWidthProperty.bind( timeColumnWhitespaceProperty.add( new Text("88:88").getBoundsInParent().getWidth() )  );
 	}
-	public final Agenda skinnable;
+	public final AgendaMine skinnable;
 	public final AgendaSkin skin;
 	final DragPane dragPane;
 	

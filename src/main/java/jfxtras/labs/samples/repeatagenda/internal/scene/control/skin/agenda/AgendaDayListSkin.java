@@ -6,12 +6,12 @@ import java.time.Period;
 import javafx.print.PrinterJob;
 import javafx.scene.control.SkinBase;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaSkin;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine;
 
-public class AgendaDayListSkin extends SkinBase<Agenda>
+public class AgendaDayListSkin extends SkinBase<AgendaMine>
 implements AgendaSkin {
 
-	protected AgendaDayListSkin(Agenda arg0) {
+	protected AgendaDayListSkin(AgendaMine arg0) {
 		super(arg0);
 		// TODO Auto-generated constructor stub
 	}

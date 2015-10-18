@@ -42,14 +42,14 @@ import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentRegularBodyPane;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentTaskBodyPane;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.LayoutHelp;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine;
 
 abstract class AppointmentAbstractTrackedPane extends AppointmentAbstractPane {
 	/**
 	 * @param calendar
 	 * @param appointment
 	 */
-	AppointmentAbstractTrackedPane(LocalDate localDate, Agenda.Appointment appointment, LayoutHelp layoutHelp)
+	AppointmentAbstractTrackedPane(LocalDate localDate, AgendaMine.Appointment appointment, LayoutHelp layoutHelp)
 	{
 		super(appointment, layoutHelp);
 		

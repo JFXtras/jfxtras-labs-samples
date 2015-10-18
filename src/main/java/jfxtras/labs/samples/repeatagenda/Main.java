@@ -22,15 +22,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import jfxtras.labs.samples.repeatagenda.controller.CalendarController;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentIO;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
+import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class Main extends Application {
 	
-    private static ObservableList<AppointmentGroup> appointmentGroups = Agenda.DEFAULT_APPOINTMENT_GROUPS;
+    private static ObservableList<AppointmentGroup> appointmentGroups = RepeatableAgenda.DEFAULT_APPOINTMENT_GROUPS;
     
     private static LocalDate firstDayOfWeekLocalDate = getFirstDayOfWeekLocalDate();
     private static LocalDate getFirstDayOfWeekLocalDate()

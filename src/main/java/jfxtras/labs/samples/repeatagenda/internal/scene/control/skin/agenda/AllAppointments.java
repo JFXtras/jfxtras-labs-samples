@@ -36,8 +36,8 @@ import java.util.List;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.WeakListChangeListener;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine.Appointment;
 
 /**
  * Capture the logic to extract the different types of appointments in one place.
@@ -49,13 +49,13 @@ public class AllAppointments {
 	/**
 	 * 
 	 */
-	public AllAppointments(ObservableList<Agenda.Appointment> appointments) {
+	public AllAppointments(ObservableList<AgendaMine.Appointment> appointments) {
 		this.appointments = appointments;
 		
 		appointments.addListener( new WeakListChangeListener<>(listChangeListener) );
 
 	}
-	final private ObservableList<Agenda.Appointment> appointments;
+	final private ObservableList<AgendaMine.Appointment> appointments;
 	final private ListChangeListener<Appointment> listChangeListener = new ListChangeListener<Appointment>() {
 		@Override
 		public void onChanged(javafx.collections.ListChangeListener.Change<? extends Appointment> changes) {
@@ -87,7 +87,7 @@ public class AllAppointments {
 		List<Appointment> collectedAppointments = new ArrayList<>();
 		
 		// scan all appointments and filter the ones for this day
-		for (Agenda.Appointment lAppointment : appointments) {
+		for (AgendaMine.Appointment lAppointment : appointments) {
 			if (lAppointment.isWholeDay()) {
 				
 				LocalDate startLocalDate = lAppointment.getStartLocalDateTime().toLocalDate();
@@ -109,7 +109,7 @@ public class AllAppointments {
 		List<Appointment> collectedAppointments = new ArrayList<>();
 		
 		// scan all appointments and filter the ones for this day
-		for (Agenda.Appointment lAppointment : appointments) {
+		for (AgendaMine.Appointment lAppointment : appointments) {
 			// an not-wholeday appointment WITHOUT an end is a task
 			if (!lAppointment.isWholeDay() && lAppointment.getEndLocalDateTime() == null) {
 				
@@ -128,7 +128,7 @@ public class AllAppointments {
 		List<Appointment> collectedAppointments = new ArrayList<>();
 		
 		// scan all appointments and filter the ones for this day
-		for (Agenda.Appointment lAppointment : appointments) {
+		for (AgendaMine.Appointment lAppointment : appointments) {
 			// an not-wholeday appointment WITH a set enddate is a regular appointment
 			if (!lAppointment.isWholeDay() && lAppointment.getEndLocalDateTime() != null) {
 				

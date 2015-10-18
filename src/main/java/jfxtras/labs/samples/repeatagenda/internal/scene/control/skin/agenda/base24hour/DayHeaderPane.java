@@ -44,8 +44,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import jfxtras.internal.scene.control.skin.DateTimeToCalendarHelper;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AllAppointments;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine.Appointment;
 import jfxtras.util.NodeUtil;
 
 /**
@@ -174,12 +174,12 @@ public class DayHeaderPane extends Pane {
 			LocalDateTime lEndDateTime = lStartDateTime.plusDays(1);
 			
 			// ask the control to create a new appointment (null may be returned)
-			Agenda.Appointment lAppointment;
+			AgendaMine.Appointment lAppointment;
 			if (layoutHelp.skinnable.newAppointmentCallbackProperty().get() != null) {
-				lAppointment = layoutHelp.skinnable.newAppointmentCallbackProperty().get().call(new Agenda.LocalDateTimeRange(lStartDateTime, lEndDateTime));
+				lAppointment = layoutHelp.skinnable.newAppointmentCallbackProperty().get().call(new AgendaMine.LocalDateTimeRange(lStartDateTime, lEndDateTime));
 			}
 			else {
-				lAppointment = layoutHelp.skinnable.createAppointmentCallbackProperty().get().call( new Agenda.CalendarRange(
+				lAppointment = layoutHelp.skinnable.createAppointmentCallbackProperty().get().call( new AgendaMine.CalendarRange(
 					DateTimeToCalendarHelper.createCalendarFromLocalDateTime(lStartDateTime, TimeZone.getDefault(), Locale.getDefault()),
 					DateTimeToCalendarHelper.createCalendarFromLocalDateTime(lEndDateTime, TimeZone.getDefault(), Locale.getDefault())
 			    ));

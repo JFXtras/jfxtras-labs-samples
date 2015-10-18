@@ -9,8 +9,9 @@ import javafx.scene.Node;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 //makes a group of colored squares used to select appointment group
 public class AppointmentGroupGridPane extends GridPane {
@@ -44,7 +45,8 @@ public class AppointmentGroupGridPane extends GridPane {
 //     for (AppointmentGroup lAppointmentGroup : layoutHelp.skinnable.appointmentGroups())
      for (AppointmentGroup lAppointmentGroup : appointmentGroups)
      {
-         lPane[lCnt] = lAppointmentGroup.getIcon();
+         // TODO - REMOVE CAST
+         lPane[lCnt] = ((RepeatableAgenda.AppointmentGroupImpl) lAppointmentGroup).getIcon();
          // create the appointment group
 //         lPane[lCnt] = new Pane();
 //         lPane[lCnt].setPrefSize(20, 20);
@@ -70,7 +72,9 @@ public class AppointmentGroupGridPane extends GridPane {
      }
    //int index = layoutHelp.skinnable.appointmentGroups().indexOf(appointment.getAppointmentGroup());
 //     int index = appointment.getAppointmentGroupIndex();
-     int index = appointment.getAppointmentGroup().getKey();
+
+     // TODO - REMOVE CAST
+     int index = ((RepeatableAgenda.AppointmentGroupImpl) appointment.getAppointmentGroup()).getKey();
      setAppointmentGroupSelected(index);
      setLPane(index);
      

@@ -8,16 +8,16 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javafx.collections.ObservableList;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public abstract class RepeatTestAbstract {
     
@@ -30,7 +30,7 @@ public abstract class RepeatTestAbstract {
     = javafx.collections.FXCollections.observableArrayList(
             IntStream
             .range(0, 23)
-            .mapToObj(i -> new Agenda.AppointmentGroupImpl()
+            .mapToObj(i -> new RepeatableAgenda.AppointmentGroupImpl()
                    .withStyleClass("group" + i)
                    .withKey(i)
                    .withDescription("group" + (i < 10 ? "0" : "") + i))

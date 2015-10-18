@@ -57,7 +57,7 @@ public class AgendaSkinSwitcher extends HBox {
 	/**
 	 * 
 	 */
-	public AgendaSkinSwitcher(Agenda agenda) {
+	public AgendaSkinSwitcher(AgendaMine agenda) {
 		this.agenda = agenda;
 		getStyleClass().add(AgendaSkinSwitcher.class.getSimpleName());
 		
@@ -65,7 +65,7 @@ public class AgendaSkinSwitcher extends HBox {
 		getChildren().add(createDayButton(agenda));
 		getChildren().add(createDayDynamicButton(agenda));
 	}
-	final Agenda agenda;
+	final AgendaMine agenda;
 	
 	// When JFxtras is based on 1.8.0_40+: @Override 
 	public String getUserAgentStylesheet() {
@@ -75,7 +75,7 @@ public class AgendaSkinSwitcher extends HBox {
 	/**
 	 * 
 	 */
-	private ImageViewButton createDayButton(Agenda agenda) {
+	private ImageViewButton createDayButton(AgendaMine agenda) {
 		ImageViewButton button = createIcon("week", "Week view");
 		button.setOnMouseClicked( (actionEvent) -> {
 			agenda.setSkin(new AgendaWeekSkin(agenda));
@@ -86,7 +86,7 @@ public class AgendaSkinSwitcher extends HBox {
 	/**
 	 * 
 	 */
-	private ImageViewButton createWeekButton(Agenda agenda) {
+	private ImageViewButton createWeekButton(AgendaMine agenda) {
 		ImageViewButton button = createIcon("day", "Day view");
 		button.setOnMouseClicked( (actionEvent) -> {
 			agenda.setSkin(new AgendaDaySkin(agenda));
@@ -97,7 +97,7 @@ public class AgendaSkinSwitcher extends HBox {
 	/**
 	 * 
 	 */
-	private ImageViewButton createDayDynamicButton(Agenda agenda) {
+	private ImageViewButton createDayDynamicButton(AgendaMine agenda) {
 		ImageViewButton button = createIcon("dayDynamic", "Dynamic days view");
 		button.setOnMouseClicked( (actionEvent) -> {
 			agenda.setSkin(new AgendaDaysFromDisplayedSkin(agenda));

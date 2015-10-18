@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AgendaSkinTimeScale24HourAbstract;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine;
 
 /**
  * @author Tom Eugelink
@@ -46,7 +46,7 @@ public class AgendaDaySkin extends AgendaSkinTimeScale24HourAbstract {
 	/**
 	 * 
 	 */
-	public AgendaDaySkin(Agenda control) {
+	public AgendaDaySkin(AgendaMine control) {
 		super(control);
 	}
 	

@@ -12,9 +12,9 @@ import org.xml.sax.SAXException;
 
 import javafx.collections.ObservableList;
 import jfxtras.labs.samples.repeatagenda.RepeatableAppointmentImpl;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 /**
  * Provides new Appointment factory for implementation of Appointment interface

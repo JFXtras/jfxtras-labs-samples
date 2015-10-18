@@ -44,8 +44,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import jfxtras.internal.scene.control.skin.DateTimeToCalendarHelper;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AllAppointments;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine.Appointment;
 import jfxtras.util.NodeUtil;
 
 /**
@@ -174,12 +174,12 @@ class DayBodyPane extends Pane
 			resizeRectangle = null;					
 			
 			// ask the control to create a new appointment (null may be returned)
-			Agenda.Appointment lAppointment = null;
+			AgendaMine.Appointment lAppointment = null;
 			if (layoutHelp.skinnable.newAppointmentCallbackProperty().get() != null) {
-				lAppointment = layoutHelp.skinnable.newAppointmentCallbackProperty().get().call(new Agenda.LocalDateTimeRange(lStartDateTime, lEndDateTime));
+				lAppointment = layoutHelp.skinnable.newAppointmentCallbackProperty().get().call(new AgendaMine.LocalDateTimeRange(lStartDateTime, lEndDateTime));
 			}
 			if (layoutHelp.skinnable.createAppointmentCallbackProperty().get() != null) {
-				lAppointment = layoutHelp.skinnable.createAppointmentCallbackProperty().get().call(new Agenda.CalendarRange(DateTimeToCalendarHelper.createCalendarFromLocalDateTime(lStartDateTime, TimeZone.getDefault(), Locale.getDefault()), DateTimeToCalendarHelper.createCalendarFromLocalDateTime(lEndDateTime, TimeZone.getDefault(), Locale.getDefault())));
+				lAppointment = layoutHelp.skinnable.createAppointmentCallbackProperty().get().call(new AgendaMine.CalendarRange(DateTimeToCalendarHelper.createCalendarFromLocalDateTime(lStartDateTime, TimeZone.getDefault(), Locale.getDefault()), DateTimeToCalendarHelper.createCalendarFromLocalDateTime(lEndDateTime, TimeZone.getDefault(), Locale.getDefault())));
 			}
 			if (lAppointment != null) {
 				layoutHelp.skinnable.appointments().add(lAppointment); // the appointments collection is listened to, so they will automatically be refreshed

@@ -1,7 +1,7 @@
 package jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour;
 
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 public class AppointmentUtilities {
 

@@ -46,7 +46,7 @@ import javafx.scene.layout.HBox;
 import jfxtras.css.CssMetaDataForSkinProperty;
 import jfxtras.css.converters.IntegerConverter;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AgendaSkinTimeScale24HourAbstract;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine;
 
 /**
  * @author Tom Eugelink
@@ -56,7 +56,7 @@ public class AgendaDaysFromDisplayedSkin extends AgendaSkinTimeScale24HourAbstra
 	/**
 	 * 
 	 */
-	public AgendaDaysFromDisplayedSkin(Agenda control) {
+	public AgendaDaysFromDisplayedSkin(AgendaMine control) {
 		super(control);
 		
 		construct();
@@ -201,14 +201,14 @@ public class AgendaDaysFromDisplayedSkin extends AgendaSkinTimeScale24HourAbstra
         
     private static class StyleableProperties 
     {
-        private static final CssMetaData<Agenda, Integer> DAYS_BEFORE_FURTHEST_CSSMETADATA = new CssMetaDataForSkinProperty<Agenda, AgendaDaysFromDisplayedSkin, Integer>("-fxx-days-before-furthest", IntegerConverter.getInstance(), -9 ) {
+        private static final CssMetaData<AgendaMine, Integer> DAYS_BEFORE_FURTHEST_CSSMETADATA = new CssMetaDataForSkinProperty<AgendaMine, AgendaDaysFromDisplayedSkin, Integer>("-fxx-days-before-furthest", IntegerConverter.getInstance(), -9 ) {
         	@Override 
         	protected ObjectProperty<Integer> getProperty(AgendaDaysFromDisplayedSkin s) {
             	return s.daysBeforeFurthestProperty;
             }
         };
         
-        private static final CssMetaData<Agenda, Integer> DAYS_AFTER_FURTHEST_CSSMETADATA = new CssMetaDataForSkinProperty<Agenda, AgendaDaysFromDisplayedSkin, Integer>("-fxx-days-after-furthest", IntegerConverter.getInstance(), 9 ) {
+        private static final CssMetaData<AgendaMine, Integer> DAYS_AFTER_FURTHEST_CSSMETADATA = new CssMetaDataForSkinProperty<AgendaMine, AgendaDaysFromDisplayedSkin, Integer>("-fxx-days-after-furthest", IntegerConverter.getInstance(), 9 ) {
         	@Override 
         	protected ObjectProperty<Integer> getProperty(AgendaDaysFromDisplayedSkin s) {
             	return s.daysAfterFurthestProperty;

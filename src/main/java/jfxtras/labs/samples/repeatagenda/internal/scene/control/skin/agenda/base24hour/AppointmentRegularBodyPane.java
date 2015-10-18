@@ -38,7 +38,7 @@ import javafx.scene.text.Text;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentAbstractTrackedPane;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.DurationDragger;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.LayoutHelp;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine.Appointment;
 
 public class AppointmentRegularBodyPane extends AppointmentAbstractTrackedPane {
 

@@ -44,8 +44,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
@@ -58,7 +58,7 @@ abstract class AppointmentAbstractPane extends Pane {
 	 * @param calendar
 	 * @param appointment
 	 */
-	AppointmentAbstractPane(Agenda.Appointment appointment, LayoutHelp layoutHelp)
+	AppointmentAbstractPane(AgendaMine.Appointment appointment, LayoutHelp layoutHelp)
 	{
 		this.appointment = appointment;
 		this.layoutHelp = layoutHelp;
@@ -83,7 +83,7 @@ abstract class AppointmentAbstractPane extends Pane {
 		// react to changes in the selected appointments
 		layoutHelp.skinnable.selectedAppointments().addListener( new WeakListChangeListener<>(listChangeListener) );
 	}
-	final protected Agenda.Appointment appointment; 
+	final protected AgendaMine.Appointment appointment; 
 	final protected LayoutHelp layoutHelp;
 	final protected HistoricalVisualizer historyVisualizer;
 	final protected AppointmentMenu appointmentMenu;
@@ -283,7 +283,7 @@ abstract class AppointmentAbstractPane extends Pane {
 	private final int roundToMinutes = 5;
 	private Text startTimeText = null;
 	private Text endTimeText = null;
-	private Agenda.Appointment appointmentForDrag = null;
+	private AgendaMine.Appointment appointmentForDrag = null;
 
 	protected  boolean showStartTimeText() {
 		return true;
@@ -296,7 +296,7 @@ abstract class AppointmentAbstractPane extends Pane {
 	/**
 	 * 
 	 */
-	private void handleDrag(Agenda.Appointment appointment, LocalDateTime dragPickupDateTime, LocalDateTime dragDropDateTime) {
+	private void handleDrag(AgendaMine.Appointment appointment, LocalDateTime dragPickupDateTime, LocalDateTime dragDropDateTime) {
 		
 		// drag start
 		boolean dragPickupInDayBody = dragInDayBody(dragPickupDateTime);

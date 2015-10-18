@@ -23,13 +23,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
+import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
+import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
+import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.samples.repeatagenda.MyData;
-import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaDaySkin;
-import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaSkin;
-import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.RepeatMenuStage;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.LocalDateTimeRange;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
@@ -38,6 +36,8 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.LocalDatePicker;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 
 /**
@@ -101,16 +101,18 @@ public class CalendarController {
 //            return null;
 //        });
 
-        agenda.setEditAppointmentCallback((Appointment a) -> {
+        agenda.setEditAppointmentCallback((Appointment appointment) -> {
             System.out.println("start edit callback");
-            repeatMenu.setup(a);
+            repeatMenu = new RepeatMenuStage(
+                      appointment
+                    , agenda.appointments()
+                    , agenda.repeats()
+                    , agenda.appointmentGroups()); // make new object when closed (problem with passing pane - null for now)
+//            repeatMenu.setup(a);
             repeatMenu.show();
+//            repeatMenu = null;
 //            agenda.refresh();
             System.out.println("end edit callback");
-            repeatMenu = new RepeatMenuStage(agenda.appointments()
-                    , agenda.repeats()
-                    , agenda.appointmentGroups()
-                    , null); // make new object when closed (problem with passing pane - null for now)
             return null;
         });
 
@@ -171,10 +173,12 @@ System.out.println("appointment list changed");
         this.data = data;
         this.startDate = startDate;
         this.endDate = endDate;
-        repeatMenu = new RepeatMenuStage(agenda.appointments(), agenda.repeats(), agenda.appointmentGroups(), null);
+//        repeatMenu = new RepeatMenuStage(agenda.appointments(), agenda.repeats(), agenda.appointmentGroups(), null);
         if (! data.getAppointmentGroups().isEmpty()) 
         { // overwrite default appointmentGroups with ones read from file if not empty
-            agenda.setAppointmentGroups(data.getAppointmentGroups()); 
+//            agenda.setAppointmentGroups(data.getAppointmentGroups());
+            agenda.appointmentGroups().clear();
+            agenda.appointmentGroups().addAll(data.getAppointmentGroups());
         }
         
         if (data.getAppointments().isEmpty())
@@ -266,13 +270,15 @@ System.out.println("appointment list changed");
     
     @FXML private void handleWeekSkin() {
         AgendaSkin skin = new AgendaWeekSkin(agenda);
-        shiftDuration = skin.shiftDuration();
+//        shiftDuration = skin.shiftDuration();
+        shiftDuration = Period.ofWeeks(1);
         agenda.setSkin(new AgendaWeekSkin(agenda));
     }
 
     @FXML private void handleDaySkin() {
         AgendaSkin skin = new AgendaWeekSkin(agenda);
-        shiftDuration = skin.shiftDuration();
+//        shiftDuration = skin.shiftDuration();
+        shiftDuration = Period.ofDays(1);
         agenda.setSkin(new AgendaDaySkin(agenda));
     }
     

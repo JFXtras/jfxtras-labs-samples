@@ -1,16 +1,30 @@
 package jfxtras.labs.samples.repeatagenda.scene.control.agenda;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
+import jfxtras.scene.control.agenda.Agenda;
 
 public class RepeatableAgenda extends Agenda {
 
+    final private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+    final public static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
+    = javafx.collections.FXCollections.observableArrayList(
+            IntStream
+            .range(0, 24)
+            .mapToObj(i -> new RepeatableAgenda.AppointmentGroupImpl()
+                   .withStyleClass("group" + i)
+                   .withKey(i)
+                   .withDescription("group" + (i < 10 ? "0" : "") + i))
+            .collect(Collectors.toList()));
+    
     /** Repeat rules */
     Collection<Repeat> repeats;
     public Collection<Repeat> repeats() { return repeats; }
@@ -183,24 +197,60 @@ public class RepeatableAgenda extends Agenda {
       }
     }
     
-    
-    /** Class to contain data for the appointment edit callback */
-    static public class RepeatableAppointmentEditData extends AppointmentEditData
+    /**
+     * A class to help you get going; all the required methods of the interface are implemented as JavaFX properties 
+     */
+    static public class AppointmentGroupImpl 
+    implements AppointmentGroup
     {
-        public Appointment appointment;
-        public Collection<Appointment> appointments;
-        public Collection<Repeat> repeats;
-        public List<AppointmentGroup> appountmentGroups;
-        public Pane pane;
+        /** Description: */
+        public ObjectProperty<String> descriptionProperty() { return descriptionObjectProperty; }
+        final private ObjectProperty<String> descriptionObjectProperty = new SimpleObjectProperty<String>(this, "description");
+        public String getDescription() { return descriptionObjectProperty.getValue(); }
+        public void setDescription(String value) { descriptionObjectProperty.setValue(value); }
+        public AppointmentGroupImpl withDescription(String value) { setDescription(value); return this; } 
+                
+        /** StyleClass: */
+        public ObjectProperty<String> styleClassProperty() { return styleClassObjectProperty; }
+        final private ObjectProperty<String> styleClassObjectProperty = new SimpleObjectProperty<String>(this, "styleClass");
+        public String getStyleClass() { return styleClassObjectProperty.getValue(); }
+        public void setStyleClass(String value) { styleClassObjectProperty.setValue(value); }
+        public AppointmentGroupImpl withStyleClass(String value) { 
+            setStyleClass(value);
+            icon = new Pane();
+            icon.setPrefSize(20, 20);
+            icon.getStylesheets().add(AGENDA_STYLE_CLASS);
+            icon.getStyleClass().addAll("AppointmentGroup", getStyleClass());
+            return this; 
+        }
+        
+        private Pane icon;
+        public Pane getIcon() { return icon; }
 
-//        public AppointmentEditData(Appointment appointment, LayoutHelp layoutHelp, Pane pane) {
-//            this.appointment = appointment;
-//            appointments = layoutHelp.skinnable.appointments();
-//            repeats = layoutHelp.skinnable.repeats();
-//            appountmentGroups = layoutHelp.skinnable.appointmentGroups();
-////            this.layoutHelp = layoutHelp;
-//            this.pane = pane;
-//        }
-
-    }
+        private int key = 0;
+        public int getKey() { return key; }
+        public void setKey(int key) { this.key = key; }
+        public AppointmentGroupImpl withKey(int key) {setKey(key); return this; }
+        
+        }
+    
+//    /** Class to contain data for the appointment edit callback */
+//    static public class RepeatableAppointmentEditData extends AppointmentEditData
+//    {
+//        public Appointment appointment;
+//        public Collection<Appointment> appointments;
+//        public Collection<Repeat> repeats;
+//        public List<AppointmentGroup> appountmentGroups;
+//        public Pane pane;
+//
+////        public AppointmentEditData(Appointment appointment, LayoutHelp layoutHelp, Pane pane) {
+////            this.appointment = appointment;
+////            appointments = layoutHelp.skinnable.appointments();
+////            repeats = layoutHelp.skinnable.repeats();
+////            appountmentGroups = layoutHelp.skinnable.appointmentGroups();
+//////            this.layoutHelp = layoutHelp;
+////            this.pane = pane;
+////        }
+//
+//    }
 }

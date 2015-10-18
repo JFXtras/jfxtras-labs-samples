@@ -151,7 +151,7 @@ import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.Agen
  * 
  * @author Tom Eugelink &lt;tbee@tbee.org&gt;
  */
-public class Agenda extends Control
+public class AgendaMine extends Control
 {
 	// ==================================================================================================================
 	// CONSTRUCTOR
@@ -159,7 +159,7 @@ public class Agenda extends Control
 	/**
 	 * 
 	 */
-	public Agenda()
+	public AgendaMine()
 	{
 		construct();
 	}
@@ -173,7 +173,7 @@ public class Agenda extends Control
 		setPrefSize(1000, 800);
 		
 		// setup the CSS
-		this.getStyleClass().add(Agenda.class.getSimpleName());
+		this.getStyleClass().add(AgendaMine.class.getSimpleName());
 		
 		// handle deprecated
 		DateTimeToCalendarHelper.syncLocalDateTime(displayedCalendarObjectProperty, displayedLocalDateTimeObjectProperty, localeObjectProperty);
@@ -188,10 +188,10 @@ public class Agenda extends Control
 	/**
 	 * Return the path to the CSS file so things are setup right
 	 */
-	final private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+	final private static String AGENDA_STYLE_CLASS = AgendaMine.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + AgendaMine.class.getSimpleName() + ".css").toExternalForm();
 	@Override public String getUserAgentStylesheet()
 	{
-        return Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+        return AgendaMine.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + AgendaMine.class.getSimpleName() + ".css").toExternalForm();
 	}
 	
 	/**
@@ -205,7 +205,7 @@ public class Agenda extends Control
 	// PROPERTIES
 
 	/** Id */
-	public Agenda withId(String value) { setId(value); return this; }
+	public AgendaMine withId(String value) { setId(value); return this; }
 
 	/** Repeats */ // TODO - NEED TO MOVE TO MY AGENDA
 	Collection<Repeat> repeats;
@@ -221,7 +221,7 @@ public class Agenda extends Control
     private void constructAppointments()
 	{
 		// when appointments are removed, they can't be selected anymore
-		appointments.addListener(new ListChangeListener<Agenda.Appointment>() 
+		appointments.addListener(new ListChangeListener<AgendaMine.Appointment>() 
 		{
 			@Override
 			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Appointment> changes)
@@ -249,7 +249,7 @@ public class Agenda extends Control
         = javafx.collections.FXCollections.observableArrayList(
                 IntStream
                 .range(0, 24)
-                .mapToObj(i -> new Agenda.AppointmentGroupImpl()
+                .mapToObj(i -> new AgendaMine.AppointmentGroupImpl()
                        .withStyleClass("group" + i)
                        .withKey(i)
                        .withDescription("group" + (i < 10 ? "0" : "") + i))
@@ -260,21 +260,21 @@ public class Agenda extends Control
 	final private ObjectProperty<Locale> localeObjectProperty = new SimpleObjectProperty<Locale>(this, "locale", Locale.getDefault());
 	public Locale getLocale() { return localeObjectProperty.getValue(); }
 	public void setLocale(Locale value) { localeObjectProperty.setValue(value); }
-	public Agenda withLocale(Locale value) { setLocale(value); return this; } 
+	public AgendaMine withLocale(Locale value) { setLocale(value); return this; } 
 
 	/** AllowDragging: allow appointments being dragged by the mouse */
 	public SimpleBooleanProperty allowDraggingProperty() { return allowDraggingObjectProperty; }
 	final private SimpleBooleanProperty allowDraggingObjectProperty = new SimpleBooleanProperty(this, "allowDragging", true);
 	public boolean getAllowDragging() { return allowDraggingObjectProperty.getValue(); }
 	public void setAllowDragging(boolean value) { allowDraggingObjectProperty.setValue(value); }
-	public Agenda withAllowDragging(boolean value) { setAllowDragging(value); return this; } 
+	public AgendaMine withAllowDragging(boolean value) { setAllowDragging(value); return this; } 
 
 	/** AllowResize: allow appointments to be resized using the mouse */
 	public SimpleBooleanProperty allowResizeProperty() { return allowResizeObjectProperty; }
 	final private SimpleBooleanProperty allowResizeObjectProperty = new SimpleBooleanProperty(this, "allowResize", true);
 	public boolean getAllowResize() { return allowResizeObjectProperty.getValue(); }
 	public void setAllowResize(boolean value) { allowResizeObjectProperty.setValue(value); }
-	public Agenda withAllowResize(boolean value) { setAllowResize(value); return this; } 
+	public AgendaMine withAllowResize(boolean value) { setAllowResize(value); return this; } 
 
 	/** 
 	 * DisplayedCalendar: this calendar denotes the timeframe being displayed. 
@@ -285,7 +285,7 @@ public class Agenda extends Control
 	private final ObjectProperty<Calendar> displayedCalendarObjectProperty = new SimpleObjectProperty<Calendar>(this, "displayedCalendar", Calendar.getInstance());
 	@Deprecated public Calendar getDisplayedCalendar() { return displayedCalendarObjectProperty.getValue(); }
 	@Deprecated public void setDisplayedCalendar(Calendar value) { displayedCalendarObjectProperty.setValue(value); }
-	@Deprecated public Agenda withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return this; }
+	@Deprecated public AgendaMine withDisplayedCalendar(Calendar value) { setDisplayedCalendar(value); return this; }
 	
 	/** 
 	 * The skin will use this date and time to determine what to display.
@@ -296,7 +296,7 @@ public class Agenda extends Control
 	private final ObjectProperty<LocalDateTime> displayedLocalDateTimeObjectProperty = new SimpleObjectProperty<LocalDateTime>(this, "displayedLocalDateTime", LocalDateTime.now());
 	public LocalDateTime getDisplayedLocalDateTime() { return displayedLocalDateTimeObjectProperty.getValue(); }
 	public void setDisplayedLocalDateTime(LocalDateTime value) { displayedLocalDateTimeObjectProperty.setValue(value); }
-	public Agenda withDisplayedLocalDateTime(LocalDateTime value) { setDisplayedLocalDateTime(value); return this; }
+	public AgendaMine withDisplayedLocalDateTime(LocalDateTime value) { setDisplayedLocalDateTime(value); return this; }
 	
 	/** selectedAppointments: a list of selected appointments */
 	public ObservableList<Appointment> selectedAppointments() { return selectedAppointments; }
@@ -311,7 +311,7 @@ public class Agenda extends Control
 	@Deprecated final private ObjectProperty<Callback<CalendarRange, Void>> calendarRangeCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, Void>>(this, "calendarRangeCallback", null);
 	@Deprecated public Callback<CalendarRange, Void> getCalendarRangeCallback() { return this.calendarRangeCallbackObjectProperty.getValue(); }
 	@Deprecated public void setCalendarRangeCallback(Callback<CalendarRange, Void> value) { this.calendarRangeCallbackObjectProperty.setValue(value); }
-	@Deprecated public Agenda withCalendarRangeCallback(Callback<CalendarRange, Void> value) { setCalendarRangeCallback(value); return this; }
+	@Deprecated public AgendaMine withCalendarRangeCallback(Callback<CalendarRange, Void> value) { setCalendarRangeCallback(value); return this; }
 	
 	/** localDateTimeRangeCallback: 
 	 * Appointments should match:
@@ -322,7 +322,7 @@ public class Agenda extends Control
 	final private ObjectProperty<Callback<LocalDateTimeRange, Void>> localDateTimeRangeCallbackObjectProperty = new SimpleObjectProperty<Callback<LocalDateTimeRange, Void>>(this, "localDateTimeRangeCallback", null);
 	public Callback<LocalDateTimeRange, Void> getLocalDateTimeRangeCallback() { return this.localDateTimeRangeCallbackObjectProperty.getValue(); }
 	public void setLocalDateTimeRangeCallback(Callback<LocalDateTimeRange, Void> value) { this.localDateTimeRangeCallbackObjectProperty.setValue(value); }
-	public Agenda withLocalDateTimeRangeCallback(Callback<LocalDateTimeRange, Void> value) { setLocalDateTimeRangeCallback(value); return this; }
+	public AgendaMine withLocalDateTimeRangeCallback(Callback<LocalDateTimeRange, Void> value) { setLocalDateTimeRangeCallback(value); return this; }
 	
 	/** addAppointmentCallback:
 	 * Since the Agenda is not the owner of the appointments but only dictates an interface, it does not know how to create a new one.
@@ -335,7 +335,7 @@ public class Agenda extends Control
 	@Deprecated final private ObjectProperty<Callback<CalendarRange, Appointment>> createAppointmentCallbackObjectProperty = new SimpleObjectProperty<Callback<CalendarRange, Appointment>>(this, "createAppointmentCallback", null);
 	@Deprecated public Callback<CalendarRange, Appointment> getCreateAppointmentCallback() { return this.createAppointmentCallbackObjectProperty.getValue(); }
 	@Deprecated public void setCreateAppointmentCallback(Callback<CalendarRange, Appointment> value) { this.createAppointmentCallbackObjectProperty.setValue(value); }
-	@Deprecated public Agenda withCreateAppointmentCallback(Callback<CalendarRange, Appointment> value) { setCreateAppointmentCallback(value); return this; }
+	@Deprecated public AgendaMine withCreateAppointmentCallback(Callback<CalendarRange, Appointment> value) { setCreateAppointmentCallback(value); return this; }
 	
 	/** addAppointmentCallback:
 	 * Since the Agenda is not the owner of the appointments but only dictates an interface, it does not know how to create a new one.
@@ -347,7 +347,7 @@ public class Agenda extends Control
 	final private ObjectProperty<Callback<LocalDateTimeRange, Appointment>> newAppointmentCallbackObjectProperty = new SimpleObjectProperty<Callback<LocalDateTimeRange, Appointment>>(this, "newAppointmentCallback", null);
 	public Callback<LocalDateTimeRange, Appointment> getNewAppointmentCallback() { return this.newAppointmentCallbackObjectProperty.getValue(); }
 	public void setNewAppointmentCallback(Callback<LocalDateTimeRange, Appointment> value) { this.newAppointmentCallbackObjectProperty.setValue(value); }
-	public Agenda withNewAppointmentCallback(Callback<LocalDateTimeRange, Appointment> value) { setNewAppointmentCallback(value); return this; }
+	public AgendaMine withNewAppointmentCallback(Callback<LocalDateTimeRange, Appointment> value) { setNewAppointmentCallback(value); return this; }
 
 	/** editAppointmentCallback:
 	 * Agenda has a default popup, but maybe you want to do something yourself.
@@ -359,7 +359,7 @@ public class Agenda extends Control
 	final private ObjectProperty<Callback<Appointment, Void>> editAppointmentCallbackObjectProperty = new SimpleObjectProperty<Callback<Appointment, Void>>(this, "editAppointmentCallback", null);
 	public Callback<Appointment, Void> getEditAppointmentCallback() { return this.editAppointmentCallbackObjectProperty.getValue(); }
 	public void setEditAppointmentCallback(Callback<Appointment, Void> value) { this.editAppointmentCallbackObjectProperty.setValue(value); }
-	public Agenda withEditAppointmentCallback(Callback<Appointment, Void> value) { setEditAppointmentCallback(value); return this; }
+	public AgendaMine withEditAppointmentCallback(Callback<Appointment, Void> value) { setEditAppointmentCallback(value); return this; }
 
 //    public ObjectProperty<Callback<AppointmentEditData, Boolean>> editAppointmentCallbackProperty() { return editAppointmentCallbackObjectProperty; }
 //    final private ObjectProperty<Callback<AppointmentEditData, Boolean>> editAppointmentCallbackObjectProperty = new SimpleObjectProperty<Callback<AppointmentEditData, Boolean>>(this, "editAppointmentCallback", null);
@@ -375,7 +375,7 @@ public class Agenda extends Control
 	final private ObjectProperty<Callback<Appointment, Void>> actionCallbackObjectProperty = new SimpleObjectProperty<Callback<Appointment, Void>>(this, "actionCallback", null);
 	public Callback<Appointment, Void> getActionCallback() { return this.actionCallbackObjectProperty.getValue(); }
 	public void setActionCallback(Callback<Appointment, Void> value) { this.actionCallbackObjectProperty.setValue(value); }
-	public Agenda withActionCallback(Callback<Appointment, Void> value) { setActionCallback(value); return this; }
+	public AgendaMine withActionCallback(Callback<Appointment, Void> value) { setActionCallback(value); return this; }
 	
 	/**
 	 * A Calendar range, for callbacks

@@ -9,15 +9,14 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Control;
-import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jfxtras.labs.samples.repeatagenda.Main;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.controller.AppointmentEditController;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 // New stage for popup window
 public class RepeatMenuStage extends Stage {
@@ -25,25 +24,26 @@ public class RepeatMenuStage extends Stage {
 //    final private AppointmentEditController appointmentEditController;
 //    final private LayoutHelp layoutHelp;
     private BooleanProperty groupNameChanged = new SimpleBooleanProperty(false);
-    private Pane pane;
-    private List<AppointmentGroup> appointmentGroups;
-    private Collection<Repeat> repeats;
-    private Collection<Appointment> appointments;
-    private Appointment appointment;
+//    private Pane pane;
+//    private List<AppointmentGroup> appointmentGroups;
+//    private Collection<Repeat> repeats;
+//    private Collection<Appointment> appointments;
+//    private Appointment appointment;
 
-    public RepeatMenuStage(Collection<Appointment> appointments
+    public RepeatMenuStage(Appointment appointment
+            , Collection<Appointment> appointments
             , Collection<Repeat> repeats
-            , List<AppointmentGroup> appointmentGroups
-            , Pane pane) {
-//        this.layoutHelp = layoutHelp;
-        this.pane = pane;
-        this.appointments = appointments;
-        this.repeats = repeats;
-        this.appointmentGroups = appointmentGroups;
-    }
-    
-    public void setup(Appointment appointment)
+            , List<AppointmentGroup> appointmentGroups)
     {
+////        this.layoutHelp = layoutHelp;
+//        this.pane = pane;
+//        this.appointments = appointments;
+//        this.repeats = repeats;
+//        this.appointmentGroups = appointmentGroups;
+//    }
+//    
+//    public void setup(Appointment appointment)
+//    {
 //        LayoutHelp layoutHelp = data.layoutHelp;
 //        Appointment appointment = data.appointment;
 //        Pane pane = data.pane;
@@ -94,6 +94,13 @@ public class RepeatMenuStage extends Stage {
 //        setX(NodeUtil.screenX(pane));
 //        setY(NodeUtil.screenY(pane));
     }
+
+//    public RepeatMenuStage(Appointment a,
+//            Collection<Appointment> appointments,
+//            Collection<Repeat> repeats,
+//            List<AppointmentGroup> appointmentGroups, Pane pane) {
+//        // TODO Auto-generated constructor stub
+//    }
 
     
 //    public void setAppointmentAndShow(Appointment appointment)

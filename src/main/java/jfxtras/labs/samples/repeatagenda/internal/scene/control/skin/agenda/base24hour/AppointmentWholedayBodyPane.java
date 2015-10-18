@@ -33,7 +33,7 @@ import java.time.LocalDate;
 
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentAbstractPane;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.LayoutHelp;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine;
 
 /**
  * Responsible for rendering a wholeday appointment on a single day.
@@ -46,7 +46,7 @@ class AppointmentWholedayBodyPane extends AppointmentAbstractPane {
 	 * @param calendar
 	 * @param appointment
 	 */
-	AppointmentWholedayBodyPane(LocalDate localDate, Agenda.Appointment appointment, LayoutHelp layoutHelp) {
+	AppointmentWholedayBodyPane(LocalDate localDate, AgendaMine.Appointment appointment, LayoutHelp layoutHelp) {
 		super(appointment, layoutHelp);
 	}
 }

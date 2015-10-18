@@ -32,7 +32,7 @@ package jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.bas
 import javafx.scene.text.Text;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentAbstractPane;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.LayoutHelp;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine;
 
 /**
  * Responsible for rendering a single whole day appointment on a day header.
@@ -45,7 +45,7 @@ class AppointmentWholedayHeaderPane extends AppointmentAbstractPane
 	 * @param calendar
 	 * @param appointment
 	 */
-	public AppointmentWholedayHeaderPane(Agenda.Appointment appointment, LayoutHelp layoutHelp)
+	public AppointmentWholedayHeaderPane(AgendaMine.Appointment appointment, LayoutHelp layoutHelp)
 	{
 		super(appointment, layoutHelp);
 		
