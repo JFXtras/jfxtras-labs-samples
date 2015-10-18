@@ -28,7 +28,7 @@ import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 
 public class RepeatableController {
 

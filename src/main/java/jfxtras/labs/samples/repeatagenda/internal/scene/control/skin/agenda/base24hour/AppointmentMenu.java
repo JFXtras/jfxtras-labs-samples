@@ -104,7 +104,11 @@ public class AppointmentMenu extends Rectangle {
             e.printStackTrace();
         }
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
-        appointmentEditController.setupData(appointment, layoutHelp.skinnable.appointments(), layoutHelp.skinnable.repeats(), layoutHelp.skinnable.appointmentGroups());
+        appointmentEditController.setupData(
+                  appointment
+                , layoutHelp.skinnable.appointments()
+                , layoutHelp.skinnable.repeats()
+                , layoutHelp.skinnable.appointmentGroups());
         Scene scene2 = new Scene(appointmentMenu);
         
         // data element change bindings

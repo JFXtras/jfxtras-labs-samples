@@ -28,7 +28,6 @@ import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.Agen
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.RepeatMenuStage;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.LocalDateTimeRange;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
@@ -36,7 +35,8 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.LocalDatePicker;
 
 
@@ -50,7 +50,7 @@ public class CalendarController {
 
     private MyData data;
 
-     public Agenda agenda = new Agenda();
+     public RepeatableAgenda agenda = new RepeatableAgenda();
      private RepeatMenuStage repeatMenu;
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private BorderPane agendaBorderPane;
@@ -95,7 +95,7 @@ public class CalendarController {
 
 //        agenda.setEditAppointmentCallback((AppointmentEditData a) -> {
 //            System.out.println("start edit callback");
-//            Stage stage = new RepeatMenu(a);
+//            Stage stage = new RepeatMenuStage2(a);
 //            stage.show();
 //            System.out.println("end edit callback");
 //            return null;
@@ -105,8 +105,12 @@ public class CalendarController {
             System.out.println("start edit callback");
             repeatMenu.setup(a);
             repeatMenu.show();
+//            agenda.refresh();
             System.out.println("end edit callback");
-            repeatMenu = new RepeatMenuStage(agenda.appointments(), agenda.repeats(), agenda.appointmentGroups(), null); // make new object when closed
+            repeatMenu = new RepeatMenuStage(agenda.appointments()
+                    , agenda.repeats()
+                    , agenda.appointmentGroups()
+                    , null); // make new object when closed (problem with passing pane - null for now)
             return null;
         });
 

@@ -1,6 +1,8 @@
 package jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -13,21 +15,26 @@ import javafx.stage.Stage;
 import jfxtras.labs.samples.repeatagenda.Main;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.controller.AppointmentEditControllerOld;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentEditData;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointmentEditData;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 import jfxtras.util.NodeUtil;
 
 // New stage for popup window
-public class RepeatMenu extends Stage {
+public class RepeatMenuStage2 extends Stage {
 
 //    final private AppointmentEditController appointmentEditController;
 //    final private LayoutHelp layoutHelp;
     private BooleanProperty groupNameChanged = new SimpleBooleanProperty(false);
 //    private Pane pane;
 
-    public RepeatMenu(AppointmentEditData data)
+    public RepeatMenuStage2(RepeatableAppointmentEditData data)
     {
-        LayoutHelp layoutHelp = data.layoutHelp;
+//        LayoutHelp layoutHelp = data.layoutHelp;
+        Collection<Appointment> appointments = data.appointments;
+        List<AppointmentGroup> appointmentGroups = data.appountmentGroups;
+        Collection<Repeat> repeats = data.repeats;
         Appointment appointment = data.appointment;
         Pane pane = data.pane;
         setTitle(AppointmentUtilities.makeAppointmentName(appointment));
@@ -45,7 +52,7 @@ public class RepeatMenu extends Stage {
             e.printStackTrace();
         }
         AppointmentEditControllerOld appointmentEditController = appointmentMenuLoader.getController();
-        appointmentEditController.setupData(appointment, layoutHelp);
+        appointmentEditController.setupData(appointment, appointments, appointmentGroups, repeats);
         Scene scene = new Scene(appointmentMenu);
 
         // data element change bindings
@@ -64,11 +71,11 @@ public class RepeatMenu extends Stage {
             case CLOSE_WITH_CHANGE:
                 if (groupNameChanged.getValue()) {    // write group name changes
                     System.out.println("group change write needed");
-                    AppointmentIO.writeAppointmentGroups(layoutHelp.skinnable.appointmentGroups(), Settings.APPOINTMENT_GROUPS_FILE);
+                    AppointmentIO.writeAppointmentGroups(appointmentGroups, Settings.APPOINTMENT_GROUPS_FILE);
                 }
                 break;
             }
-            layoutHelp.skin.setupAppointments();    // refresh appointment graphics
+//            layoutHelp.skin.setupAppointments();    // refresh appointment graphics - can't be done here
         });
         
         setScene(scene);

@@ -56,7 +56,8 @@ public class AppointmentGroupGridPane extends GridPane {
          LayoutHelp layoutHelp;
          // mouse 
          setupMouseOverAsBusy(lPane[lCnt]);
-         lPane[lCnt].setOnMouseClicked( (mouseEvent) -> {
+         lPane[lCnt].setOnMouseClicked( (mouseEvent) ->
+         {
              mouseEvent.consume(); // consume before anything else, in case there is a problem in the handling
              appointmentGroupSelected.set(appointmentGroups.indexOf(lAppointmentGroup));
 

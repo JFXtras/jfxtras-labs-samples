@@ -8,7 +8,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 
 public final class MyData {
 	    

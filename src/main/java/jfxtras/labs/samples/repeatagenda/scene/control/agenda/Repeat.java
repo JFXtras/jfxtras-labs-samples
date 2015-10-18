@@ -33,6 +33,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.StringConverter;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 
 /**
  * Contains rules for repeatable appointments in the calendar

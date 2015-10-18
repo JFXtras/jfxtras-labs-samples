@@ -1,6 +1,7 @@
 package jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.controller;
 
 
+import java.util.Collection;
 import java.util.ResourceBundle;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -15,6 +16,7 @@ import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentUtilities;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.LayoutHelp;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
 
 /**
@@ -35,18 +37,25 @@ public class AppointmentPopupController {
     @FXML private Button attendanceButton;
     @FXML private Label appointmentTimeLabel;
     @FXML private TextField nameTextField;
+    private Collection<Appointment> appointments;
+    private Collection<Repeat> repeats;
 
     @FXML public void initialize() {
    }
 
-    public void setupData(Pane pane
+    public void setupData(
+              Collection<Appointment> appointments
             , Appointment appointment
-            , LayoutHelp layoutHelp
+            , Collection<Repeat> repeats
+            , Pane pane
+//            , LayoutHelp layoutHelp
             , Popup popup) {
 
         this.pane = pane;
         this.appointment = appointment;
-        this.layoutHelp = layoutHelp;
+        this.appointments = appointments;
+        this.repeats = repeats;
+//        this.layoutHelp = layoutHelp;
         this.popup = popup;
         
         appointmentTimeLabel.setText(AppointmentUtilities.makeAppointmentTime(appointment));
@@ -64,9 +73,8 @@ public class AppointmentPopupController {
     @FXML private void handleDeleteAppointment() throws ParserConfigurationException {
         popup.hide();
 //        RepeatableUtilities.deleteAppointments(layoutHelp.skinnable.appointments()
-        RepeatableUtilities.deleteAppointments(layoutHelp.skinnable.appointments()
-                , appointment
-                , layoutHelp.skinnable.repeats());
+        RepeatableUtilities.deleteAppointments(appointments, appointment, repeats);
+
         layoutHelp.skin.setupAppointments();    // refresh appointment graphics
     }
     

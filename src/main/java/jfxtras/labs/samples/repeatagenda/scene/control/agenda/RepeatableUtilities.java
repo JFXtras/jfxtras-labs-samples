@@ -28,6 +28,7 @@ import javafx.util.Callback;
 import jfxtras.labs.samples.repeatagenda.MyRepeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 
 public final class RepeatableUtilities {
     
@@ -95,7 +96,8 @@ public final class RepeatableUtilities {
      * @return 
      * @throws ParserConfigurationException 
      */
-    public static WindowCloseType deleteAppointments(Collection<Appointment> appointments
+    public static WindowCloseType deleteAppointments(
+              Collection<Appointment> appointments
             , Appointment appointment
             , Collection<Repeat> repeats) throws ParserConfigurationException
     {

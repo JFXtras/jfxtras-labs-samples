@@ -17,7 +17,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 
 public abstract class RepeatTestAbstract {
     

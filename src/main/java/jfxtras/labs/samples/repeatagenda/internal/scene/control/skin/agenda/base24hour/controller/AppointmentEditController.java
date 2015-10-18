@@ -21,7 +21,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities.WindowCloseType;
 import jfxtras.scene.control.LocalDateTimeTextField;

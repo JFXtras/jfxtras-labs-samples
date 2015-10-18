@@ -38,8 +38,8 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.DataUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointmentImplBase;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointmentImplBase;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 
 public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<RepeatableAppointmentImpl> implements RepeatableAppointment {

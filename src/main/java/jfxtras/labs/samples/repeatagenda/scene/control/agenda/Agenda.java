@@ -34,6 +34,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -51,7 +52,6 @@ import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.DateTimeToCalendarHelper;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.AgendaWeekSkin;
-import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.LayoutHelp;
 
 /**
  * = Agenda
@@ -188,6 +188,7 @@ public class Agenda extends Control
 	/**
 	 * Return the path to the CSS file so things are setup right
 	 */
+	final private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
 	@Override public String getUserAgentStylesheet()
 	{
         return Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
@@ -206,7 +207,7 @@ public class Agenda extends Control
 	/** Id */
 	public Agenda withId(String value) { setId(value); return this; }
 
-	/** Repeats */
+	/** Repeats */ // TODO - NEED TO MOVE TO MY AGENDA
 	Collection<Repeat> repeats;
     public Collection<Repeat> repeats() { return repeats; }
     public void setRepeats(Collection<Repeat> repeats) { this.repeats = repeats; }
@@ -247,7 +248,7 @@ public class Agenda extends Control
     public final static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
         = javafx.collections.FXCollections.observableArrayList(
                 IntStream
-                .range(0, 23)
+                .range(0, 24)
                 .mapToObj(i -> new Agenda.AppointmentGroupImpl()
                        .withStyleClass("group" + i)
                        .withKey(i)
@@ -359,6 +360,13 @@ public class Agenda extends Control
 	public Callback<Appointment, Void> getEditAppointmentCallback() { return this.editAppointmentCallbackObjectProperty.getValue(); }
 	public void setEditAppointmentCallback(Callback<Appointment, Void> value) { this.editAppointmentCallbackObjectProperty.setValue(value); }
 	public Agenda withEditAppointmentCallback(Callback<Appointment, Void> value) { setEditAppointmentCallback(value); return this; }
+
+//    public ObjectProperty<Callback<AppointmentEditData, Boolean>> editAppointmentCallbackProperty() { return editAppointmentCallbackObjectProperty; }
+//    final private ObjectProperty<Callback<AppointmentEditData, Boolean>> editAppointmentCallbackObjectProperty = new SimpleObjectProperty<Callback<AppointmentEditData, Boolean>>(this, "editAppointmentCallback", null);
+//    public Callback<AppointmentEditData, Boolean> getEditAppointmentCallback() { return this.editAppointmentCallbackObjectProperty.getValue(); }
+//    public void setEditAppointmentCallback(Callback<AppointmentEditData, Boolean> value) { this.editAppointmentCallbackObjectProperty.setValue(value); }
+//    public Agenda withEditAppointmentCallback(Callback<AppointmentEditData, Boolean> value) { setEditAppointmentCallback(value); return this; }
+
 	
 	/** actionCallback:
 	 * This triggered when the action is called on an appointment, usually this is a double click
@@ -441,27 +449,6 @@ public class Agenda extends Control
         AppointmentGroup getAppointmentGroup();
         void setAppointmentGroup(AppointmentGroup s);
 
-//       boolean isRepeatMade();
-//       void setRepeatMade(boolean b);
-//
-//       void setRepeat(Repeat repeat);
-//       Repeat getRepeat();
-//////       boolean hasRepeat();
-//       boolean repeatFieldsEquals(Object obj);
-
-       
-        // my variables
-//        public final static int INITIAL_KEY = -1;
-    
-//        Integer getKey(); // unique appointment key
-//        void setKey(Integer value);
-//        boolean hasKey();
-//        void assignKey(); // add next key to appointment
-
-//        List<Integer> getStudentKeys();     // students in class
-//        void setStudentKeys(List<Integer> i);
-//        ObservableList<Integer> studentKeysProperty();
-		
 		// ----
 		// Calendar
 		
@@ -528,76 +515,6 @@ public class Agenda extends Control
         default void setEndLocalDateTime(LocalDateTime v) {
             setEndZonedDateTime(v == null ? null : ZonedDateTime.of(v, ZoneId.systemDefault()));
         }
-        
-//        /**
-//         * Copies all fields into parameter appointment
-//         * 
-//         * @param appointment
-//         * @return
-//         */
-//        default Appointment copyInto(Appointment appointment) {
-//            appointment.setEndLocalDateTime(getEndLocalDateTime());
-//            appointment.setStartLocalDateTime(getStartLocalDateTime());
-//            copyNonDateFieldsInto(appointment);
-////            Iterator<DayOfWeek> dayOfWeekIterator = Arrays 
-////                    .stream(DayOfWeek.values())
-////                    .limit(7)
-////                    .iterator();
-////                while (dayOfWeekIterator.hasNext())
-////                {
-////                    DayOfWeek key = dayOfWeekIterator.next();
-////                    boolean b1 = this.getRepeat().getDayOfWeekMap().get(key).get();
-////                    boolean b2 = appointment.getRepeat().getDayOfWeekMap().get(key).get();
-////                    System.out.println("copied day of week2 " + key + " " + b1 + " " + b2);
-////                }
-//            return appointment;
-//        }
-//        
-//        /**
-//         * Copies this Appointment non-time fields into parameter appointment
-//         * 
-//         * @param appointment
-//         * @return
-//         */
-//        default Appointment copyNonDateFieldsInto(Appointment appointment) {
-//            appointment.setAppointmentGroup(getAppointmentGroup());
-//            appointment.setDescription(getDescription());
-//            appointment.setSummary(getSummary());
-////            boolean b1 = getRepeat() == null;
-////            boolean b2 = appointment.getRepeat() == null;
-////            System.out.println("repeats " + b1 + " " + b2);
-////            if (getRepeat() == null) return appointment;
-////            if (appointment.getRepeat() == null)
-////            {
-////                appointment.setRepeat(RepeatFactory.newRepeat(getRepeat()));
-////            } else
-////            {
-////                getRepeat().copyInto(appointment.getRepeat());
-////            }
-//            return appointment;
-//        }
-//        
-//        /**
-//         * Copies this Appointment non-time fields into parameter appointment
-//         * Used when some of fields are unique and should not be copied.
-//         * 
-//         * @param appointment
-//         * @return
-//         */
-//        default Appointment copyNonDateFieldsInto(Appointment appointment, Appointment appointmentOld) {
-//            if (appointment.getAppointmentGroup().equals(appointmentOld.getAppointmentGroup())) {
-//                appointment.setAppointmentGroup(getAppointmentGroup());
-//            }
-//            if (appointment.getDescription().equals(appointmentOld.getDescription())) {
-//                appointment.setDescription(getDescription());
-//            }
-//            if (appointment.getSummary().equals(appointmentOld.getSummary())) {
-//                appointment.setSummary(getSummary());
-//            }
-//            getRepeat().copyInto(appointment.getRepeat());
-////            repeatMap.get(this).copyInto(repeatMap.get(appointment));
-//            return appointment;
-//        }
         
     }
 	
@@ -830,6 +747,7 @@ public class Agenda extends Control
             setStyleClass(value);
             icon = new Pane();
             icon.setPrefSize(20, 20);
+            icon.getStylesheets().add(AGENDA_STYLE_CLASS);
             icon.getStyleClass().addAll("AppointmentGroup", getStyleClass());
             return this; 
         }
@@ -866,15 +784,18 @@ public class Agenda extends Control
     {
         public Appointment appointment;
         public Collection<Appointment> appointments;
-        public 
-//        public LayoutHelp layoutHelp;
+//        public Collection<Repeat> repeats;
+        public List<AppointmentGroup> appountmentGroups;
         public Pane pane;
 
-        public AppointmentEditData(Appointment appointment, LayoutHelp layoutHelp, Pane pane) {
-            this.appointment = appointment;
-            this.layoutHelp = layoutHelp;
-            this.pane = pane;
-        }
+//        public AppointmentEditData(Appointment appointment, LayoutHelp layoutHelp, Pane pane) {
+//            this.appointment = appointment;
+//            appointments = layoutHelp.skinnable.appointments();
+//            repeats = layoutHelp.skinnable.repeats();
+//            appountmentGroups = layoutHelp.skinnable.appointmentGroups();
+////            this.layoutHelp = layoutHelp;
+//            this.pane = pane;
+//        }
 
     }
 }

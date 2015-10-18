@@ -3,8 +3,8 @@ package jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.bas
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -42,7 +42,7 @@ public final class AppointmentIO {
     
 
     
-    public static void writeAppointmentGroups(List<AppointmentGroup> appointmentGroups
+    public static void writeAppointmentGroups(Collection<AppointmentGroup> appointmentGroups
             , Path file)
     {
         // XML document

@@ -3,6 +3,8 @@ package jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.bas
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.beans.property.BooleanProperty;
@@ -15,11 +17,11 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
-import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.LayoutHelp;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.Appointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAppointment;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities.WindowCloseType;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -32,7 +34,7 @@ public class AppointmentEditControllerOld {
     public RepeatableAppointment getAppointmentOld() { return appointmentOld; }
     private Collection<Appointment> appointments;
     private Collection<Repeat> repeats;
-    private LayoutHelp layoutHelp;
+//    private LayoutHelp layoutHelp;
 
     private BooleanProperty groupNameChanged = new SimpleBooleanProperty(false);
 
@@ -74,15 +76,19 @@ public class AppointmentEditControllerOld {
 //            -> appointment.setStartLocalDateTime(newValue);
 
     // Setup up data for controls
-    public void setupData(Appointment inputAppointment, LayoutHelp layoutHelp)
+    public void setupData
+             (Appointment inputAppointment
+            , Collection<Appointment> appointments
+            , List<AppointmentGroup> appointmentGroups
+            , Collection<Repeat> repeats)
     {
         RepeatableAppointment appointment = (RepeatableAppointment) inputAppointment;
-        this.layoutHelp = layoutHelp;
+//        this.layoutHelp = layoutHelp;
         this.appointment = appointment;
-        repeats = layoutHelp.skinnable.repeats();
+//        repeats = layoutHelp.skinnable.repeats();
 //        appointments = layoutHelp.skinnable.appointments()
 //                .stream().map(a -> (RepeatableAppointment) a).collect(Collectors.toList()); // temp cast to RepeatableAppointments
-        appointments = layoutHelp.skinnable.appointments();
+//        appointments = layoutHelp.skinnable.appointments();
 
         appointmentOld = AppointmentFactory.newAppointment(appointment);
 
@@ -100,7 +106,7 @@ public class AppointmentEditControllerOld {
          });
         
         // START DATE TIME TEXT FIELD
-        startTextField.setLocale(layoutHelp.skinnable.getLocale());
+        startTextField.setLocale(Locale.getDefault());
         startTextField.setLocalDateTime(appointment.getStartLocalDateTime());
 
         //        startTextField.localDateTimeProperty().bindBidirectional(appointment.startLocalDateTimeProperty());
@@ -109,7 +115,7 @@ public class AppointmentEditControllerOld {
 //                -> appointment.setStartLocalDateTime(newValue));
 
         // END DATE TIME TEXT FIELD
-        endTextField.setLocale(layoutHelp.skinnable.getLocale());
+        endTextField.setLocale(Locale.getDefault());
         endTextField.setLocalDateTime(appointment.getEndLocalDateTime());
         endTextField.setVisible(appointment.getEndLocalDateTime() != null);
 
@@ -133,21 +139,21 @@ public class AppointmentEditControllerOld {
             endTextField.setVisible(appointment.getEndLocalDateTime() != null);
         });
         
-        appointmentGroupGridPane.setupData(appointment, layoutHelp.skinnable.appointmentGroups());
+        appointmentGroupGridPane.setupData(appointment, appointmentGroups);
         
         // store group name changes by each character typed
         appointmentGroupGridPane.appointmentGroupSelectedProperty().addListener(
             (observable, oldSelection, newSelection) ->  {
                 Integer i = appointmentGroupGridPane.getAppointmentGroupSelected();
-                String newText = layoutHelp.skinnable.appointmentGroups().get(i).getDescription();
+                String newText = appointmentGroups.get(i).getDescription();
                 groupTextField.setText(newText);
                 groupNameChanged.set(true);
             });
 
         groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->  {
             Integer i = appointmentGroupGridPane.getAppointmentGroupSelected();
-            layoutHelp.skinnable.appointmentGroups().get(i).setDescription(newSelection);
-            appointmentGroupGridPane.updateToolTip(i, layoutHelp.skinnable.appointmentGroups());
+            appointmentGroups.get(i).setDescription(newSelection);
+            appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
             groupNameChanged.set(true);
         });
             }
@@ -162,7 +168,7 @@ public class AppointmentEditControllerOld {
         setCloseType(result);
 
         if (getCloseType() == WindowCloseType.CLOSE_WITH_CHANGE) {
-            layoutHelp.skin.setupAppointments();    // refresh appointment graphics
+//            layoutHelp.skin.setupAppointments();    // refresh appointment graphics - can't do here
         }
     }
     
