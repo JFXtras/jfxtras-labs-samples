@@ -82,7 +82,7 @@ public class AppointmentMenu extends Rectangle {
 	 */
 	public void showMenu(MouseEvent mouseEvent) {
 		// has the client done his own popup?
-		Callback<Appointment, Void> lEditCallback = layoutHelp.skinnable.getEditAppointmentCallback();
+		Callback<Appointment, Void> lEditCallback = null; // layoutHelp.skinnable.getEditAppointmentCallback(); // removed by David Bal
 		if (lEditCallback != null) {
 //		    AppointmentEditData data = new AppointmentEditData(appointment, layoutHelp, pane);
 			lEditCallback.call(appointment);
@@ -104,15 +104,15 @@ public class AppointmentMenu extends Rectangle {
             e.printStackTrace();
         }
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
-        appointmentEditController.setupData(
-                  appointment
-                , layoutHelp.skinnable.appointments()
-                , layoutHelp.skinnable.repeats()
-                , layoutHelp.skinnable.appointmentGroups());
+//        appointmentEditController.setupData( // removed by David Bal
+//                  appointment
+//                , layoutHelp.skinnable.appointments()
+//                , layoutHelp.skinnable.repeats()
+//                , layoutHelp.skinnable.appointmentGroups());
         Scene scene2 = new Scene(appointmentMenu);
         
         // data element change bindings
-        groupNameChanged.bindBidirectional(appointmentEditController.groupNameChangedProperty());
+        groupNameChanged.bindBidirectional(appointmentEditController.groupNameEditedProperty());
 
         // listen for close event
         appointmentEditController.closeTypeProperty().addListener(
@@ -126,7 +126,7 @@ public class AppointmentMenu extends Rectangle {
             case CLOSE_WITH_CHANGE:
                 if (groupNameChanged.getValue()) {    // write group name changes
                     System.out.println("group change write needed");
-                    AppointmentIO.writeAppointmentGroups(layoutHelp.skinnable.appointmentGroups(), Settings.APPOINTMENT_GROUPS_FILE);
+//                    AppointmentIO.writeAppointmentGroups(layoutHelp.skinnable.appointmentGroups(), Settings.APPOINTMENT_GROUPS_FILE); // removed by David Bal
                 }
                 break;
 //            default: // restore previous state

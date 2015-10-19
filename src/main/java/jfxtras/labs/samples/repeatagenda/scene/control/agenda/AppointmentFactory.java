@@ -50,11 +50,13 @@ public final class AppointmentFactory {
     /**
      * writes appointmentList to file - temporary work around for type problem
      */
-    public static void writeToFile(List<? extends Appointment> appointments) {
+    public static void writeToFile(List<Appointment> appointments) {
+        System.out.println("write appointmetns");
         List<RepeatableAppointment> appointments2 = appointments
                 .stream()
                 .map(a -> ((RepeatableAppointment) a)) // down cast all appointmetns to RepeatableAppointments
                 .collect(Collectors.toList());
+        System.out.println("repeat made = " + appointments2.stream().filter(a -> a.isRepeatMade()).count());
         RepeatableAppointmentImpl.writeToFile(appointments2, Settings.APPOINTMENTS_FILE);
     }
     

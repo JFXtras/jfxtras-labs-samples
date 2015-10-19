@@ -23,7 +23,6 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.R
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities.WindowCloseType;
 import jfxtras.scene.control.LocalDateTimeTextField;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 
@@ -32,12 +31,19 @@ public class AppointmentEditController {
     private RepeatableAppointment appointment;
     private RepeatableAppointment appointmentOld;
     public RepeatableAppointment getAppointmentOld() { return appointmentOld; }
-    private Collection<Appointment> appointments;
+    private Collection<RepeatableAppointment> appointments;
     private Collection<Repeat> repeats;
     private List<AppointmentGroup> appointmentGroups;
 //    private LayoutHelp layoutHelp;
 
-    private BooleanProperty groupNameChanged = new SimpleBooleanProperty(false);
+    // Change properties
+    // TODO - make iterator containing collection of changed appointments 
+    private BooleanProperty groupNameEdited = new SimpleBooleanProperty(false);
+    public BooleanProperty groupNameEditedProperty() { return groupNameEdited; }
+    private BooleanProperty appointmentEdited = new SimpleBooleanProperty(false);
+    public BooleanProperty appointmentEditedProperty() { return appointmentEdited; }
+    private BooleanProperty repeatEdited = new SimpleBooleanProperty(false);
+    public BooleanProperty repeatEditedProperty() { return repeatEdited; }
 
     private ObjectProperty<WindowCloseType> closeType = new SimpleObjectProperty<WindowCloseType>(WindowCloseType.X); // default to X, meaning click on X to close window
     public ObjectProperty<WindowCloseType> closeTypeProperty() { return closeType; }
@@ -77,8 +83,8 @@ public class AppointmentEditController {
 //            -> appointment.setStartLocalDateTime(newValue);
 
     // Setup up data for controls
-    public void setupData(Appointment inputAppointment
-            , Collection<Appointment> appointments
+    public void setupData(RepeatableAppointment inputAppointment
+            , Collection<RepeatableAppointment> appointments
             , Collection<Repeat> repeats
             , List<AppointmentGroup> appointmentGroups)
     {
@@ -147,14 +153,14 @@ public class AppointmentEditController {
                 Integer i = appointmentGroupGridPane.getAppointmentGroupSelected();
                 String newText = appointmentGroups.get(i).getDescription();
                 groupTextField.setText(newText);
-                groupNameChanged.set(true);
+                groupNameEdited.set(true);
             });
 
         groupTextField.textProperty().addListener((observable, oldSelection, newSelection) ->  {
             int i = appointmentGroupGridPane.getAppointmentGroupSelected();
             appointmentGroups.get(i).setDescription(newSelection);
             appointmentGroupGridPane.updateToolTip(i, appointmentGroups);
-            groupNameChanged.set(true);
+            groupNameEdited.set(true);
         });
             }
 
@@ -164,7 +170,9 @@ public class AppointmentEditController {
         final WindowCloseType result = RepeatableUtilities.editAppointments(appointments
                         , appointment
                         , appointmentOld
-                        , repeats);
+                        , repeats
+                        , a -> { appointmentEdited.set(true); return null;}
+                        , r -> { repeatEdited.set(true); return null; });
         setCloseType(result);
 
         if (getCloseType() == WindowCloseType.CLOSE_WITH_CHANGE) {
@@ -179,10 +187,6 @@ public class AppointmentEditController {
     
     public AppointmentGroupGridPane getAppointmentGroupGridPane() {
         return appointmentGroupGridPane;
-    }
-
-    public BooleanProperty groupNameChangedProperty() {
-        return groupNameChanged;
     }
 
     public RepeatableController getRepeatableController() {

@@ -31,7 +31,7 @@ public abstract class RepeatTestAbstract {
             IntStream
             .range(0, 23)
             .mapToObj(i -> new RepeatableAgenda.AppointmentGroupImpl()
-                   .withStyleClass("group" + i)
+//                   .withStyleClass("group" + i) // skipped due to static variable problem with junit
                    .withKey(i)
                    .withDescription("group" + (i < 10 ? "0" : "") + i))
             .collect(Collectors.toList()));

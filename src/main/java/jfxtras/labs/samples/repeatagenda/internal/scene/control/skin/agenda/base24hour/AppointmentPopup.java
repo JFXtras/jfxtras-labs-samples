@@ -34,12 +34,12 @@ public class AppointmentPopup extends Popup {
         appointmentManage.getStylesheets().add(layoutHelp.skinnable.getUserAgentStylesheet());
         
         AppointmentPopupController appointmentManageController = appointmentManageLoader.getController();
-        appointmentManageController.setupData(
-                  layoutHelp.skinnable.appointments()
-                , appointment
-                , layoutHelp.skinnable.repeats()
-                , pane
-                , this);
+//        appointmentManageController.setupData( // removed byDavid Bal
+//                  layoutHelp.skinnable.appointments()
+//                , appointment
+//                , layoutHelp.skinnable.repeats()
+//                , pane
+//                , this);
 
         
         setAutoFix(true);

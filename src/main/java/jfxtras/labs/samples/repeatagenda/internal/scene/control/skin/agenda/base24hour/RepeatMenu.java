@@ -2,6 +2,7 @@ package jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.bas
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javafx.beans.property.BooleanProperty;
@@ -14,24 +15,32 @@ import javafx.stage.Stage;
 import jfxtras.labs.samples.repeatagenda.Main;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.controller.AppointmentEditController;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 // New stage for popup window
-public class RepeatMenuStage extends Stage {
+public class RepeatMenu extends Stage {
 
 //    final private AppointmentEditController appointmentEditController;
 //    final private LayoutHelp layoutHelp;
-    private BooleanProperty groupNameChanged = new SimpleBooleanProperty(false);
-//    private Pane pane;
+    private BooleanProperty groupNameEdited = new SimpleBooleanProperty(false);
+    private BooleanProperty appointmentEdited = new SimpleBooleanProperty(false);
+    public BooleanProperty appointmentEditedProperty() { return appointmentEdited; }
+//    private Collection<Appointment> editedAppointments;
+    private Iterator<Appointment> editedAppointments; // TODO
+    private BooleanProperty repeatEdited = new SimpleBooleanProperty(false);
+    public BooleanProperty repeatEditedProperty() { return repeatEdited; }
+
+    //    private Pane pane;
 //    private List<AppointmentGroup> appointmentGroups;
 //    private Collection<Repeat> repeats;
 //    private Collection<Appointment> appointments;
 //    private Appointment appointment;
 
-    public RepeatMenuStage(Appointment appointment
-            , Collection<Appointment> appointments
+    public RepeatMenu(RepeatableAppointment appointment
+            , Collection<RepeatableAppointment> appointments
             , Collection<Repeat> repeats
             , List<AppointmentGroup> appointmentGroups)
     {
@@ -66,7 +75,9 @@ public class RepeatMenuStage extends Stage {
         Scene scene = new Scene(appointmentMenu);
 
         // data element change bindings
-        groupNameChanged.bindBidirectional(appointmentEditController.groupNameChangedProperty());
+        groupNameEdited.bindBidirectional(appointmentEditController.groupNameEditedProperty());
+        appointmentEdited.bindBidirectional(appointmentEditController.appointmentEditedProperty());
+        repeatEdited.bindBidirectional(appointmentEditController.repeatEditedProperty());
 
         // listen for close event
         appointmentEditController.closeTypeProperty().addListener((observable, oldSelection, newSelection) -> close());
@@ -79,14 +90,14 @@ public class RepeatMenuStage extends Stage {
             switch (appointmentEditController.getCloseType())
             {
             case CLOSE_WITH_CHANGE:
-                if (groupNameChanged.getValue()) {    // write group name changes
+                if (groupNameEdited.getValue()) {    // write group name changes
                     System.out.println("group change write needed");
                     AppointmentIO.writeAppointmentGroups(appointmentGroups, Settings.APPOINTMENT_GROUPS_FILE);
                 }
                 break;
             }
 //            layoutHelp.skin.setupAppointments();    // refresh appointment graphics
-            System.out.println("RepeatMenuStage refresh" ); // refresh - use callback?
+            System.out.println("RepeatMenuStage refresh " + appointmentEdited.get() + " " +  repeatEdited.get()); // refresh - use callback?
         });
         
         setScene(scene);

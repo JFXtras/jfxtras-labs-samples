@@ -62,7 +62,8 @@ abstract class AppointmentAbstractPane extends Pane {
 	{
 		this.appointment = appointment;
 		this.layoutHelp = layoutHelp;
-		appointmentMenu = new AppointmentMenu(this, appointment, layoutHelp);
+		appointmentMenu = null;
+//		appointmentMenu = new AppointmentMenu(this, appointment, layoutHelp); // removed by David Bal
 		
 		// for debugging setStyle("-fx-border-color:PINK;-fx-border-width:1px;");
 		getStyleClass().add("Appointment");
@@ -196,7 +197,7 @@ abstract class AppointmentAbstractPane extends Pane {
 				}
 				// we use a clone for calculating the current time during the drag
 //				appointmentForDrag = new AppointmentImplLocal();
-                appointmentForDrag = AppointmentFactory.newAppointment();
+//                appointmentForDrag = AppointmentFactory.newAppointment(); // removed by David Bal
 			}
 			
 			// move the drag rectangle

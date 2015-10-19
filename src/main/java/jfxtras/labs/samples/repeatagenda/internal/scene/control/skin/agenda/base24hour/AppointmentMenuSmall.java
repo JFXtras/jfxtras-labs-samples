@@ -18,7 +18,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
 import javafx.util.Callback;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AgendaMine.Appointment;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 import jfxtras.scene.control.ImageViewButton;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -151,9 +150,9 @@ public class AppointmentMenuSmall extends Rectangle {
         styleBox.getChildren().add(styleLabel);
         lVBox.getChildren().add(styleBox);
 		
-        final AppointmentGroupGridPane appointmentGroupGridPane
-            = new AppointmentGroupGridPane(appointment, layoutHelp.skinnable.appointmentGroups());
-        lVBox.getChildren().add(appointmentGroupGridPane);
+//        final AppointmentGroupGridPane appointmentGroupGridPane // removed by David Bal
+//            = new AppointmentGroupGridPane(appointment, layoutHelp.skinnable.appointmentGroups());
+//        lVBox.getChildren().add(appointmentGroupGridPane);
         
 		Button saveButton = new Button(Settings.resources.getString("button.save"));
         Button advancedEditButton = new Button(Settings.resources.getString("button.add.more.details"));
@@ -165,14 +164,14 @@ public class AppointmentMenuSmall extends Rectangle {
         
         saveButton.setOnAction((event) -> {
             popup.hide();
-            if (writeAppointment ) AppointmentFactory.writeToFile(layoutHelp.skinnable.appointments());
+//            if (writeAppointment ) AppointmentFactory.writeToFile(layoutHelp.skinnable.appointments()); // David Bal
         });
 
         advancedEditButton.setOnAction((event) -> {
             popup.hide();
-            if (writeAppointment ) AppointmentFactory.writeToFile(layoutHelp.skinnable.appointments());
-            AppointmentMenu appointmentMenu = new AppointmentMenu(pane, appointment, layoutHelp);
-            appointmentMenu.showMenu(mouseEvent);
+//            if (writeAppointment ) AppointmentFactory.writeToFile(layoutHelp.skinnable.appointments()); // David Bal
+//            AppointmentMenu appointmentMenu = new AppointmentMenu(pane, appointment, layoutHelp);
+//            appointmentMenu.showMenu(mouseEvent);
         });
 		
 		// show it just below the menu icon
@@ -180,7 +179,7 @@ public class AppointmentMenuSmall extends Rectangle {
         
 
         popup.setOnAutoHide((event) -> {
-                if (writeAppointment ) AppointmentFactory.writeToFile(layoutHelp.skinnable.appointments());
+//                if (writeAppointment ) AppointmentFactory.writeToFile(layoutHelp.skinnable.appointments()); // David Bal
 //                layoutHelp.skinnable.setWriteAppointmentNeeded(true);
             }
         );

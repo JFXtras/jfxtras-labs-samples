@@ -227,6 +227,16 @@ public abstract class Repeat {
     public Set<LocalDate> getDeletedDates() { return deletedDates; }
     public void setDeletedDates(Set<LocalDate> dates) { deletedDates = dates; }
     public Repeat withDeletedDates(Set<LocalDate> dates) { setDeletedDates(dates); return this; }
+    private boolean deletedDatesEquals(Collection<LocalDate> deletedDatesTest)
+    {
+        Iterator<LocalDate> dateIterator = getDeletedDates().iterator();
+        while (dateIterator.hasNext())
+        {
+            LocalDate myDate = dateIterator.next();
+            if (! deletedDatesTest.contains(myDate)) return false;
+        }
+        return true;
+    }
     
     /** Appointment-specific data */
     private RepeatableAppointment appointmentData = AppointmentFactory.newAppointment();
@@ -364,7 +374,8 @@ public abstract class Repeat {
             && isRepeatDayOfWeek().equals(testObj.isRepeatDayOfWeek())
             && getRepeatFrequency().equals(testObj.getRepeatFrequency())
             && getAppointmentData().repeatFieldsEquals(testObj.getAppointmentData())
-            && dayOfWeekMapEqual(testObj.getDayOfWeekMap());
+            && dayOfWeekMapEqual(testObj.getDayOfWeekMap())
+            && deletedDatesEquals(testObj.getDeletedDates());
     }
     
     /**
@@ -737,7 +748,7 @@ public abstract class Repeat {
      * @param endTemporalAdjuster: adjusts endLocalDateTime
      * @return
      */
-    protected void updateAppointments(Collection<Appointment> appointments
+    protected void updateAppointments(Collection<RepeatableAppointment> appointments
             , RepeatableAppointment appointment
             , RepeatableAppointment appointmentOld
             , TemporalAdjuster startTemporalAdjuster
@@ -774,7 +785,7 @@ public abstract class Repeat {
      * @param appointment: already modified appointment
      * @return
      */
-    public void updateAppointments(Collection<Appointment> appointments
+    public void updateAppointments(Collection<RepeatableAppointment> appointments
             , RepeatableAppointment appointment)
     {
         // Identify invalid repeat appointments
@@ -849,7 +860,7 @@ public abstract class Repeat {
      * @return
      */
     public boolean oneAppointmentToIndividual(Collection<Repeat> repeats
-            , Collection<Appointment> appointments)
+            , Collection<RepeatableAppointment> appointments)
     {
         if (getEndCriteria() != EndCriteria.NEVER)
         { // Count number of valid appointment start dates, stop when after end date or more than one appointment date

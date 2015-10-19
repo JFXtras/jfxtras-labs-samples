@@ -1,6 +1,7 @@
 package jfxtras.labs.samples.repeatagenda.scene.control.agenda;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -8,13 +9,22 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda;
 
-public class RepeatableAgenda extends Agenda {
+public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
 
-    final private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
+//    public RepeatableAgenda() {
+//     // setup the CSS
+//        this.getStyleClass().add(Agenda.class.getSimpleName());
+////        AGENDA_STYLE_CLASS = RepeatableAgenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + RepeatableAgenda.class.getSimpleName() + ".css").toExternalForm();
+//    }
+    
+    private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
     final public static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
     = javafx.collections.FXCollections.observableArrayList(
             IntStream
@@ -24,11 +34,64 @@ public class RepeatableAgenda extends Agenda {
                    .withKey(i)
                    .withDescription("group" + (i < 10 ? "0" : "") + i))
             .collect(Collectors.toList()));
+//    public static ObservableList<AppointmentGroup> defaultAppointmentGroups() {
+//        return javafx.collections.FXCollections.observableArrayList(
+//                IntStream
+//                .range(0, 24)
+//                .mapToObj(i -> new RepeatableAgenda.AppointmentGroupImpl()
+//                       .withStyleClass("group" + i)
+//                       .withKey(i)
+//                       .withDescription("group" + (i < 10 ? "0" : "") + i))
+//                .collect(Collectors.toList()));
+//    }
+//    
+    // propertys indicating writes are necessary - TODO - how to hook into them?
+    private BooleanProperty groupNameEdited = new SimpleBooleanProperty(false);
+    private BooleanProperty appointmentEdited = new SimpleBooleanProperty(false);
+    public BooleanProperty appointmentEditedProperty() { return appointmentEdited; }
+//    private Collection<Appointment> editedAppointments;
+    private Iterator<Appointment> editedAppointments; // TODO
+    private BooleanProperty repeatEdited = new SimpleBooleanProperty(false);
+    public BooleanProperty repeatEditedProperty() { return repeatEdited; }
+
+    
     
     /** Repeat rules */
     Collection<Repeat> repeats;
     public Collection<Repeat> repeats() { return repeats; }
     public void setRepeats(Collection<Repeat> repeats) { this.repeats = repeats; }
+    
+    /** Input list - is kept updated with Agenda.appointments */
+    ObservableList<T> items = FXCollections.observableArrayList();
+    public void setItems(ObservableList<T> items)
+    { 
+        this.items = items;
+        items.addListener(listener);
+    }
+    public ObservableList<T> getItems() { return items; }
+    private final ListChangeListener<RepeatableAppointment> listener = (ListChangeListener<RepeatableAppointment>) change -> {
+        System.out.println("item change");
+        while (change.next())
+        {
+            for (Appointment myAppointment : change.getAddedSubList())
+            {
+                appointments().add(myAppointment);
+            }
+            for (Appointment myAppointment : change.getRemoved())
+            {
+                appointments().remove(myAppointment);
+            }
+        }
+    };
+    
+    public RepeatableAgenda(ObservableList<T> items) {
+        this.items = items;
+        items.addListener(listener);
+    }
+
+    public RepeatableAgenda() {
+        items.addListener(listener);
+    }
     
     static public interface RepeatableAppointment extends Agenda.Appointment
     {
@@ -215,10 +278,11 @@ public class RepeatableAgenda extends Agenda {
         final private ObjectProperty<String> styleClassObjectProperty = new SimpleObjectProperty<String>(this, "styleClass");
         public String getStyleClass() { return styleClassObjectProperty.getValue(); }
         public void setStyleClass(String value) { styleClassObjectProperty.setValue(value); }
-        public AppointmentGroupImpl withStyleClass(String value) { 
+        public AppointmentGroupImpl withStyleClass(String value) {
             setStyleClass(value);
             icon = new Pane();
             icon.setPrefSize(20, 20);
+//            icon.getStyleClass().add(Agenda.class.getSimpleName());
             icon.getStylesheets().add(AGENDA_STYLE_CLASS);
             icon.getStyleClass().addAll("AppointmentGroup", getStyleClass());
             return this; 
@@ -233,24 +297,5 @@ public class RepeatableAgenda extends Agenda {
         public AppointmentGroupImpl withKey(int key) {setKey(key); return this; }
         
         }
-    
-//    /** Class to contain data for the appointment edit callback */
-//    static public class RepeatableAppointmentEditData extends AppointmentEditData
-//    {
-//        public Appointment appointment;
-//        public Collection<Appointment> appointments;
-//        public Collection<Repeat> repeats;
-//        public List<AppointmentGroup> appountmentGroups;
-//        public Pane pane;
-//
-////        public AppointmentEditData(Appointment appointment, LayoutHelp layoutHelp, Pane pane) {
-////            this.appointment = appointment;
-////            appointments = layoutHelp.skinnable.appointments();
-////            repeats = layoutHelp.skinnable.repeats();
-////            appountmentGroups = layoutHelp.skinnable.appointmentGroups();
-//////            this.layoutHelp = layoutHelp;
-////            this.pane = pane;
-////        }
-//
-//    }
+
 }

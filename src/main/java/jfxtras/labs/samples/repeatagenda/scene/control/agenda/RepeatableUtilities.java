@@ -97,8 +97,8 @@ public final class RepeatableUtilities {
      * @throws ParserConfigurationException 
      */
     public static WindowCloseType deleteAppointments(
-              Collection<Appointment> appointments
-            , Appointment appointment
+              Collection<RepeatableAppointment> appointments
+            , RepeatableAppointment appointment
             , Collection<Repeat> repeats) throws ParserConfigurationException
     {
         return deleteAppointments(
@@ -121,7 +121,7 @@ public final class RepeatableUtilities {
      * @return 
      * @throws ParserConfigurationException 
      */
-    public static WindowCloseType deleteAppointments(Collection<Appointment> appointments
+    public static WindowCloseType deleteAppointments(Collection<RepeatableAppointment> appointments
             , Appointment appointmentInput
             , Collection<Repeat> repeats
             , Callback<RepeatChange[], RepeatChange> changeDialogCallback
@@ -275,9 +275,9 @@ public final class RepeatableUtilities {
      */
     // Works for by drag-and-drop on the agenda and for editing from AppointmentEditController
     public static WindowCloseType editAppointments(
-              Collection<Appointment> appointments
-            , Appointment appointmentInput
-            , Appointment appointmentOldInput
+              Collection<RepeatableAppointment> appointments
+            , RepeatableAppointment appointmentInput
+            , RepeatableAppointment appointmentOldInput
             , Collection<Repeat> repeats
             , Callback<RepeatChange[], RepeatChange> changeDialogCallback
             , Callback<Collection<RepeatableAppointment>, Void> writeAppointmentsCallback
@@ -322,7 +322,7 @@ public final class RepeatableUtilities {
 
         // FIND OUT WHICH TYPE OF APPOINTMENT IS BEING EDITED
         final AppointmentType appointmentType = makeAppointmentType(repeat, repeatOld);
-//        System.out.println("appointmentType " + appointmentType);
+        System.out.println("appointmentType " + appointmentType);
         switch (appointmentType)
         {
         case INDIVIDUAL:
@@ -581,12 +581,12 @@ public final class RepeatableUtilities {
         }
         
         // Write changes that occurred
-//        System.out.println(writeAppointments +  " " + writeRepeats);
+        System.out.println("write flags " + writeAppointments +  " " + writeRepeats);
 //        if (writeAppointments) AppointmentFactory.writeToFile(appointments);
 //        if (writeRepeats) MyRepeat.writeToFile(repeats);
 
-//        if (writeAppointments && (writeAppointmentsCallback != null)) writeAppointmentsCallback.call(appointments); // write appointment changes
-//        if (writeRepeats && (writeRepeatsCallback != null)) writeRepeatsCallback.call(repeats);                     // write repeat changes
+        if (writeAppointments && (writeAppointmentsCallback != null)) writeAppointmentsCallback.call(null); // write appointment changes
+        if (writeRepeats && (writeRepeatsCallback != null)) writeRepeatsCallback.call(repeats);                     // write repeat changes
 
         return (writeAppointments || writeRepeats) ? WindowCloseType.CLOSE_WITH_CHANGE : WindowCloseType.CLOSE_WITHOUT_CHANGE;
         
@@ -603,7 +603,7 @@ public final class RepeatableUtilities {
      * @return
      */
     public static WindowCloseType editAppointments(
-              Collection<Appointment> appointments
+              Collection<RepeatableAppointment> appointments
             , RepeatableAppointment appointment
             , RepeatableAppointment appointmentOld
             , Collection<Repeat> repeats)
@@ -618,6 +618,34 @@ public final class RepeatableUtilities {
               , r -> { MyRepeat.writeToFile(r); return null; });
     }
     
+    
+    /**
+     * Edit repeatable appointment.
+     * Uses default callbacks for dialog, write appointments and write repeats
+     * 
+     * @param appointments
+     * @param appointment
+     * @param appointmentOld
+     * @param repeats
+     * @return
+     */
+    public static WindowCloseType editAppointments(
+            Collection<RepeatableAppointment> appointments
+          , RepeatableAppointment appointment
+          , RepeatableAppointment appointmentOld
+          , Collection<Repeat> repeats
+          , Callback<Collection<RepeatableAppointment>, Void> writeAppointmentsCallback
+          , Callback<Collection<Repeat>, Void> writeRepeatsCallback)
+    {
+        return editAppointments(
+                appointments
+              , appointment
+              , appointmentOld
+              , repeats
+              , a -> repeatChangeDialog()
+              , writeAppointmentsCallback
+              , writeRepeatsCallback);
+    }
 
     
     
