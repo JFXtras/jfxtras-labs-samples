@@ -25,6 +25,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.R
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities.RepeatChange;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities.WindowCloseType;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 public class RepeatEditTest extends RepeatTestAbstract {
     
@@ -36,12 +37,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
     {
         Repeat repeat = getRepeatDailyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
-        Set<RepeatableAppointment> appointments = new TreeSet<RepeatableAppointment>(getAppointmentComparator());
+        Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDate startDate = LocalDate.of(2015, 11, 1);
         LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
-        Iterator<RepeatableAppointment> appointmentIterator = appointments.iterator();
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(2, appointments.size()); // check if there are only two appointments
 //        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
 //        System.exit(0);
@@ -80,7 +81,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         assertEquals(2, appointments.size()); // check if there are only two appointments
 
         // Check Appointments
-        Iterator<RepeatableAppointment> appointmentIteratorNew = appointments.iterator();
+        Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
         RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
 //        System.out.println("editedAppointment1 " + editedAppointment1.getStartLocalDateTime());
 
@@ -113,12 +114,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
     {
         Repeat repeat = getRepeatDailyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
-        Set<RepeatableAppointment> appointments = new TreeSet<RepeatableAppointment>(getAppointmentComparator());
+        Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDate startDate = LocalDate.of(2015, 11, 1);
         LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
-        Iterator<RepeatableAppointment> appointmentIterator = appointments.iterator();
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(2, appointments.size()); // check if there are only two appointments
 
         // select appointment and apply changes
@@ -155,7 +156,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         
         // Check appointments
-        Iterator<RepeatableAppointment> appointmentIteratorNew = appointments.iterator();
+        Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
 
         RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
         RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment()
@@ -197,12 +198,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
     {
         Repeat repeat = getRepeatWeeklyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
-        Set<RepeatableAppointment> appointments = new TreeSet<RepeatableAppointment>(getAppointmentComparator());
+        Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDate startDate = LocalDate.of(2015, 11, 1);
         LocalDate endDate = LocalDate.of(2015, 11, 14); // tests two week time range
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
-        Iterator<RepeatableAppointment> appointmentIterator = appointments.iterator();
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(4, appointments.size()); // check number of appointments
 
         // select appointment and apply changes
@@ -239,7 +240,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
 
         // Check appointments
-        Iterator<RepeatableAppointment> appointmentIteratorNew = appointments.iterator();
+        Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
 
         RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
         RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment()
@@ -290,12 +291,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
     {
         Repeat repeat = getRepeatWeeklyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
-        Set<RepeatableAppointment> appointments = new TreeSet<RepeatableAppointment>(getAppointmentComparator());
+        Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDate startDate = LocalDate.of(2015, 11, 1);
         LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
-        Iterator<RepeatableAppointment> appointmentIterator = appointments.iterator();
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(2, appointments.size()); // check number of appointments
 
         // select appointment and apply changes
@@ -334,7 +335,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         
         // Check appointments
-        Iterator<RepeatableAppointment> appointmentIteratorNew = appointments.iterator();
+        Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
 
         RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
         RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment()
@@ -375,12 +376,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
     {
         Repeat repeat = getRepeatWeeklyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
-        Set<RepeatableAppointment> appointments = new TreeSet<RepeatableAppointment>(getAppointmentComparator());
+        Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDate startDate = LocalDate.of(2015, 11, 1);
         LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
-        Iterator<RepeatableAppointment> appointmentIterator = appointments.iterator();
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(2, appointments.size()); // check number of appointments
 
         // select appointment and apply changes (should be undone with cancel)
@@ -421,7 +422,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         
         // Check appointments
-        Iterator<RepeatableAppointment> appointmentIteratorNew = appointments.iterator();
+        Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
 
         RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
         RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment()
@@ -452,12 +453,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
     {
         Repeat repeat = getRepeatWeeklyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
-        Set<RepeatableAppointment> appointments = new TreeSet<RepeatableAppointment>(getAppointmentComparator());
+        Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDate startDate = LocalDate.of(2015, 11, 1);
         LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
-        Iterator<RepeatableAppointment> appointmentIterator = appointments.iterator();
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(2, appointments.size()); // check number of appointments
 
         // select appointment and apply changes (should be undone with cancel)
@@ -496,7 +497,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         
         // Check appointments
-        Iterator<RepeatableAppointment> appointmentIteratorNew = appointments.iterator();
+        Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
 
         RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
         RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment()
@@ -527,12 +528,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
     {
         final Repeat repeat = getRepeatDailyFixed();
         final List<Repeat> repeats = new ArrayList<Repeat>(Arrays.asList(repeat));
-        final Set<RepeatableAppointment> appointments = new TreeSet<RepeatableAppointment>(getAppointmentComparator());
+        final Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         final LocalDate startDate = LocalDate.of(2015, 10, 25);
         final LocalDate endDate = LocalDate.of(2015, 10, 31); // tests one week time range
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
-        final Iterator<RepeatableAppointment> appointmentIterator = appointments.iterator();
+        final Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(3, appointments.size()); // check number of appointments
 
         // select appointment and apply changes
@@ -590,7 +591,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         assertEquals(expectedRepeat2, repeat2); // check to see if repeat rule changed correctly
         
         // Check appointments
-        Iterator<RepeatableAppointment> appointmentIteratorNew = appointments.iterator();
+        Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
 
         final RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
         final RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment()
@@ -622,12 +623,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
         
         Repeat repeat = getRepeatWeeklyFixed2();
         final List<Repeat> repeats = new ArrayList<Repeat>(Arrays.asList(repeat));
-        Set<RepeatableAppointment> appointments = new TreeSet<RepeatableAppointment>(getAppointmentComparator());
+        Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDate startDate = LocalDate.of(2015, 11, 29);
         LocalDate endDate = LocalDate.of(2015, 12, 5); // tests one week time range
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
-        Iterator<RepeatableAppointment> appointmentIterator = appointments.iterator();
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(3, appointments.size()); // check number of appointments
 
         // select appointment and apply changes
@@ -692,7 +693,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         assertEquals(expectedRepeat2, repeat2); // check to see if repeat rule changed correctly
         
         // Check appointments
-        Iterator<RepeatableAppointment> appointmentIteratorNew = appointments.iterator();
+        Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
 
         RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
         RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment()
@@ -733,12 +734,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
     {
         Repeat repeat = getRepeatDailyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
-        Set<RepeatableAppointment> appointments = new TreeSet<RepeatableAppointment>(getAppointmentComparator());
+        Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
         LocalDate startDate = LocalDate.of(2015, 10, 25);
         LocalDate endDate = LocalDate.of(2015, 10, 31); // tests one week time range
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
-        Iterator<RepeatableAppointment> appointmentIterator = appointments.iterator();
+        Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(3, appointments.size()); // check if there are only two appointments
 
         // select appointment and apply changes
@@ -779,7 +780,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         
         // Check appointments
-        Iterator<RepeatableAppointment> appointmentIteratorNew = appointments.iterator();
+        Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
 
         RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
         RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment()
@@ -826,5 +827,110 @@ public class RepeatEditTest extends RepeatTestAbstract {
     
     }
     
+    /**
+     * Tests editing all daily appointments.  Changes from interval of 2 to 1.
+     */
+    @Test
+    public void editAllDailyInterval()
+    {
+        final Repeat repeat = getRepeatDaily2();
+        final List<Repeat> repeats = new ArrayList<Repeat>(Arrays.asList(repeat));
+        final Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
+        final LocalDate startDate = LocalDate.of(2015, 10, 18);
+        final LocalDate endDate = LocalDate.of(2015, 10, 24); // tests one week time range
+        Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
+        appointments.addAll(newAppointments);
+        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+        final Iterator<Appointment> appointmentIterator = appointments.iterator();
+        assertEquals(4, appointments.size()); // check number of appointments
+
+        // select appointment and apply changes
+        appointmentIterator.next();
+        final RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next(); // select second appointment
+        final RepeatableAppointment appointmentOld = AppointmentFactory.newAppointment(selectedAppointment);
+        repeat.setRepeatFrequency(1);
+
+        WindowCloseType windowCloseType = RepeatableUtilities.editAppointments(
+                appointments
+              , selectedAppointment
+              , appointmentOld
+              , repeats
+              , a -> RepeatChange.ALL
+              , null
+              , null);
+        assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
+        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+        assertEquals(5, appointments.size()); // check number of appointments
+
+        // Check Repeat (with changes)
+        RepeatableAppointment a = AppointmentFactory.newAppointment()
+                .withAppointmentGroup(appointmentGroups.get(15))
+                .withSummary("Daily Appointment Fixed2");
+        final Repeat expectedRepeat = RepeatFactory.newRepeat()
+                .withStartLocalDate(LocalDate.of(2015, 10, 18))
+                .withStartLocalTime(LocalTime.of(8, 0))
+                .withEndLocalTime(LocalTime.of(9, 30))
+                .withEndCriteria(EndCriteria.AFTER)
+                .withIntervalUnit(IntervalUnit.DAILY)
+                .withRepeatFrequency(1)
+                .withEndAfterEvents(5)
+                .withAppointmentData(a);
+        assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
+        
+        // Check appointments
+        Iterator<Appointment> appointmentIteratorNew = appointments.iterator();
+
+        final RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
+        final RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment()
+                .withStartLocalDateTime(LocalDate.of(2015, 10, 18).atTime(8, 00))
+                .withEndLocalDateTime(LocalDate.of(2015, 10, 18).atTime(9, 30))
+                .withAppointmentGroup(appointmentGroups.get(15))
+                .withSummary("Daily Appointment Fixed2")
+                .withRepeatMade(true)
+                .withRepeat(repeat);
+        assertEquals(expectedAppointment1, editedAppointment1); // Check to see if repeat-generated appointment changed correctly
+
+        final RepeatableAppointment editedAppointment2 = (RepeatableAppointment) appointmentIteratorNew.next();
+        final RepeatableAppointment expectedAppointment2 = AppointmentFactory.newAppointment()
+                .withStartLocalDateTime(LocalDate.of(2015, 10, 19).atTime(8, 00))
+                .withEndLocalDateTime(LocalDate.of(2015, 10, 19).atTime(9, 30))
+                .withAppointmentGroup(appointmentGroups.get(15))
+                .withSummary("Daily Appointment Fixed2")
+                .withRepeatMade(true)
+                .withRepeat(repeat);
+        assertEquals(expectedAppointment2, editedAppointment2); // Check to see if repeat-generated appointment changed correctly
+
+        final RepeatableAppointment editedAppointment3 = (RepeatableAppointment) appointmentIteratorNew.next();
+        final RepeatableAppointment expectedAppointment3 = AppointmentFactory.newAppointment()
+                .withStartLocalDateTime(LocalDate.of(2015, 10, 20).atTime(8, 00))
+                .withEndLocalDateTime(LocalDate.of(2015, 10, 20).atTime(9, 30))
+                .withAppointmentGroup(appointmentGroups.get(15))
+                .withSummary("Daily Appointment Fixed2")
+                .withRepeatMade(true)
+                .withRepeat(repeat);
+        assertEquals(expectedAppointment3, editedAppointment3); // Check to see if repeat-generated appointment changed correctly
+        
+        final RepeatableAppointment editedAppointment4 = (RepeatableAppointment) appointmentIteratorNew.next();
+        final RepeatableAppointment expectedAppointment4 = AppointmentFactory.newAppointment()
+                .withStartLocalDateTime(LocalDate.of(2015, 10, 21).atTime(8, 00))
+                .withEndLocalDateTime(LocalDate.of(2015, 10, 21).atTime(9, 30))
+                .withAppointmentGroup(appointmentGroups.get(15))
+                .withSummary("Daily Appointment Fixed2")
+                .withRepeatMade(true)
+                .withRepeat(repeat);
+        assertEquals(expectedAppointment4, editedAppointment4); // Check to see if repeat-generated appointment changed correctly
+
+        final RepeatableAppointment editedAppointment5 = (RepeatableAppointment) appointmentIteratorNew.next();
+        final RepeatableAppointment expectedAppointment5 = AppointmentFactory.newAppointment()
+                .withStartLocalDateTime(LocalDate.of(2015, 10, 22).atTime(8, 00))
+                .withEndLocalDateTime(LocalDate.of(2015, 10, 22).atTime(9, 30))
+                .withAppointmentGroup(appointmentGroups.get(15))
+                .withSummary("Daily Appointment Fixed2")
+                .withRepeatMade(true)
+                .withRepeat(repeat);
+        assertEquals(expectedAppointment5, editedAppointment5); // Check to see if repeat-generated appointment changed correctly
+
+    
+    }
    
 }

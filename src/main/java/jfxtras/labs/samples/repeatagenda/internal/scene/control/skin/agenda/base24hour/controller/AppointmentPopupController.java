@@ -18,6 +18,7 @@ import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 /**
  * @author David Bal
@@ -37,14 +38,14 @@ public class AppointmentPopupController {
     @FXML private Button attendanceButton;
     @FXML private Label appointmentTimeLabel;
     @FXML private TextField nameTextField;
-    private Collection<RepeatableAppointment> appointments;
+    private Collection<Appointment> appointments;
     private Collection<Repeat> repeats;
 
     @FXML public void initialize() {
    }
 
     public void setupData(
-              Collection<RepeatableAppointment> appointments
+              Collection<Appointment> appointments
             , RepeatableAppointment appointment
             , Collection<Repeat> repeats
             , Pane pane

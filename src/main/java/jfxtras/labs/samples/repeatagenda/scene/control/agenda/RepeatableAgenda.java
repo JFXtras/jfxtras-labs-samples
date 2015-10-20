@@ -1,7 +1,8 @@
 package jfxtras.labs.samples.repeatagenda.scene.control.agenda;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -10,13 +11,12 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda;
 
-public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
+public class RepeatableAgenda<T extends RepeatableAppointment, U extends Repeat> extends Agenda {
 
 //    public RepeatableAgenda() {
 //     // setup the CSS
@@ -46,52 +46,119 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
 //    }
 //    
     // propertys indicating writes are necessary - TODO - how to hook into them?
-    private BooleanProperty groupNameEdited = new SimpleBooleanProperty(false);
-    private BooleanProperty appointmentEdited = new SimpleBooleanProperty(false);
-    public BooleanProperty appointmentEditedProperty() { return appointmentEdited; }
-//    private Collection<Appointment> editedAppointments;
-    private Iterator<Appointment> editedAppointments; // TODO
-    private BooleanProperty repeatEdited = new SimpleBooleanProperty(false);
-    public BooleanProperty repeatEditedProperty() { return repeatEdited; }
+//    private BooleanProperty groupNameEdited = new SimpleBooleanProperty(false);
+//    private BooleanProperty appointmentEdited = new SimpleBooleanProperty(false);
+//    public BooleanProperty appointmentEditedProperty() { return appointmentEdited; }
+////    private Collection<Appointment> editedAppointments;
+//    private Iterator<Appointment> editedAppointments; // TODO
+//    private BooleanProperty repeatEdited = new SimpleBooleanProperty(false);
+//    public BooleanProperty repeatEditedProperty() { return repeatEdited; }
 
+    public RepeatableAgenda(Collection<T> individualAppointments, Collection<U> repeats)
+    {
+        setIndividualAppointments(individualAppointments);
+        setRepeats(repeats);
+    }
     
-    
+    public RepeatableAgenda() { }
+
+    // TODO - UPDATE WITH REPEATS
     /** Repeat rules */
-    Collection<Repeat> repeats;
-    public Collection<Repeat> repeats() { return repeats; }
-    public void setRepeats(Collection<Repeat> repeats) { this.repeats = repeats; }
-    
-    /** Input list - is kept updated with Agenda.appointments */
-    ObservableList<T> items = FXCollections.observableArrayList();
-    public void setItems(ObservableList<T> items)
-    { 
-        this.items = items;
-        items.addListener(listener);
-    }
-    public ObservableList<T> getItems() { return items; }
-    private final ListChangeListener<RepeatableAppointment> listener = (ListChangeListener<RepeatableAppointment>) change -> {
-        System.out.println("item change");
-        while (change.next())
+    private Collection<U> repeats;
+    public Collection<U> getRepeats() { return repeats; }
+    public void setRepeats(Collection<U> repeatRules)
+    {
+        this.repeats = repeatRules;
+        if (getIndividualAppointments() != null)
         {
-            for (Appointment myAppointment : change.getAddedSubList())
-            {
-                appointments().add(myAppointment);
-            }
-            for (Appointment myAppointment : change.getRemoved())
-            {
-                appointments().remove(myAppointment);
-            }
+            getRepeats().stream().forEach(a -> a.collectAppointments(getIndividualAppointments())); // add individual appointments that have repeat rules to their Repeat objects
         }
-    };
-    
-    public RepeatableAgenda(ObservableList<T> items) {
-        this.items = items;
-        items.addListener(listener);
+        
+        // manage repeat-made appointments when the range changes
+        setLocalDateTimeRangeCallback(param -> {
+            LocalDate startDate = param.getStartLocalDateTime().toLocalDate();
+            LocalDate endDate = param.getEndLocalDateTime().toLocalDate();
+            System.out.println("dates changed " + startDate + " " + endDate);
+            System.out.println("2agenda.appointments().size() " + appointments().size());
+            appointments().removeIf(a -> ((RepeatableAppointment) a).isRepeatMade());
+            getRepeats().stream().forEach(r -> r.getAppointments().clear());
+            getRepeats().stream().forEach(r ->
+            { // Make new repeat-made appointments inside range
+                Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
+                appointments().addAll(newAppointments);
+//                agenda.appointments().addAll(newAppointments);
+                System.out.println("newAppointments " + newAppointments.size());
+//                r.removeOutsideRangeAppointments(data.getAppointments());                 // remove outside range appointments
+            });
+            System.out.println("3agenda.appointments().size() " + appointments().size());
+//            System.exit(0);
+            return null; // return argument for the Callback
+        });
+        // make appointments when range changes
+//        getRepeats().stream().forEach(r ->
+//        { // Make new repeat-made appointments inside range
+//            Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
+//            data.getAppointments().addAll(newAppointments);
+////            agenda.appointments().addAll(newAppointments);
+//            System.out.println("newAppointments " + newAppointments.size());
+////            r.removeOutsideRangeAppointments(data.getAppointments());                 // remove outside range appointments
+//        });
+//        Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
     }
 
-    public RepeatableAgenda() {
-        items.addListener(listener);
+    // TODO - UPDATE WITH APPOINTMENTS
+    /** Individual appointments - kept updated with appointments*/
+    private Collection<T> individualAppointments = FXCollections.observableArrayList();
+    public Collection<T> getIndividualAppointments() { return individualAppointments; }
+    public void setIndividualAppointments(Collection<T> list)
+    {
+        individualAppointments = list;
+        if (getRepeats() != null)
+        {
+            getRepeats().stream().forEach(a -> a.collectAppointments(getIndividualAppointments())); // add individual appointments that have repeat rules to their Repeat objects
+        }
     }
+    
+//    // IO Callbacks
+//    private Callback<Collection<RepeatableAppointment>, Void> writeAppointmentsCallback;
+//    /** Write individual appointment collection callback */
+//    public void setWriteAppointmentsCallback(Callback<Collection<RepeatableAppointment>, Void> callBack) { writeAppointmentsCallback = callBack; }
+//    private Callback<Collection<Repeat>, Void> writeRepeatsCallback;
+//    /** Write repeat collection callback */
+//    public void setWriteRepeatsCallback(Callback<Collection<Repeat>, Void> callBack) { writeRepeatsCallback = callBack; }
+
+//    private ObservableList<RepeatableAppointment> repeatMadeAppointments = FXCollections.observableArrayList();
+//    /** Appointment list - is kept updated with Agenda.appointments */
+//    private ObservableList<Appointment> appointmentItems = FXCollections.observableArrayList();
+//    public void setAppointmentItems(ObservableList<Appointment> items)
+//    { 
+//        this.appointmentItems = items;
+//        items.addListener(listener);
+//    }
+//    public ObservableList<T> getAppointmentItems() { return appointmentItems; }
+//    private final ListChangeListener<RepeatableAppointment> listener = (ListChangeListener<RepeatableAppointment>) change -> {
+//        System.out.println("item change");
+//        while (change.next())
+//        {
+//            for (Appointment myAppointment : change.getAddedSubList())
+//            {
+//                appointments().add(myAppointment);
+//            }
+//            for (Appointment myAppointment : change.getRemoved())
+//            {
+//                appointments().remove(myAppointment);
+//            }
+//        }
+//    };
+//    
+//    public RepeatableAgenda(ObservableList<T> items) {
+//        this.appointmentItems = items;
+//        items.addListener(listener);
+//    }
+//
+//    public RepeatableAgenda() {
+//        appointmentItems.addListener(listener);
+//    }
     
     static public interface RepeatableAppointment extends Agenda.Appointment
     {
@@ -104,6 +171,9 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
 ////        boolean hasRepeat();
         boolean repeatFieldsEquals(Object obj); // TODO - CAN THIS BE MADE DEFAULT OR REMOVED?
         
+        // TODO - FOR EDITED REPEATABLE APPOINTMENTS, THIS MARKS WHICH RECURRANCE THIS APPOINTMENT TAKES THE PLACE OF
+        public void setInPlaceOfRecurrance(LocalDateTime t); // If not null, contains the start date and time of recurring appointment this appointment takes the place of
+
         /**
          * Copies all fields into parameter appointment
          * 
@@ -192,7 +262,11 @@ public class RepeatableAgenda<T extends RepeatableAppointment> extends Agenda {
         public boolean isRepeatMade() { return repeatMade.getValue(); }
         public void setRepeatMade(boolean b) {repeatMade.set(b); }
         public T withRepeatMade(boolean b) {repeatMade.set(b); return (T)this; }
-        
+
+        // TODO - FOR EDITED REPEATABLE APPOINTMENTS, THIS MARKS WHICH RECURRANCE THIS APPOINTMENT TAKES THE PLACE OF
+        private LocalDateTime inPlaceOfRecurrance; // If not null, contains the start date and time of recurring appointment this appointment takes the place of
+        public void setInPlaceOfRecurrance(LocalDateTime t) { inPlaceOfRecurrance = t; } // If not null, contains the start date and time of recurring appointment this appointment takes the place of
+
         /** WholeDay: */
         public ObjectProperty<Boolean> wholeDayProperty() { return wholeDayObjectProperty; }
         final private ObjectProperty<Boolean> wholeDayObjectProperty = new SimpleObjectProperty<Boolean>(this, "wholeDay", false);

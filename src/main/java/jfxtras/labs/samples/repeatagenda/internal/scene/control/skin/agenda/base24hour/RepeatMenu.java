@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import jfxtras.labs.samples.repeatagenda.Main;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.controller.AppointmentEditController;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
@@ -39,10 +40,12 @@ public class RepeatMenu extends Stage {
 //    private Collection<Appointment> appointments;
 //    private Appointment appointment;
 
-    public RepeatMenu(RepeatableAppointment appointment
-            , Collection<RepeatableAppointment> appointments
+    public RepeatMenu(Appointment appointment
+            , Collection<Appointment> appointments
             , Collection<Repeat> repeats
-            , List<AppointmentGroup> appointmentGroups)
+            , List<AppointmentGroup> appointmentGroups
+            , Callback<Collection<RepeatableAppointment>, Void> appointmentCallback
+            , Callback<Collection<Repeat>, Void> repeatCallback)
     {
 ////        this.layoutHelp = layoutHelp;
 //        this.pane = pane;
@@ -71,7 +74,13 @@ public class RepeatMenu extends Stage {
             e.printStackTrace();
         }
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
-        appointmentEditController.setupData(appointment, appointments, repeats, appointmentGroups);
+        appointmentEditController.setupData(
+                appointment
+              , appointments
+              , repeats
+              , appointmentGroups
+              , appointmentCallback
+              , repeatCallback);
         Scene scene = new Scene(appointmentMenu);
 
         // data element change bindings

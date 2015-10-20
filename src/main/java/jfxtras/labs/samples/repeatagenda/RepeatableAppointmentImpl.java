@@ -80,14 +80,16 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
 //    public MyAppointment withAppointmentGroup(AppointmentGroup value) { setAppointmentGroup(value); return this; }
 //    public void assignAppointmentGroup(ObservableList<AppointmentGroup> appointmentGroups) { setAppointmentGroup(appointmentGroups.get(appointmentGroupIndex));  }
 //   
+        
+    // TODO - REPALCE WITH UID - from iCalendar
     private static int nextKey = 0;
-    private static Map<Integer, MyRepeat> repeatIntegerKeyMap = new HashMap<Integer, MyRepeat>(); // private map of repeats used to match Repeat objects to appointments
+    private static Map<Integer, RepeatImpl> repeatIntegerKeyMap = new HashMap<Integer, RepeatImpl>(); // private map of repeats used to match Repeat objects to appointments
     /** create map of Repeat objects and repeat keys.  Its used to find Repeat objects to attach to Appointment objects.
      * Only used when setting up appointments from file */
     protected static void setupRepeats(Set<Repeat> set)
     {
-        Set<MyRepeat> myRepeats
-            = set.stream().map(a -> (MyRepeat) a).collect(Collectors.toSet());
+        Set<RepeatImpl> myRepeats
+            = set.stream().map(a -> (RepeatImpl) a).collect(Collectors.toSet());
         repeatIntegerKeyMap = myRepeats.stream()
                            .collect(Collectors.toMap(a -> a.getKey(), a -> a));
     }
@@ -298,7 +300,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         
         if (getKey() == null) setKey(nextKey++); // if it has no key (meaning its new) give it the next one
         myElement.setAttribute("key", getKey().toString());
-        myElement.setAttribute("repeatKey", (getRepeat() == null) ? "" : ((MyRepeat) getRepeat()).getKey().toString());
+        myElement.setAttribute("repeatKey", (getRepeat() == null) ? "" : ((RepeatImpl) getRepeat()).getKey().toString());
 //        myElement.setAttribute("repeatKey", (repeat == null) ? "" : ((MyRepeat) repeat).getKey().toString());
         final String s = getStudentKeys().stream()
                                          .map(a -> a.toString())

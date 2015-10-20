@@ -1,16 +1,16 @@
 package jfxtras.labs.samples.repeatagenda.scene.control.agenda;
 
-import jfxtras.labs.samples.repeatagenda.MyRepeat;
+import jfxtras.labs.samples.repeatagenda.RepeatImpl;
 
 public final class RepeatFactory {
 
     private RepeatFactory() { }
         
-    public static MyRepeat newRepeat() {
-        return new MyRepeat();
+    public static RepeatImpl newRepeat() {
+        return new RepeatImpl();
     }
     
-    public static MyRepeat newRepeat(Repeat r) {
-        return new MyRepeat(r);
+    public static RepeatImpl newRepeat(Repeat r) {
+        return new RepeatImpl(r);
     }
 }

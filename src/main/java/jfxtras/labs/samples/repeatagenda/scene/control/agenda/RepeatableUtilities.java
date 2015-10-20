@@ -10,6 +10,7 @@ import java.time.temporal.TemporalAdjuster;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.util.Callback;
-import jfxtras.labs.samples.repeatagenda.MyRepeat;
+import jfxtras.labs.samples.repeatagenda.RepeatImpl;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
@@ -97,7 +98,7 @@ public final class RepeatableUtilities {
      * @throws ParserConfigurationException 
      */
     public static WindowCloseType deleteAppointments(
-              Collection<RepeatableAppointment> appointments
+              Collection<Appointment> appointments
             , RepeatableAppointment appointment
             , Collection<Repeat> repeats) throws ParserConfigurationException
     {
@@ -108,7 +109,7 @@ public final class RepeatableUtilities {
               , a -> repeatChangeDialog()
               , a -> confirmDelete(a)
               , a -> { AppointmentFactory.writeToFile(a); return null; }
-              , r -> { MyRepeat.writeToFile(r); return null; });
+              , r -> { RepeatImpl.writeToFile(r); return null; });
     }
     
     /**
@@ -121,7 +122,7 @@ public final class RepeatableUtilities {
      * @return 
      * @throws ParserConfigurationException 
      */
-    public static WindowCloseType deleteAppointments(Collection<RepeatableAppointment> appointments
+    public static WindowCloseType deleteAppointments(Collection<Appointment> appointments
             , Appointment appointmentInput
             , Collection<Repeat> repeats
             , Callback<RepeatChange[], RepeatChange> changeDialogCallback
@@ -275,11 +276,13 @@ public final class RepeatableUtilities {
      */
     // Works for by drag-and-drop on the agenda and for editing from AppointmentEditController
     public static WindowCloseType editAppointments(
-              Collection<RepeatableAppointment> appointments
+              Collection<Appointment> appointments
             , RepeatableAppointment appointmentInput
             , RepeatableAppointment appointmentOldInput
             , Collection<Repeat> repeats
             , Callback<RepeatChange[], RepeatChange> changeDialogCallback
+//            , Collection<RepeatableAppointment> editedAppointments
+//            , Collection<Repeat> editedRepeats)
             , Callback<Collection<RepeatableAppointment>, Void> writeAppointmentsCallback
             , Callback<Collection<Repeat>, Void> writeRepeatsCallback)
     {
@@ -289,6 +292,7 @@ public final class RepeatableUtilities {
         final Repeat repeat = appointment.getRepeat(); // repeat with new changes
 //        System.out.println("repeat start " + repeat.getStartLocalTime());
         final Repeat repeatOld = appointmentOld.getRepeat(); // repeat prior to changes
+        Set<RepeatableAppointment> editedAppointmentsTemp = new HashSet<RepeatableAppointment>();
         
         final boolean appointmentChanged = ! appointment.equals(appointmentOld);
         final boolean repeatChanged = (repeat == null) ? false : ! repeat.equals(repeatOld);
@@ -317,8 +321,8 @@ public final class RepeatableUtilities {
 
         RepeatChange[] choices = null;
         RepeatChange changeResponse;
-        boolean writeAppointments = false;
-        boolean writeRepeats = false;
+        boolean editedAppointmentsFlag = false;
+        boolean editedRepeatsFlag = false;
 
         // FIND OUT WHICH TYPE OF APPOINTMENT IS BEING EDITED
         final AppointmentType appointmentType = makeAppointmentType(repeat, repeatOld);
@@ -326,7 +330,8 @@ public final class RepeatableUtilities {
         switch (appointmentType)
         {
         case INDIVIDUAL:
-            writeAppointments = true;
+            editedAppointmentsFlag = true;
+            editedAppointmentsTemp.add(appointment);
             break;
         case HAD_REPEAT_BECOMING_INDIVIDUAL:
 //            changeResponse = repeatChangeDialog();
@@ -364,8 +369,9 @@ public final class RepeatableUtilities {
                 return WindowCloseType.CLOSE_WITHOUT_CHANGE;
             }
             appointment.setRepeatMade(false);
-            writeAppointments = true;
-            writeRepeats = true;
+            editedRepeatsFlag = true;
+            editedAppointmentsFlag = true;
+            editedAppointmentsTemp.add(appointment);
             break;
         case WITH_NEW_REPEAT: // don't display edit dialog - just make appointments
 //            System.out.println("WITH_NEW_REPEAT");
@@ -379,8 +385,10 @@ public final class RepeatableUtilities {
           appointment.copyNonDateFieldsInto(repeat.getAppointmentData()); // copy any appointment changes (i.e. description, group, location, etc)
           repeats.add(repeat);
           appointment.setRepeatMade(true);
-          writeAppointments = true;
-          writeRepeats = true;
+          editedRepeatsFlag = true;
+          if (! appointmentOld.isRepeatMade()) {
+              editedAppointmentsFlag = true; // only edit appointments if appointment existed previously
+          }
           break;
         case WITH_EXISTING_REPEAT:
             if (! appointmentChanged) choices = new RepeatChange[] {RepeatChange.ALL, RepeatChange.FUTURE};
@@ -390,13 +398,15 @@ public final class RepeatableUtilities {
             {
             case ONE:
                 appointment.setRepeatMade(false);
+                appointment.setInPlaceOfRecurrance(appointmentOld.getStartLocalDateTime());
                 if (startMinuteShift != 0 || endMinuteShift != 0)
                 { // if appointment has new day or time make it individual
                     appointment.setRepeat(null); // make appointment individual if time changes
                     repeat.getDeletedDates().add(startDateOld);
-                    writeRepeats = true;
+                    editedRepeatsFlag = true;
                 }
-                writeAppointments = true;
+//                writeAppointments = true;
+                editedAppointmentsTemp.add(appointment);
                 if (repeatOld != null)
                 {
                     repeat.unbindAll();
@@ -423,7 +433,7 @@ public final class RepeatableUtilities {
                     switch (repeat.getEndCriteria())
                     {
                     case AFTER:
-//                        repeat.makeEndOnDateFromEndAfterEvents();
+                        repeat.makeEndOnDateFromEndAfterEvents();
                         break;
                     case ON:
 //                        repeat.makeEndAfterEventsFromEndOnDate();
@@ -452,8 +462,13 @@ public final class RepeatableUtilities {
 //                System.out.println("size1 " + appointments.size());
                 repeat.updateAppointments(appointments, appointment, appointmentOld
                         , startTemporalAdjuster, endTemporalAdjuster);
+                editedAppointmentsTemp.addAll(repeat
+                      .getAppointments()
+                      .stream()
+                      .filter(a -> ! a.isRepeatMade())
+                      .collect(Collectors.toSet()));
 //                System.out.println("size2 " + appointments.size());
-                writeRepeats = true;
+                editedRepeatsFlag = true;
                 break;
             case FUTURE:
                 repeat.unbindAll();
@@ -553,8 +568,9 @@ public final class RepeatableUtilities {
 //                System.out.println("repeatOld.getEndOnDate() " + repeatOld.getEndOnDate() + " " + repeatOld.getStartLocalDate());
 //                System.out.println("repeat.getEndOnDate() " + repeat.getEndOnDate() + " " + repeat.getStartLocalDate());
 //              System.exit(0);                
-                writeRepeats = true;
-                if (repeatOld.oneAppointmentToIndividual(repeats, appointments)) writeAppointments = true;  // Check if any repeats have only one appointment and should become individual
+                editedRepeatsFlag = true;
+                if (repeatOld.oneAppointmentToIndividual(repeats, appointments)) editedAppointmentsFlag = true;  // Check if any repeats have only one appointment and should become individual
+                // TODO - CHANGES OF CONVERT TO ONE APPOINTMENT
                 break;
             case CANCEL: // restore old appointment and repeat rule
                 appointmentOld.copyInto(appointment);
@@ -574,21 +590,25 @@ public final class RepeatableUtilities {
                 return WindowCloseType.CLOSE_WITHOUT_CHANGE;
             }
             // Check if any repeats have only one appointment and should become individual
-            if (repeat.oneAppointmentToIndividual(repeats, appointments)) writeAppointments = true;
+            if (repeat.oneAppointmentToIndividual(repeats, appointments)) editedAppointmentsFlag = true;
             break;
         default:
             throw new InvalidParameterException("Invalid Appointment Type");
         }
         
         // Write changes that occurred
-        System.out.println("write flags " + writeAppointments +  " " + writeRepeats);
+        System.out.println("write flags " + editedAppointmentsFlag +  " " + editedRepeatsFlag);
 //        if (writeAppointments) AppointmentFactory.writeToFile(appointments);
 //        if (writeRepeats) MyRepeat.writeToFile(repeats);
 
-        if (writeAppointments && (writeAppointmentsCallback != null)) writeAppointmentsCallback.call(null); // write appointment changes
-        if (writeRepeats && (writeRepeatsCallback != null)) writeRepeatsCallback.call(repeats);                     // write repeat changes
+        if (editedAppointmentsFlag && (writeAppointmentsCallback != null)) writeAppointmentsCallback.call(null); // write appointment changes
+        if (editedRepeatsFlag && (writeRepeatsCallback != null)) writeRepeatsCallback.call(repeats);                     // write repeat changes
 
-        return (writeAppointments || writeRepeats) ? WindowCloseType.CLOSE_WITH_CHANGE : WindowCloseType.CLOSE_WITHOUT_CHANGE;
+//        if (editedAppointmentsFlag) editedAppointments.addAll(editedAppointmentsTemp);
+//        if (editedRepeatsFlag) editedRepeats.add(repeat);                     // write repeat changes
+
+        
+        return (editedAppointmentsFlag || editedRepeatsFlag) ? WindowCloseType.CLOSE_WITH_CHANGE : WindowCloseType.CLOSE_WITHOUT_CHANGE;
         
     }
 
@@ -603,10 +623,12 @@ public final class RepeatableUtilities {
      * @return
      */
     public static WindowCloseType editAppointments(
-              Collection<RepeatableAppointment> appointments
+              Collection<Appointment> appointments
             , RepeatableAppointment appointment
             , RepeatableAppointment appointmentOld
             , Collection<Repeat> repeats)
+//            , Collection<RepeatableAppointment> editedAppointments
+//            , Collection<Repeat> editedRepeats)
     {
         return editAppointments(
                 appointments
@@ -614,8 +636,10 @@ public final class RepeatableUtilities {
               , appointmentOld
               , repeats
               , a -> repeatChangeDialog()
+//              , editedAppointments
+//              , editedRepeats);
               , a -> { AppointmentFactory.writeToFile(a); return null; }
-              , r -> { MyRepeat.writeToFile(r); return null; });
+              , r -> { RepeatImpl.writeToFile(r); return null; });
     }
     
     
@@ -630,7 +654,7 @@ public final class RepeatableUtilities {
      * @return
      */
     public static WindowCloseType editAppointments(
-            Collection<RepeatableAppointment> appointments
+            Collection<Appointment> appointments
           , RepeatableAppointment appointment
           , RepeatableAppointment appointmentOld
           , Collection<Repeat> repeats

@@ -30,20 +30,20 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
-public class MyRepeat extends Repeat {
+public class RepeatImpl extends Repeat {
 
     private static int nextKey = 0;
 
-    /** Unique number identifying this Repeat object. */
+    /** Unique number identifying this Repeat object. */ // TODO - REPLACE WITH UID - like iCalendar
     private Integer key;
     public Integer getKey() { return key; }
     void setKey(Integer value) { key = value; } 
-    public MyRepeat withKey(Integer value) { setKey(value); return this; }
+    public RepeatImpl withKey(Integer value) { setKey(value); return this; }
     public boolean hasKey() { return (getKey() != null); } // new Repeat has no key
 
-    public MyRepeat() { }
+    public RepeatImpl() { }
     
-    public MyRepeat(Repeat oldRepeat) {
+    public RepeatImpl(Repeat oldRepeat) {
         if (oldRepeat != null) {
             // Copy any MyRepeat specific fields first
             oldRepeat.copyInto(this);
@@ -63,7 +63,7 @@ public class MyRepeat extends Repeat {
     
     @Override
     public boolean equals(Object obj) {
-        MyRepeat testObj = (MyRepeat) obj;
+        RepeatImpl testObj = (RepeatImpl) obj;
         // Add any equal tests for MyRepeat fields
         return super.equals(obj);
     }
@@ -101,7 +101,7 @@ public class MyRepeat extends Repeat {
                     {
                         Integer myKey = keyIterator.next();
                         nextKey = Math.max(nextKey, myKey);
-                        Repeat myRepeat = new MyRepeat().unmarshal((Element) myNodeList.item(n), myKey);
+                        Repeat myRepeat = new RepeatImpl().unmarshal((Element) myNodeList.item(n), myKey);
                         int i = ((RepeatableAppointmentImpl) myRepeat.getAppointmentData()).getAppointmentGroupIndex();
 //                        System.out.println("i " + i);
 //                        Integer i = myRepeat.getAppointmentData().getAppointmentGroup().getKey();
@@ -133,7 +133,7 @@ public class MyRepeat extends Repeat {
      * @param myElement: Element with one Repeat object's data
      * @return A Repeat object with all the data fields filled from the Element
      */
-    private MyRepeat unmarshal(Element myElement, Integer expectedKey)
+    private RepeatImpl unmarshal(Element myElement, Integer expectedKey)
     {
         Map<String, String> repeatAttributes = DataUtilities.getAttributes(myElement, "repeat");
 
@@ -204,9 +204,9 @@ public class MyRepeat extends Repeat {
      */
     private static void writeToFile(Collection<Repeat> repeats, Path writeFile)
     {
-        Set<MyRepeat> myRepeats = repeats
+        Set<RepeatImpl> myRepeats = repeats
                 .stream()
-                .map(a -> (MyRepeat) a).collect(Collectors.toSet());
+                .map(a -> (RepeatImpl) a).collect(Collectors.toSet());
         
         // XML document
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -223,7 +223,7 @@ public class MyRepeat extends Repeat {
         doc.appendChild(rootElement);
 
         // loop through each repeat
-        for(MyRepeat myRepeat : myRepeats)
+        for(RepeatImpl myRepeat : myRepeats)
         {
             Node myElement = myRepeat.marshal(doc);
             rootElement.appendChild(myElement);

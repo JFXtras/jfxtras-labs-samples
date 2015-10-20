@@ -8,7 +8,6 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
-import java.util.Collection;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -27,9 +26,10 @@ import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.samples.repeatagenda.MyData;
-import jfxtras.labs.samples.repeatagenda.MyRepeat;
+import jfxtras.labs.samples.repeatagenda.RepeatImpl;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.RepeatMenu;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
@@ -50,7 +50,7 @@ public class CalendarController {
 
     private MyData data;
 
-     public RepeatableAgenda<RepeatableAppointment> agenda = new RepeatableAgenda<RepeatableAppointment>();
+     public RepeatableAgenda<RepeatableAppointment, Repeat> agenda = new RepeatableAgenda<RepeatableAppointment, Repeat>();
      private RepeatMenu repeatMenu;
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private BorderPane agendaBorderPane;
@@ -105,33 +105,36 @@ public class CalendarController {
 
         agenda.setEditAppointmentCallback((Appointment appointment) -> {
             System.out.println("start edit callback");
-//            repeatMenu = new RepeatMenu(
-//                      appointment
-//                    , agenda.appointments()
-//                    , agenda.repeats()
-//                    , agenda.appointmentGroups()); // make new object when closed (problem with passing pane - null for now)
             repeatMenu = new RepeatMenu(
                     (RepeatableAppointment) appointment
-                  , data.getAppointments()
-                  , data.getRepeats()
-                  , data.getAppointmentGroups()); // make new object when closed (problem with passing pane - null for now)
+                    , agenda.appointments()
+                    , agenda.getRepeats()
+                    , agenda.appointmentGroups()
+                    , a -> { AppointmentFactory.writeToFile(a); return null; }
+                    , r -> { RepeatImpl.writeToFile(r); return null; }); // make new object when closed (problem with passing pane - null for now)
+
+//            repeatMenu = new RepeatMenu(
+//                    (RepeatableAppointment) appointment
+//                  , data.getAppointments()
+//                  , data.getRepeats()
+//                  , data.getAppointmentGroups()); // make new object when closed (problem with passing pane - null for now)
             
 //            // MAY HAVE TO STOP HERE - EXECUTATION ISN'T HALTED
 //            System.out.println("agenda.repeats().size() " + agenda.repeats().size() + " " + agenda.repeats().iterator().next().getDeletedDates().size());
 //            
 //            editDone = false;
-            repeatMenu.appointmentEditedProperty().addListener((obs) ->
-            {
-//                editDone = true;
-                System.out.println("write appointments---" + ((RepeatableAppointment) appointment).getRepeat().getDeletedDates().size());
-                AppointmentFactory.writeToFile(agenda.appointments());
-            });
-            repeatMenu.repeatEditedProperty().addListener((obs) -> 
-            {
-//                editDone = true;
-                System.out.println("write repeats---");
-                MyRepeat.writeToFile(agenda.repeats());   
-            });
+//            repeatMenu.appointmentEditedProperty().addListener((obs) ->
+//            {
+////                editDone = true;
+//                System.out.println("write appointments---" + ((RepeatableAppointment) appointment).getRepeat().getDeletedDates().size());
+//                AppointmentFactory.writeToFile(agenda.appointments());
+//            });
+//            repeatMenu.repeatEditedProperty().addListener((obs) -> 
+//            {
+////                editDone = true;
+//                System.out.println("write repeats---");
+//                MyRepeat.writeToFile(data.getRepeats());   
+//            });
 //            if (editDone) agenda.refresh();
 ////            repeatMenu.setup(a);
             repeatMenu.show();
@@ -140,27 +143,29 @@ public class CalendarController {
 //            System.out.println("end edit callback");
             return null;
         });
+        
+
 
         
-        // manage repeat-made appointments when the range changes
-        agenda.setLocalDateTimeRangeCallback(param -> {
-            startDate = param.getStartLocalDateTime().toLocalDate();
-            endDate = param.getEndLocalDateTime().toLocalDate();
-            System.out.println("dates changed " + startDate + " " + endDate);
-            System.out.println("2agenda.appointments().size() " + agenda.appointments().size());
-            agenda.appointments().removeIf(a -> ((RepeatableAppointment) a).isRepeatMade());
-            data.getRepeats().stream().forEach(r -> r.getAppointments().clear());
-            data.getRepeats().stream().forEach(r ->
-            { // Make new repeat-made appointments inside range
-                Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
-                data.getAppointments().addAll(newAppointments);
-//                agenda.appointments().addAll(newAppointments);
-                System.out.println("newAppointments " + newAppointments.size());
-//                r.removeOutsideRangeAppointments(data.getAppointments());                 // remove outside range appointments
-            });
-            System.out.println("3agenda.appointments().size() " + agenda.appointments().size());
-            return null; // return argument for the Callback
-        });
+//        // manage repeat-made appointments when the range changes
+//        agenda.setLocalDateTimeRangeCallback(param -> {
+//            startDate = param.getStartLocalDateTime().toLocalDate();
+//            endDate = param.getEndLocalDateTime().toLocalDate();
+//            System.out.println("dates changed " + startDate + " " + endDate);
+//            System.out.println("2agenda.appointments().size() " + agenda.appointments().size());
+//            agenda.appointments().removeIf(a -> ((RepeatableAppointment) a).isRepeatMade());
+//            data.getRepeats().stream().forEach(r -> r.getAppointments().clear());
+//            data.getRepeats().stream().forEach(r ->
+//            { // Make new repeat-made appointments inside range
+//                Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
+//                data.getAppointments().addAll(newAppointments);
+////                agenda.appointments().addAll(newAppointments);
+//                System.out.println("newAppointments " + newAppointments.size());
+////                r.removeOutsideRangeAppointments(data.getAppointments());                 // remove outside range appointments
+//            });
+//            System.out.println("3agenda.appointments().size() " + agenda.appointments().size());
+//            return null; // return argument for the Callback
+//        });
         
         agenda.appointments().addListener((ListChangeListener.Change<? extends Appointment> change)
                 -> {
@@ -201,7 +206,11 @@ System.out.println("appointment list changed");
         this.data = data;
         this.startDate = startDate;
         this.endDate = endDate;
-        agenda.setItems(data.getAppointments());
+        agenda.setIndividualAppointments(data.getAppointments());
+        agenda.setRepeats(data.getRepeats());
+//        agenda.setWriteAppointmentsCallback(a -> { AppointmentFactory.writeToFile(a); return null; });
+//        agenda.setWriteRepeatsCallback(r -> { RepeatImpl.writeToFile(r); return null; });
+
 //        repeatMenu = new RepeatMenuStage(agenda.appointments(), agenda.repeats(), agenda.appointmentGroups(), null);
         if (! data.getAppointmentGroups().isEmpty()) 
         { // overwrite default appointmentGroups with ones read from file if not empty
@@ -286,7 +295,6 @@ System.out.println("appointment list changed");
 ////            System.out.println("here " + data.getAppointments().size());
 ////            System.exit(0);
         }
-//        agenda.setRepeats(data.getRepeats()); // TODO - CHANGE TO ADD ALL
 //        agenda.getItems().addAll(data.getAppointments());
 //        System.out.println("agenda.appointments().size() " + agenda.appointments().size());
 //        agenda.setRepeats(data.getRepeats());

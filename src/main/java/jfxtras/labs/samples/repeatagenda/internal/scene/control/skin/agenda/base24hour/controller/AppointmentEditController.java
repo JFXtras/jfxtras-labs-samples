@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentGroupGridPane;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
@@ -23,6 +24,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.R
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities.WindowCloseType;
 import jfxtras.scene.control.LocalDateTimeTextField;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 
@@ -31,9 +33,11 @@ public class AppointmentEditController {
     private RepeatableAppointment appointment;
     private RepeatableAppointment appointmentOld;
     public RepeatableAppointment getAppointmentOld() { return appointmentOld; }
-    private Collection<RepeatableAppointment> appointments;
+    private Collection<Appointment> appointments;
     private Collection<Repeat> repeats;
     private List<AppointmentGroup> appointmentGroups;
+    private Callback<Collection<RepeatableAppointment>, Void> appointmentCallback;
+    private Callback<Collection<Repeat>, Void> repeatCallback;
 //    private LayoutHelp layoutHelp;
 
     // Change properties
@@ -83,16 +87,20 @@ public class AppointmentEditController {
 //            -> appointment.setStartLocalDateTime(newValue);
 
     // Setup up data for controls
-    public void setupData(RepeatableAppointment inputAppointment
-            , Collection<RepeatableAppointment> appointments
+    public void setupData(Appointment inputAppointment
+            , Collection<Appointment> appointments
             , Collection<Repeat> repeats
-            , List<AppointmentGroup> appointmentGroups)
+            , List<AppointmentGroup> appointmentGroups
+            , Callback<Collection<RepeatableAppointment>, Void> appointmentCallback
+            , Callback<Collection<Repeat>, Void> repeatCallback)
     {
 //        this.layoutHelp = layoutHelp;
         Locale locale = Locale.getDefault();
         this.appointment = (RepeatableAppointment) inputAppointment;
         this.appointments = appointments;
         this.repeats = repeats;
+        this.appointmentCallback = appointmentCallback;
+        this.repeatCallback = repeatCallback;
 //        repeats = layoutHelp.skinnable.repeats();
 //        appointments = layoutHelp.skinnable.appointments();
 
@@ -171,8 +179,8 @@ public class AppointmentEditController {
                         , appointment
                         , appointmentOld
                         , repeats
-                        , a -> { appointmentEdited.set(true); return null;}
-                        , r -> { repeatEdited.set(true); return null; });
+                        , appointmentCallback
+                        , repeatCallback);
         setCloseType(result);
 
         if (getCloseType() == WindowCloseType.CLOSE_WITH_CHANGE) {

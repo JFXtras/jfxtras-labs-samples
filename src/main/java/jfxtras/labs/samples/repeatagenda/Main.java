@@ -60,7 +60,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
 	    
 //	    RepeatEditTest r = new RepeatEditTest();
-//	    r.editOneDailyTimeAndDate();
+//	    r.editAllDailyInterval();
 //	    System.exit(0);
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);
@@ -83,7 +83,7 @@ public class Main extends Application {
 //        { // add hard-coded repeats
 //            data.getRepeats().add(e)
 //        }
-        MyRepeat.readFromFile(appointmentRepeatsPath, data.getAppointmentGroups(), data.getRepeats());
+        RepeatImpl.readFromFile(appointmentRepeatsPath, data.getAppointmentGroups(), data.getRepeats());
         RepeatableAppointmentImpl.setupRepeats(data.getRepeats()); // must be done before appointments are read
         Path appointmentsPath = Paths.get(Main.class.getResource("").getPath() + "appointments.xml");
 //        boolean isAppointmentsNew = (appointmentsPath.toFile().exists() && ! appointmentsPath.toFile().isDirectory());

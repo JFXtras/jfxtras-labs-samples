@@ -42,7 +42,7 @@ public abstract class RepeatTestAbstract {
         RepeatableAppointment a1 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(5))
                 .withSummary("Weekly Appointment Variable");
-        return new MyRepeat()
+        return new RepeatImpl()
                 .withStartLocalDate(LocalDate.now())
                 .withStartLocalTime(LocalTime.now().plusHours(3))
                 .withEndLocalTime(LocalTime.now().plusHours(5))
@@ -58,7 +58,7 @@ public abstract class RepeatTestAbstract {
         RepeatableAppointment a2 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Variable");
-        return new MyRepeat()
+        return new RepeatImpl()
                 .withStartLocalDate(LocalDate.now().minusDays(1))
                 .withStartLocalTime(LocalTime.now().minusHours(5))
                 .withEndLocalTime(LocalTime.now().minusHours(3))
@@ -74,7 +74,7 @@ public abstract class RepeatTestAbstract {
         RepeatableAppointment a3 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Variable");
-        return new MyRepeat()
+        return new RepeatImpl()
                 .withStartLocalDate(LocalDate.now().minusDays(2))
                 .withStartLocalTime(LocalTime.now().plusHours(4))
                 .withEndLocalTime(LocalTime.now().plusHours(7))
@@ -180,5 +180,21 @@ public abstract class RepeatTestAbstract {
                 .withEndCriteria(EndCriteria.NEVER)
                 .withIntervalUnit(IntervalUnit.YEARLY)
                 .withAppointmentData(a2);
+    }
+    
+    public Repeat getRepeatDaily2()
+    {
+        RepeatableAppointment a = AppointmentFactory.newAppointment()
+                .withAppointmentGroup(appointmentGroups.get(15))
+                .withSummary("Daily Appointment Fixed2");
+        return new RepeatImpl()
+                .withStartLocalDate(LocalDate.of(2015, 10, 18))
+                .withStartLocalTime(LocalTime.of(8, 0))
+                .withEndLocalTime(LocalTime.of(9, 30))
+                .withEndCriteria(EndCriteria.AFTER)
+                .withIntervalUnit(IntervalUnit.DAILY)
+                .withRepeatFrequency(2)
+                .withEndAfterEvents(5)
+                .withAppointmentData(a);
     }
 }

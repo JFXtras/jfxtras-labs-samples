@@ -36,7 +36,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.R
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 
 /**
- * Contains rules for repeatable appointments in the calendar
+ * Contains rules for repeatable appointments in agenda
  *  
  * @author David Bal
  */
@@ -186,13 +186,15 @@ public abstract class Repeat {
      */
     public void makeEndOnDateFromEndAfterEvents()
     {
-        int eventCounter = 0;
-        LocalDate myDate = getStartLocalDate().minusDays(1);
-        while (eventCounter < getEndAfterEvents())
+        Iterator<LocalDate> validDateIterator = validDateStreamEndless()
+                .limit(getEndAfterEvents())
+                .iterator();
+        LocalDate myDate = null;
+        while (validDateIterator.hasNext())
         {
-            myDate = myDate.with(new NextAppointment());
-            eventCounter++;
+            myDate = validDateIterator.next();
         }
+        System.out.println("end on date " + myDate);
         setEndOnDate(myDate);
     }
     /**
@@ -536,13 +538,11 @@ public abstract class Repeat {
      * 
      * @param appointments
      */
-    public void collectAppointments(Collection<RepeatableAppointment> appointments) {
+    public void collectAppointments(Collection<? extends RepeatableAppointment> appointments) {
         Set<RepeatableAppointment> s = appointments.stream()
                                          .map(a -> (RepeatableAppointment) a)
                                          .filter(a -> a.getRepeat() != null)
                                          .filter(a -> a.getRepeat().equals(this))
-//                                         .filter(a -> repeatMap.get(a) != null)
-//                                         .filter(a -> repeatMap.get(a).equals(this))
                                          .collect(Collectors.toSet());
         getAppointments().addAll(s);
     }
@@ -748,7 +748,7 @@ public abstract class Repeat {
      * @param endTemporalAdjuster: adjusts endLocalDateTime
      * @return
      */
-    protected void updateAppointments(Collection<RepeatableAppointment> appointments
+    protected void updateAppointments(Collection<Appointment> appointments
             , RepeatableAppointment appointment
             , RepeatableAppointment appointmentOld
             , TemporalAdjuster startTemporalAdjuster
@@ -785,7 +785,7 @@ public abstract class Repeat {
      * @param appointment: already modified appointment
      * @return
      */
-    public void updateAppointments(Collection<RepeatableAppointment> appointments
+    public void updateAppointments(Collection<Appointment> appointments
             , RepeatableAppointment appointment)
     {
         // Identify invalid repeat appointments
@@ -806,9 +806,11 @@ public abstract class Repeat {
             while (validDateTime.isBefore(appointmentDateTime))
             { // advance valid dates to get to myDateTime
                 validDateTime = validDateTimeIterator.next();
+                System.out.println("getEndCriteria " + getEndCriteria() + " " + validDateTime + " " + endDate.atTime(getStartLocalTime()));
                 if (getEndCriteria() != EndCriteria.NEVER)
                 {
-                    if (validDateTime.isAfter(endDate.atTime(getStartLocalTime())))
+                    if (validDateTime.isAfter(endDate.atTime(getStartLocalTime())) || // after displayed date interval
+                            validDateTime.isAfter(getEndOnDate().atTime(getStartLocalTime()))) // after end of repeat rule
                     { // appointment is invalid - too late
                         invalidAppointments.add(myAppointment);
                         break;
@@ -820,7 +822,7 @@ public abstract class Repeat {
                 invalidAppointments.add(myAppointment);
             }
         }
-        
+        System.out.println("invalidAppointments " + invalidAppointments.size() + " " + appointments.size());
         // Change unique appointment to individual
         boolean writeAppointmentsNeeded = getAppointments()
                 .stream()
@@ -848,6 +850,7 @@ public abstract class Repeat {
 //            }
         }
         appointments.addAll(makeAppointments()); // add any new appointments needed
+        System.out.println("make new appointments " + appointments.size());
         
 //        if (writeAppointmentsNeeded || writeAppointmentsNeeded2) AppointmentFactory.writeToFile(appointments); //  DO THIS ELSEWHERE WHEN I HAVE THE ACTUAL REPEATABLEAPPOINTMENT COLLECTION
     }
@@ -860,7 +863,7 @@ public abstract class Repeat {
      * @return
      */
     public boolean oneAppointmentToIndividual(Collection<Repeat> repeats
-            , Collection<RepeatableAppointment> appointments)
+            , Collection<Appointment> appointments)
     {
         if (getEndCriteria() != EndCriteria.NEVER)
         { // Count number of valid appointment start dates, stop when after end date or more than one appointment date
