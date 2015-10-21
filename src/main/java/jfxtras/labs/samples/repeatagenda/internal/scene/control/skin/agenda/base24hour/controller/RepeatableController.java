@@ -29,10 +29,11 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 public class RepeatableController {
 
-private RepeatableAppointment appointment;
+//private RepeatableAppointment appointment;
 private Repeat repeat;
 
 @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
@@ -271,15 +272,20 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
 }
 
 
-    public void setupData(RepeatableAppointment appointment) {
+/**
+ * 
+ * @param appointment
+ * @param dateTimeRange : date range for current agenda skin
+ */
+    public void setupData(RepeatableAppointment appointment, LocalDateTimeRange dateTimeRange) {
 
-        this.appointment = appointment;
+//        this.appointment = appointment;
         if (appointment.getRepeat() != null)
         { // get existing repeat
             repeat = appointment.getRepeat();
         } else { // make new repeat
 //            repeat = new Repeat();
-            repeat = RepeatFactory.newRepeat();
+            repeat = RepeatFactory.newRepeat(dateTimeRange);
             repeat.setDefaults();
             appointment.copyNonDateFieldsInto(repeat.getAppointmentData());
             repeat.setStartLocalDate(appointment.getStartLocalDateTime().toLocalDate());

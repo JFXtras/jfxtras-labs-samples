@@ -16,10 +16,10 @@ import javafx.util.Callback;
 import jfxtras.labs.samples.repeatagenda.Main;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.controller.AppointmentEditController;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
+import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 // New stage for popup window
 public class RepeatMenu extends Stage {
@@ -41,11 +41,12 @@ public class RepeatMenu extends Stage {
 //    private Appointment appointment;
 
     public RepeatMenu(Appointment appointment
+            , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
             , Collection<Repeat> repeats
             , List<AppointmentGroup> appointmentGroups
-            , Callback<Collection<RepeatableAppointment>, Void> appointmentCallback
-            , Callback<Collection<Repeat>, Void> repeatCallback)
+            , Callback<Collection<Appointment>, Void> appointmentWriteCallback
+            , Callback<Collection<Repeat>, Void> repeatWriteCallback)
     {
 ////        this.layoutHelp = layoutHelp;
 //        this.pane = pane;
@@ -76,11 +77,12 @@ public class RepeatMenu extends Stage {
         AppointmentEditController appointmentEditController = appointmentMenuLoader.getController();
         appointmentEditController.setupData(
                 appointment
+              , dateTimeRange
               , appointments
               , repeats
               , appointmentGroups
-              , appointmentCallback
-              , repeatCallback);
+              , appointmentWriteCallback
+              , repeatWriteCallback);
         Scene scene = new Scene(appointmentMenu);
 
         // data element change bindings

@@ -2,6 +2,7 @@ package jfxtras.labs.samples.repeatagenda;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
+import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 public abstract class RepeatTestAbstract {
     
@@ -141,7 +143,7 @@ public abstract class RepeatTestAbstract {
         RepeatableAppointment a2 = AppointmentFactory.newAppointment()
                 .withAppointmentGroup(appointmentGroups.get(9))
                 .withSummary("Monthly Appointment Fixed");
-        return RepeatFactory.newRepeat()
+        return RepeatFactory.newRepeat(new LocalDateTimeRange(LocalDateTime.of(2015, 10, 4, 0, 0), LocalDateTime.of(2015, 10, 10, 0, 0)))
                 .withStartLocalDate(LocalDate.of(2015, 10, 7))
                 .withStartLocalTime(LocalTime.of(8, 45))
                 .withEndLocalTime(LocalTime.of(10, 15))

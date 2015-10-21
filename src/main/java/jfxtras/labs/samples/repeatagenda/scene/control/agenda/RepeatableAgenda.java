@@ -11,18 +11,13 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda;
 
 public class RepeatableAgenda<T extends RepeatableAppointment, U extends Repeat> extends Agenda {
-
-//    public RepeatableAgenda() {
-//     // setup the CSS
-//        this.getStyleClass().add(Agenda.class.getSimpleName());
-////        AGENDA_STYLE_CLASS = RepeatableAgenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + RepeatableAgenda.class.getSimpleName() + ".css").toExternalForm();
-//    }
     
     private static String AGENDA_STYLE_CLASS = Agenda.class.getResource("/jfxtras/internal/scene/control/skin/agenda/" + Agenda.class.getSimpleName() + ".css").toExternalForm();
     final public static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
@@ -60,8 +55,18 @@ public class RepeatableAgenda<T extends RepeatableAppointment, U extends Repeat>
         setRepeats(repeats);
     }
     
-    public RepeatableAgenda() { }
+    public RepeatableAgenda()
+    {
+        // Listen for changes to appointments (additions and deletions)
+        appointments().addListener((ListChangeListener.Change<? extends Appointment> change)
+            -> {
+                    System.out.println("appointment list changed");
+            });
+    }
 
+    private LocalDateTimeRange dateTimeRange; // range of current skin
+    public LocalDateTimeRange dateTimeRange() { return dateTimeRange; }
+    
     // TODO - UPDATE WITH REPEATS
     /** Repeat rules */
     private Collection<U> repeats;
@@ -75,9 +80,10 @@ public class RepeatableAgenda<T extends RepeatableAppointment, U extends Repeat>
         }
         
         // manage repeat-made appointments when the range changes
-        setLocalDateTimeRangeCallback(param -> {
-            LocalDate startDate = param.getStartLocalDateTime().toLocalDate();
-            LocalDate endDate = param.getEndLocalDateTime().toLocalDate();
+        setLocalDateTimeRangeCallback(dateTimeRange -> {
+            this.dateTimeRange = dateTimeRange;
+            LocalDate startDate = dateTimeRange.getStartLocalDateTime().toLocalDate();
+            LocalDate endDate = dateTimeRange.getEndLocalDateTime().toLocalDate();
             System.out.println("dates changed " + startDate + " " + endDate);
             System.out.println("2agenda.appointments().size() " + appointments().size());
             appointments().removeIf(a -> ((RepeatableAppointment) a).isRepeatMade());
@@ -94,16 +100,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment, U extends Repeat>
 //            System.exit(0);
             return null; // return argument for the Callback
         });
-        // make appointments when range changes
-//        getRepeats().stream().forEach(r ->
-//        { // Make new repeat-made appointments inside range
-//            Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
-//            data.getAppointments().addAll(newAppointments);
-////            agenda.appointments().addAll(newAppointments);
-//            System.out.println("newAppointments " + newAppointments.size());
-////            r.removeOutsideRangeAppointments(data.getAppointments());                 // remove outside range appointments
-//        });
-//        Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
+
     }
 
     // TODO - UPDATE WITH APPOINTMENTS
@@ -321,7 +318,7 @@ public class RepeatableAgenda<T extends RepeatableAppointment, U extends Repeat>
 //          boolean repeatEquals = (getRepeat() == null)
 //                  ? (testObj.getRepeat() == null) : getRepeat().equals(testObj.getRepeat());
           boolean appointmentGroupEquals = (getAppointmentGroup() == null)
-                  ? (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());              
+                  ? (testObj.getAppointmentGroup() == null) : getAppointmentGroup().equals(testObj.getAppointmentGroup());
 //           System.out.println("repeat appointment " + descriptionEquals + " " + locationEquals + " " + summaryEquals + " " +  " " + appointmentGroupEquals);
           return descriptionEquals && locationEquals && summaryEquals && appointmentGroupEquals;
       }

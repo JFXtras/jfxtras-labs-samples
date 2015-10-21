@@ -29,6 +29,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.DataUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
+import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 public class RepeatImpl extends Repeat {
 
@@ -42,6 +43,11 @@ public class RepeatImpl extends Repeat {
     public boolean hasKey() { return (getKey() != null); } // new Repeat has no key
 
     public RepeatImpl() { }
+
+    public RepeatImpl(LocalDateTimeRange dateTimeRange)
+    {
+        super(dateTimeRange);
+    }
     
     public RepeatImpl(Repeat oldRepeat) {
         if (oldRepeat != null) {

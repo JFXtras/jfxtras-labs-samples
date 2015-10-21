@@ -15,7 +15,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -32,6 +31,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
@@ -51,6 +51,7 @@ public class CalendarController {
     private MyData data;
 
      public RepeatableAgenda<RepeatableAppointment, Repeat> agenda = new RepeatableAgenda<RepeatableAppointment, Repeat>();
+     private LocalDateTimeRange dateTimeRange;
      private RepeatMenu repeatMenu;
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private BorderPane agendaBorderPane;
@@ -88,12 +89,28 @@ public class CalendarController {
 //        }
 
         // accept new appointments
-        agenda.newAppointmentCallbackProperty().set((LocalDateTimeRange dateTimeRange) -> AppointmentFactory.newAppointment()
-            .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime())
-            .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
-            .withSummary("New")
-            .withDescription("")
-            .withAppointmentGroup(agenda.appointmentGroups().get(0)));
+        agenda.newAppointmentCallbackProperty().set((LocalDateTimeRange dateTimeRange) -> 
+        {
+//            System.out.println("new appointment calllback");
+            RepeatableAppointment appointment = AppointmentFactory.newAppointment()
+                .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime())
+                .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
+                .withSummary("New")
+                .withDescription("")
+                .withAppointmentGroup(agenda.appointmentGroups().get(0));
+            
+            repeatMenu = new RepeatMenu(
+                    (RepeatableAppointment) appointment
+                    , agenda.dateTimeRange()
+                    , agenda.appointments()
+                    , agenda.getRepeats()
+                    , agenda.appointmentGroups()
+                    , a -> { AppointmentFactory.writeToFile(a); return null; }
+                    , r -> { RepeatImpl.writeToFile(r); return null; }); // make new object when closed (problem with passing pane - null for now)
+            repeatMenu.show();
+            
+            return appointment;
+        });
 
 //        agenda.setEditAppointmentCallback((AppointmentEditData a) -> {
 //            System.out.println("start edit callback");
@@ -107,71 +124,38 @@ public class CalendarController {
             System.out.println("start edit callback");
             repeatMenu = new RepeatMenu(
                     (RepeatableAppointment) appointment
+                    , agenda.dateTimeRange()
                     , agenda.appointments()
                     , agenda.getRepeats()
                     , agenda.appointmentGroups()
                     , a -> { AppointmentFactory.writeToFile(a); return null; }
                     , r -> { RepeatImpl.writeToFile(r); return null; }); // make new object when closed (problem with passing pane - null for now)
-
-//            repeatMenu = new RepeatMenu(
-//                    (RepeatableAppointment) appointment
-//                  , data.getAppointments()
-//                  , data.getRepeats()
-//                  , data.getAppointmentGroups()); // make new object when closed (problem with passing pane - null for now)
-            
-//            // MAY HAVE TO STOP HERE - EXECUTATION ISN'T HALTED
-//            System.out.println("agenda.repeats().size() " + agenda.repeats().size() + " " + agenda.repeats().iterator().next().getDeletedDates().size());
-//            
-//            editDone = false;
-//            repeatMenu.appointmentEditedProperty().addListener((obs) ->
-//            {
-////                editDone = true;
-//                System.out.println("write appointments---" + ((RepeatableAppointment) appointment).getRepeat().getDeletedDates().size());
-//                AppointmentFactory.writeToFile(agenda.appointments());
-//            });
-//            repeatMenu.repeatEditedProperty().addListener((obs) -> 
-//            {
-////                editDone = true;
-//                System.out.println("write repeats---");
-//                MyRepeat.writeToFile(data.getRepeats());   
-//            });
-//            if (editDone) agenda.refresh();
-////            repeatMenu.setup(a);
             repeatMenu.show();
-////            repeatMenu = null;
-////            agenda.refresh();
-//            System.out.println("end edit callback");
             return null;
         });
         
-
-
-        
 //        // manage repeat-made appointments when the range changes
-//        agenda.setLocalDateTimeRangeCallback(param -> {
-//            startDate = param.getStartLocalDateTime().toLocalDate();
-//            endDate = param.getEndLocalDateTime().toLocalDate();
+//        agenda.setLocalDateTimeRangeCallback(dateTimeRange -> {
+//            this.dateTimeRange = dateTimeRange;
+//            LocalDate startDate = dateTimeRange.getStartLocalDateTime().toLocalDate();
+//            LocalDate endDate = dateTimeRange.getEndLocalDateTime().toLocalDate();
 //            System.out.println("dates changed " + startDate + " " + endDate);
-//            System.out.println("2agenda.appointments().size() " + agenda.appointments().size());
-//            agenda.appointments().removeIf(a -> ((RepeatableAppointment) a).isRepeatMade());
-//            data.getRepeats().stream().forEach(r -> r.getAppointments().clear());
-//            data.getRepeats().stream().forEach(r ->
+//            System.out.println("2agenda.appointments().size() " + appointments().size());
+//            appointments().removeIf(a -> ((RepeatableAppointment) a).isRepeatMade());
+//            getRepeats().stream().forEach(r -> r.getAppointments().clear());
+//            getRepeats().stream().forEach(r ->
 //            { // Make new repeat-made appointments inside range
 //                Collection<RepeatableAppointment> newAppointments = r.makeAppointments(startDate, endDate);
-//                data.getAppointments().addAll(newAppointments);
+//                appointments().addAll(newAppointments);
 ////                agenda.appointments().addAll(newAppointments);
 //                System.out.println("newAppointments " + newAppointments.size());
 ////                r.removeOutsideRangeAppointments(data.getAppointments());                 // remove outside range appointments
 //            });
-//            System.out.println("3agenda.appointments().size() " + agenda.appointments().size());
+//            System.out.println("3agenda.appointments().size() " + appointments().size());
+////            System.exit(0);
 //            return null; // return argument for the Callback
 //        });
-        
-        agenda.appointments().addListener((ListChangeListener.Change<? extends Appointment> change)
-                -> {
-System.out.println("appointment list changed");
-                });
-        
+                
         // action
         agenda.setActionCallback( (appointment) -> {
             System.out.println("Action on " + appointment);
@@ -238,30 +222,30 @@ System.out.println("appointment list changed");
 
         if (data.getRepeats().isEmpty())
         { // add Repeats if none read in from file
-//            RepeatableAppointment a1 = AppointmentFactory.newAppointment()
-//                    .withAppointmentGroup(agenda.appointmentGroups().get(5))
-//                    .withSummary("Weekly Appointment");
-//            data.getRepeats().add(RepeatFactory.newRepeat()
-//                    .withStartLocalDate(LocalDate.now())
-//                    .withStartLocalTime(LocalTime.now().plusHours(3))
-//                    .withEndLocalTime(LocalTime.now().plusHours(5))
-//                    .withEndCriteria(EndCriteria.NEVER)
-//                    .withIntervalUnit(IntervalUnit.WEEKLY)
-//                    .withDayOfWeek(LocalDate.now().getDayOfWeek(), true)
-//                    .withDayOfWeek(LocalDate.now().plusDays(2).getDayOfWeek(), true)
-//                    .withAppointmentData(a1));
-//            RepeatableAppointment a2 = AppointmentFactory.newAppointment()
-//                    .withAppointmentGroup(agenda.appointmentGroups().get(9))
-//                    .withSummary("Monthly Appointment");
-//            data.getRepeats().add(RepeatFactory.newRepeat()
-//                    .withStartLocalDate(LocalDate.now().minusDays(1))
-//                    .withStartLocalTime(LocalTime.now().minusHours(5))
-//                    .withEndLocalTime(LocalTime.now().minusHours(3))
-//                    .withEndCriteria(EndCriteria.ON)
-//                    .withEndOnDate(LocalDate.now().minusDays(1).plusMonths(3))
-//                    .withIntervalUnit(IntervalUnit.MONTHLY)
-//                    .withMonthlyRepeat(MonthlyRepeat.DAY_OF_MONTH)
-//                    .withAppointmentData(a2));
+            RepeatableAppointment a1 = AppointmentFactory.newAppointment()
+                    .withAppointmentGroup(agenda.appointmentGroups().get(5))
+                    .withSummary("Weekly Appointment");
+            data.getRepeats().add(RepeatFactory.newRepeat()
+                    .withStartLocalDate(LocalDate.now())
+                    .withStartLocalTime(LocalTime.now().plusHours(3))
+                    .withEndLocalTime(LocalTime.now().plusHours(5))
+                    .withEndCriteria(EndCriteria.NEVER)
+                    .withIntervalUnit(IntervalUnit.WEEKLY)
+                    .withDayOfWeek(LocalDate.now().getDayOfWeek(), true)
+                    .withDayOfWeek(LocalDate.now().plusDays(2).getDayOfWeek(), true)
+                    .withAppointmentData(a1));
+            RepeatableAppointment a2 = AppointmentFactory.newAppointment()
+                    .withAppointmentGroup(agenda.appointmentGroups().get(9))
+                    .withSummary("Monthly Appointment");
+            data.getRepeats().add(RepeatFactory.newRepeat()
+                    .withStartLocalDate(LocalDate.now().minusDays(1))
+                    .withStartLocalTime(LocalTime.now().minusHours(5))
+                    .withEndLocalTime(LocalTime.now().minusHours(3))
+                    .withEndCriteria(EndCriteria.ON)
+                    .withEndOnDate(LocalDate.now().minusDays(1).plusMonths(3))
+                    .withIntervalUnit(IntervalUnit.MONTHLY)
+                    .withMonthlyRepeat(MonthlyRepeat.DAY_OF_MONTH)
+                    .withAppointmentData(a2));
             RepeatableAppointment a3 = AppointmentFactory.newAppointment()
                     .withAppointmentGroup(agenda.appointmentGroups().get(15))
                     .withSummary("Daily Appointment");

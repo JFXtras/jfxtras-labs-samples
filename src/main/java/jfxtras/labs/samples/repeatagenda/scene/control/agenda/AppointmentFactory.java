@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -42,7 +41,7 @@ public final class AppointmentFactory {
     /**
      * writes appointmentList to file
      */
-    public static void writeToFile(Collection<RepeatableAppointment> appointments) {
+    public static void writeToFile(Collection<Appointment> appointments) {
 //        System.out.println("writeToFile");
         RepeatableAppointmentImpl.writeToFile(appointments, Settings.APPOINTMENTS_FILE);
     }
@@ -52,12 +51,12 @@ public final class AppointmentFactory {
      */
     public static void writeToFile(List<Appointment> appointments) {
         System.out.println("write appointmetns");
-        List<RepeatableAppointment> appointments2 = appointments
-                .stream()
-                .map(a -> ((RepeatableAppointment) a)) // down cast all appointmetns to RepeatableAppointments
-                .collect(Collectors.toList());
-        System.out.println("repeat made = " + appointments2.stream().filter(a -> a.isRepeatMade()).count());
-        RepeatableAppointmentImpl.writeToFile(appointments2, Settings.APPOINTMENTS_FILE);
+//        List<RepeatableAppointment> appointments2 = appointments
+//                .stream()
+//                .map(a -> ((RepeatableAppointment) a)) // down cast all appointmetns to RepeatableAppointments
+//                .collect(Collectors.toList());
+        System.out.println("repeat made = " + appointments.stream().filter(a -> ((RepeatableAppointment) a).isRepeatMade()).count());
+        RepeatableAppointmentImpl.writeToFile(appointments, Settings.APPOINTMENTS_FILE);
     }
     
 

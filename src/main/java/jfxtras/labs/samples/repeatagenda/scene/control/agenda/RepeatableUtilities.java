@@ -127,7 +127,7 @@ public final class RepeatableUtilities {
             , Collection<Repeat> repeats
             , Callback<RepeatChange[], RepeatChange> changeDialogCallback
             , Callback<String, Boolean> confirmDeleteCallback
-            , Callback<Collection<RepeatableAppointment>, Void> writeAppointmentsCallback
+            , Callback<Collection<Appointment>, Void> writeAppointmentsCallback
             , Callback<Collection<Repeat>, Void> writeRepeatsCallback) throws ParserConfigurationException
     {
         RepeatableAppointment appointment = (RepeatableAppointment) appointmentInput;
@@ -276,14 +276,14 @@ public final class RepeatableUtilities {
      */
     // Works for by drag-and-drop on the agenda and for editing from AppointmentEditController
     public static WindowCloseType editAppointments(
-              Collection<Appointment> appointments
-            , RepeatableAppointment appointmentInput
+              RepeatableAppointment appointmentInput
             , RepeatableAppointment appointmentOldInput
+            , Collection<Appointment> appointments
             , Collection<Repeat> repeats
             , Callback<RepeatChange[], RepeatChange> changeDialogCallback
 //            , Collection<RepeatableAppointment> editedAppointments
 //            , Collection<Repeat> editedRepeats)
-            , Callback<Collection<RepeatableAppointment>, Void> writeAppointmentsCallback
+            , Callback<Collection<Appointment>, Void> writeAppointmentsCallback
             , Callback<Collection<Repeat>, Void> writeRepeatsCallback)
     {
         RepeatableAppointment appointment = (RepeatableAppointment) appointmentInput;
@@ -381,6 +381,7 @@ public final class RepeatableUtilities {
 //          System.out.println(repeat.getStartLocalDate());
 //          System.exit(0);
           Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments();
+          System.out.println("newAppointments " + newAppointments.size() + " " + repeat.getAppointments());
           appointments.addAll(newAppointments);
           appointment.copyNonDateFieldsInto(repeat.getAppointmentData()); // copy any appointment changes (i.e. description, group, location, etc)
           repeats.add(repeat);
@@ -430,6 +431,7 @@ public final class RepeatableUtilities {
                 case DAILY: // fall through
                 case MONTHLY: // fall through
                 case YEARLY:
+                    repeat.adjustDateTime(true, startTemporalAdjuster, endTemporalAdjuster);
                     switch (repeat.getEndCriteria())
                     {
                     case AFTER:
@@ -442,7 +444,7 @@ public final class RepeatableUtilities {
                         break;
                     }
 //                    System.out.println("before " + repeat.getStartLocalDate() + " " + repeat.getStartLocalTime());
-                    repeat.adjustDateTime(true, startTemporalAdjuster, endTemporalAdjuster);
+//                    repeat.adjustDateTime(true, startTemporalAdjuster, endTemporalAdjuster);
 //                    System.out.println("after " + repeat.getStartLocalDate() + " " + repeat.getStartLocalTime());
                     break;
                 case WEEKLY:
@@ -500,7 +502,7 @@ public final class RepeatableUtilities {
                 // Split appointments between repeat and repeatOld
                 repeatOld.getAppointments().clear();
                 Iterator<RepeatableAppointment> appointmentIterator = repeat.getAppointments().iterator();
-                int counter = 0;
+//                int counter = 0;
                 while (appointmentIterator.hasNext())
                 {
                     RepeatableAppointment a = appointmentIterator.next();
@@ -508,30 +510,36 @@ public final class RepeatableUtilities {
                     {
                         appointmentIterator.remove();
                         repeatOld.getAppointments().add(a);
-                    } else {
-                        counter++;                                    
+//                    } else {
+//                        counter++;                                    
                     }
                 }
                 
                 // Modify start and end date for repeat and repeatOld.  Adjust IntervalUnit specific data
                 repeatOld.setEndCriteria(EndCriteria.ON);
                 repeatOld.setEndAfterEvents(null); // criteria changed to ON so null endAfterEvents
-                repeatOld.setEndOnDate(startDate.minusDays(1)); //TODO - NEED TO SET TO LAST VALID DATE
+//                repeatOld.setEndOnDate(startDate.minusDays(1)); //TODO - NEED TO SET TO LAST VALID DATE
                 repeatOld.setEndOnDate(repeatOld.previousValidDate(startDateOld));
-                boolean adjustStartDate;
+//                boolean adjustStartDate;
                 switch (repeat.getIntervalUnit())
                 {
                 case DAILY: // fall through
                 case MONTHLY: // fall through
                 case YEARLY:
 //                    adjustStartDate = startDate.equals(repeat.getStartLocalDate());
+//                    System.out.println("repeat.getEndAfterEvents( " + repeat.getEndAfterEvents() + " " + repeat.getEndOnDate() + " " + dayShift);
                     repeat.adjustDateTime(false, startTemporalAdjuster, endTemporalAdjuster);
-                    if (repeat.getEndCriteria() != EndCriteria.NEVER) repeat.makeEndAfterEventsFromEndOnDate();
+                    if (repeat.getEndCriteria() != EndCriteria.NEVER)
+                    {
+                        LocalDate newEndOnDate = repeat.getEndOnDate().plusDays(dayShift);
+                        repeat.setEndOnDate(newEndOnDate);
+                    }
+                    if (repeat.getEndCriteria() == EndCriteria.AFTER) repeat.makeEndAfterEventsFromEndOnDate();
+//                    System.out.println("repeat.getEndAfterEvents( " + repeat.getEndAfterEvents() + " " + repeat.getEndOnDate());
 //                    switch (repeat.getEndCriteria())
 //                    {
 //                    case AFTER:
-////                        repeat.setEndAfterEvents(counter);
-////                        repeat.makeEndOnDateFromEndAfterEvents();
+//                        repeat.makeEndOnDateFromEndAfterEvents();
 //                        repeat.makeEndAfterEventsFromEndOnDate();
 //                        break;
 //                    case ON:
@@ -601,7 +609,7 @@ public final class RepeatableUtilities {
 //        if (writeAppointments) AppointmentFactory.writeToFile(appointments);
 //        if (writeRepeats) MyRepeat.writeToFile(repeats);
 
-        if (editedAppointmentsFlag && (writeAppointmentsCallback != null)) writeAppointmentsCallback.call(null); // write appointment changes
+        if (editedAppointmentsFlag && (writeAppointmentsCallback != null)) writeAppointmentsCallback.call(appointments); // write appointment changes
         if (editedRepeatsFlag && (writeRepeatsCallback != null)) writeRepeatsCallback.call(repeats);                     // write repeat changes
 
 //        if (editedAppointmentsFlag) editedAppointments.addAll(editedAppointmentsTemp);
@@ -631,9 +639,9 @@ public final class RepeatableUtilities {
 //            , Collection<Repeat> editedRepeats)
     {
         return editAppointments(
-                appointments
-              , appointment
+                appointment
               , appointmentOld
+              , appointments
               , repeats
               , a -> repeatChangeDialog()
 //              , editedAppointments
@@ -654,17 +662,17 @@ public final class RepeatableUtilities {
      * @return
      */
     public static WindowCloseType editAppointments(
-            Collection<Appointment> appointments
-          , RepeatableAppointment appointment
+            RepeatableAppointment appointment
           , RepeatableAppointment appointmentOld
+          , Collection<Appointment> appointments
           , Collection<Repeat> repeats
-          , Callback<Collection<RepeatableAppointment>, Void> writeAppointmentsCallback
+          , Callback<Collection<Appointment>, Void> writeAppointmentsCallback
           , Callback<Collection<Repeat>, Void> writeRepeatsCallback)
     {
         return editAppointments(
-                appointments
-              , appointment
+                appointment
               , appointmentOld
+              , appointments
               , repeats
               , a -> repeatChangeDialog()
               , writeAppointmentsCallback

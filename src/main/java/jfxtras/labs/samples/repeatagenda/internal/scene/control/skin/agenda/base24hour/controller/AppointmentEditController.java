@@ -26,6 +26,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilitie
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
+import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 
 public class AppointmentEditController {
@@ -36,7 +37,7 @@ public class AppointmentEditController {
     private Collection<Appointment> appointments;
     private Collection<Repeat> repeats;
     private List<AppointmentGroup> appointmentGroups;
-    private Callback<Collection<RepeatableAppointment>, Void> appointmentCallback;
+    private Callback<Collection<Appointment>, Void> appointmentCallback;
     private Callback<Collection<Repeat>, Void> repeatCallback;
 //    private LayoutHelp layoutHelp;
 
@@ -88,10 +89,11 @@ public class AppointmentEditController {
 
     // Setup up data for controls
     public void setupData(Appointment inputAppointment
+            , LocalDateTimeRange dateTimeRange
             , Collection<Appointment> appointments
             , Collection<Repeat> repeats
             , List<AppointmentGroup> appointmentGroups
-            , Callback<Collection<RepeatableAppointment>, Void> appointmentCallback
+            , Callback<Collection<Appointment>, Void> appointmentCallback
             , Callback<Collection<Repeat>, Void> repeatCallback)
     {
 //        this.layoutHelp = layoutHelp;
@@ -106,7 +108,7 @@ public class AppointmentEditController {
 
         appointmentOld = AppointmentFactory.newAppointment(appointment);
 
-        repeatableController.setupData(appointment);
+        repeatableController.setupData(appointment, dateTimeRange);
 
         // ***AREN'T THESE BINDINGS DUPLICATES OF ABOVE?****
         nameTextField.setText(appointment.getSummary());
@@ -175,9 +177,10 @@ public class AppointmentEditController {
     // AFTER CLICK SAVE VERIFY REPEAT IS VALID, IF NOT PROMPT.
     @FXML private void handleCloseButton() {
 
-        final WindowCloseType result = RepeatableUtilities.editAppointments(appointments
-                        , appointment
+        final WindowCloseType result = RepeatableUtilities.editAppointments(
+                          appointment
                         , appointmentOld
+                        , appointments
                         , repeats
                         , appointmentCallback
                         , repeatCallback);

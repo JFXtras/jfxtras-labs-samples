@@ -34,6 +34,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.StringConverter;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
+import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 /**
  * Contains rules for repeatable appointments in agenda
@@ -211,7 +212,7 @@ public abstract class Repeat {
             myDate = myDate.with(new NextAppointment());
             eventCounter++;
         }
-        setEndAfterEvents(eventCounter);
+        endAfterEvents.set(eventCounter);
     }
     
     final private ObjectProperty<LocalDate> endOnDate = new SimpleObjectProperty<LocalDate>();
@@ -264,25 +265,18 @@ public abstract class Repeat {
     }
 
     /**
+     * Constructor with range - used in factory (new Repeat objects need range to make appointments)
+     */
+    public Repeat(LocalDateTimeRange dateTimeRange)
+    {
+        startDate = dateTimeRange.getStartLocalDateTime().toLocalDate();
+        endDate = dateTimeRange.getEndLocalDateTime().toLocalDate();
+    }
+
+    /**
      * Default constructor
      */
     public Repeat() { }
-    
-//    /**
-//     * Copy constructor that makes a new object with the parts from an Appointment copied
-//     * TODO - SHOULD THIS BE REMOVED?
-//     * 
-//     * @param appointment
-//     * @return
-//     * @throws CloneNotSupportedException
-//     */
-//    public Repeat(Appointment appointment) {
-//        this.withStartLocalDate(appointment.getStartLocalDateTime().toLocalDate())
-//            .withStartLocalTime(appointment.getStartLocalDateTime().toLocalTime())
-//            .withEndLocalTime(appointment.getEndLocalDateTime().toLocalTime())
-//            .withAppointmentData(appointment)
-//            .withDayOfWeek(appointment.getStartLocalDateTime().toLocalDate().getDayOfWeek(), true);
-//    }
     
     /**
      * Copy constructor that makes a new object with the parts from an Appointment copied
@@ -806,11 +800,12 @@ public abstract class Repeat {
             while (validDateTime.isBefore(appointmentDateTime))
             { // advance valid dates to get to myDateTime
                 validDateTime = validDateTimeIterator.next();
-                System.out.println("getEndCriteria " + getEndCriteria() + " " + validDateTime + " " + endDate.atTime(getStartLocalTime()));
+//                System.out.println("getEndCriteria " + getEndCriteria() + " " + validDateTime + " " + getEndOnDate() + " " + validDateTime.isAfter(endDate.atTime(getStartLocalTime())) + " " + // after displayed date interval
+//                        validDateTime.toLocalDate().isAfter(getEndOnDate()));
                 if (getEndCriteria() != EndCriteria.NEVER)
                 {
                     if (validDateTime.isAfter(endDate.atTime(getStartLocalTime())) || // after displayed date interval
-                            validDateTime.isAfter(getEndOnDate().atTime(getStartLocalTime()))) // after end of repeat rule
+                            validDateTime.toLocalDate().isAfter(getEndOnDate())) // after end of repeat rule
                     { // appointment is invalid - too late
                         invalidAppointments.add(myAppointment);
                         break;

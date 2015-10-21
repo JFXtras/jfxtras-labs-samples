@@ -58,9 +58,9 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
-	    
+	   
 //	    RepeatEditTest r = new RepeatEditTest();
-//	    r.editAllDailyInterval();
+//	    r.editFutureDailyTimeAndDate();
 //	    System.exit(0);
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);

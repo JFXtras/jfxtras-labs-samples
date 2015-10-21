@@ -42,6 +42,7 @@ import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.A
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointmentImplBase;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<RepeatableAppointmentImpl> implements RepeatableAppointment {
@@ -215,7 +216,7 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         appointment.copyInto(this);
     }
     
-    public static void writeToFile(Collection<RepeatableAppointment> appointments, Path file)
+    public static void writeToFile(Collection<Appointment> appointments, Path file)
     {
         // XML document
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -231,13 +232,14 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         doc.appendChild(rootElement);
         
         // Appointments
-        for (RepeatableAppointment myAppointment : appointments)
+        System.out.println("writetoFile appointments " + appointments);
+        for (Appointment myAppointment : appointments)
         {
-            if (myAppointment instanceof RepeatableAppointment)
-            {
+//            if (myAppointment instanceof RepeatableAppointment)
+//            {
                 RepeatableAppointment repeatableAppointment = (RepeatableAppointment) myAppointment;
                 if (repeatableAppointment.isRepeatMade()) continue; // skip appointments that are made by repeat rules
-            }
+//            }
             Element appointmentElement = doc.createElement("appointment");
 //            Repeat repeat = repeatMap.get(myAppointment);
             AppointmentFactory.returnConcreteAppointment(myAppointment).marshal(appointmentElement);
