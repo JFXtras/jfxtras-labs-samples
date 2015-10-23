@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
-import java.util.Collection;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -23,7 +22,6 @@ import javafx.stage.Stage;
 import jfxtras.labs.samples.repeatagenda.controller.CalendarController;
 import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentIO;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
@@ -59,9 +57,10 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
 	   
-//	    RepeatEditTest r = new RepeatEditTest();
-//	    r.editFutureDailyTimeAndDate();
-//	    System.exit(0);
+	    RepeatEditTest r = new RepeatEditTest();
+	    r.editOneDailyTimeAndDate();
+	    System.exit(0);
+	    
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);
         Settings.setup(resources);
@@ -95,11 +94,12 @@ public class Main extends Application {
         AppointmentFactory.readFromFile(appointmentsPath, data.getAppointmentGroups(), data.getAppointments());
 //        MyAppointment.readFromFile(appointmentsPath.toFile(), appointmentGroups, data.getAppointments());
         data.getRepeats().stream().forEach(a -> a.collectAppointments(data.getAppointments())); // add individual appointments that have repeat rules to their Repeat objects
-        data.getRepeats().stream().forEach(a ->
-        {
-            Collection<RepeatableAppointment> appointments = a.makeAppointments(LocalDate.now().minusWeeks(1), LocalDate.now().plusWeeks(1)); // Make repeat appointments (using default of one week before and one week after today - TODO - get dates from Agenda and make exact initial appointments)
-            data.getAppointments().addAll(appointments);
-        });
+        // ADD APPOINTMENTS WHEN AGENDA TIME UPDATES
+//        data.getRepeats().stream().forEach(a ->
+//        {
+//            Collection<RepeatableAppointment> appointments = a.makeAppointments(LocalDate.now().minusWeeks(1), LocalDate.now().plusWeeks(1)); // Make repeat appointments (using default of one week before and one week after today - TODO - get dates from Agenda and make exact initial appointments)
+//            data.getAppointments().addAll(appointments);
+//        });
 
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();

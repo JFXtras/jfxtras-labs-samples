@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -27,13 +28,15 @@ import org.xml.sax.SAXException;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.DataUtilities;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 public class RepeatImpl extends Repeat {
 
+    // TODO - REPLACE WITH UID LIKE iCalendar
     private static int nextKey = 0;
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
 
     /** Unique number identifying this Repeat object. */ // TODO - REPLACE WITH UID - like iCalendar
     private Integer key;
@@ -155,10 +158,16 @@ public class RepeatImpl extends Repeat {
         String endCriteriaString = DataUtilities.myGet(repeatAttributes, "endCriteria", "");
         EndCriteria myEndCriteria = EndCriteria.valueOf(endCriteriaString);
         setEndCriteria(myEndCriteria);
-        setStartLocalDate(DataUtilities.myParseLocalDate(DataUtilities.myGet(repeatAttributes, "startDate", "")));
-        setStartLocalTime(DataUtilities.myParseLocalTime(DataUtilities.myGet(repeatAttributes, "startTime", ""), Settings.TIME_FORMAT_AGENDA));
-        setEndLocalTime(DataUtilities.myParseLocalTime(DataUtilities.myGet(repeatAttributes, "endTime", ""), Settings.TIME_FORMAT_AGENDA));
-        setDeletedDates(DataUtilities.myGetSet(repeatAttributes, "deletedDates", "", Settings.DATE_FORMAT1));
+        setStartLocalDate(myParseLocalDateTime(DataUtilities.myGet(repeatAttributes, "startDate", "")));
+        setDurationInSeconds(Integer.valueOf(DataUtilities.myGet(repeatAttributes, "duration", "")));
+//        setStartLocalTime(myParseLocalDateTime(DataUtilities.myGet(repeatAttributes, "startTime", ""), Settings.TIME_FORMAT_AGENDA));
+//        setEndLocalTime(myParseLocalDateTime(DataUtilities.myGet(repeatAttributes, "endTime", ""), Settings.TIME_FORMAT_AGENDA));
+        Set<LocalDateTime> exceptionDates = Arrays
+                .stream(DataUtilities.myGet(repeatAttributes, "deletedDates", "").split(" "))
+                .map(a -> myParseLocalDateTime(a))
+                .collect(Collectors.toSet());
+        setExceptions(exceptionDates);
+//        setExceptionDates(DataUtilities.myGetSet(repeatAttributes, "deletedDates", "", Settings.DATE_FORMAT1));
 
         switch (myIntervalUnit) {
             case DAILY:
@@ -184,7 +193,7 @@ public class RepeatImpl extends Repeat {
                 setEndAfterEvents(DataUtilities.myParseInt(DataUtilities.myGet(repeatAttributes, "endAfterEvents", "")));
                 // fall through
             case ON:
-                setEndOnDate(LocalDate.parse(DataUtilities.myGet(repeatAttributes, "endOnDate", ""), Settings.DATE_FORMAT1));
+                setEndOnDate(LocalDateTime.parse(DataUtilities.myGet(repeatAttributes, "endOnDate", ""), formatter));
                 break;
             default:
                 break;
@@ -275,11 +284,13 @@ public class RepeatImpl extends Repeat {
         if (getKey() == null) setKey(nextKey++); // if it has no key (meaning its new) give it the next one
         myElement.setAttribute("key", Integer.toString(getKey()));
         myElement.setAttribute("repeatFrequency", Integer.toString(getRepeatFrequency()));
-        myElement.setAttribute("startDate", DataUtilities.myFormatLocalDate(getStartLocalDate()));
-        myElement.setAttribute("startTime", DataUtilities.myFormatLocalTime(getStartLocalTime()));
-        myElement.setAttribute("endTime", DataUtilities.myFormatLocalTime(getEndLocalTime()));
-        String d = getDeletedDates().stream()
-                                    .map(a -> DataUtilities.myFormatLocalDate(a))
+        myElement.setAttribute("startDate", getStartLocalDate().format(formatter));
+        myElement.setAttribute("duration", Integer.toString(getDurationInSeconds()));
+
+//        myElement.setAttribute("startTime", DataUtilities.myFormatLocalTime(getStartLocalTime()));
+//        myElement.setAttribute("endTime", DataUtilities.myFormatLocalTime(getEndLocalTime()));
+        String d = getExceptions().stream()
+                                    .map(a -> a.format(formatter))
                                     .collect(Collectors.joining(" "));
         myElement.setAttribute("deletedDates", d);
 
@@ -326,5 +337,14 @@ public class RepeatImpl extends Repeat {
         myElement.appendChild(appointmentElement);
         
         return myElement;
+    }
+    
+    public static LocalDateTime myParseLocalDateTime(String s)
+    {
+        try {
+            return LocalDateTime.parse(s, formatter);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

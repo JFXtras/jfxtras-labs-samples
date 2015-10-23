@@ -2,6 +2,9 @@ package jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.bas
 
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 
 import javafx.beans.InvalidationListener;
@@ -69,9 +72,9 @@ private ToggleGroup endGroup;
 @FXML private Button closeButton;
 @FXML private Button cancelButton;
 
-final InvalidationListener makeEndOnDateListener = (obs) -> repeat.makeEndOnDateFromEndAfterEvents();
+final private InvalidationListener makeEndOnDateListener = (obs) -> repeat.makeEndOnDateFromEndAfterEvents();
 
-private ChangeListener<? super Integer> frequencyListener = (observable, oldValue, newValue) ->
+final private ChangeListener<? super Integer> frequencyListener = (observable, oldValue, newValue) ->
 {
     if (newValue == 1) {
         unitLabel.setText(repeat.getIntervalUnit().toStringSingular());
@@ -80,6 +83,11 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
     }
 };
 
+final private ChangeListener<? super LocalDate> startDateListener = ((observable, oldSelection, newSelection) ->
+{
+    LocalTime startTime = repeat.getStartLocalDate().toLocalTime();
+    repeat.setStartLocalDate(newSelection.atTime(startTime));
+});
 
 @FXML public void initialize()
 {
@@ -252,20 +260,27 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
     });
     
     
+    final ChangeListener<? super LocalDate> endOnDateListener = ((observable, oldSelection, newSelection) ->
+    {
+        LocalTime endTime = repeat.getStartLocalDate().plusSeconds(repeat.getDurationInSeconds()).toLocalTime();
+        repeat.setEndOnDate(newSelection.atTime(endTime));
+    });
     endOnRadioButton.selectedProperty().addListener((observable, oldSelection, newSelection) ->
     {
         if (newSelection) {
             if (repeat.getEndCriteria() == EndCriteria.ON)
             { // if Repeat is ON already (initial condition) then set date in picker
-                endOnDatePicker.setValue(repeat.getEndOnDate());
+                endOnDatePicker.setValue(repeat.getEndOnDate().toLocalDate());
             }
             repeat.setEndCriteria(EndCriteria.ON); 
             endOnDatePicker.setDisable(false);
-            repeat.endOnDateProperty().bind(endOnDatePicker.valueProperty());
+            endOnDatePicker.valueProperty().addListener(endOnDateListener);
+//            repeat.endOnDateProperty().bind(endOnDatePicker.valueProperty());
             endOnDatePicker.show();
         } else {
             endOnDatePicker.setDisable(true);
-            repeat.endOnDateProperty().unbind();
+            endOnDatePicker.valueProperty().removeListener(endOnDateListener);
+//            repeat.endOnDateProperty().unbind();
         }
     });
     
@@ -288,9 +303,11 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
             repeat = RepeatFactory.newRepeat(dateTimeRange);
             repeat.setDefaults();
             appointment.copyNonDateFieldsInto(repeat.getAppointmentData());
-            repeat.setStartLocalDate(appointment.getStartLocalDateTime().toLocalDate());
-            repeat.setStartLocalTime(appointment.getStartLocalDateTime().toLocalTime());
-            repeat.setEndLocalTime(appointment.getEndLocalDateTime().toLocalTime());
+            repeat.setStartLocalDate(appointment.getStartLocalDateTime());
+//            repeat.setStartLocalTime(appointment.getStartLocalDateTime().toLocalTime());
+            int duration = (int) ChronoUnit.SECONDS.between(appointment.getStartLocalDateTime()
+                    , appointment.getEndLocalDateTime());
+            repeat.setDurationInSeconds(duration);
             DayOfWeek d = appointment.getStartLocalDateTime().getDayOfWeek();
             repeat.setDayOfWeek(d, true); // set default day of week for default Weekly appointment
         }
@@ -347,7 +364,8 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
         saturdayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.SATURDAY));
         dayOfMonthRadioButton.selectedProperty().bindBidirectional(repeat.repeatDayOfMonthProperty());
         dayOfWeekRadioButton.selectedProperty().bindBidirectional(repeat.repeatDayOfWeekProperty());
-        startDatePicker.valueProperty().bind(repeat.startLocalDateProperty());
+//        startDatePicker.valueProperty().bind(repeat.startLocalDateProperty());
+        startDatePicker.valueProperty().addListener(startDateListener);
         setEndGroup(repeat.getEndCriteria());
         repeat.endAfterEventsProperty().addListener(makeEndOnDateListener);
     }
@@ -378,7 +396,8 @@ private ChangeListener<? super Integer> frequencyListener = (observable, oldValu
         saturdayCheckBox.selectedProperty().unbindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.SATURDAY));
         dayOfMonthRadioButton.selectedProperty().unbindBidirectional(repeat.repeatDayOfMonthProperty());
         dayOfWeekRadioButton.selectedProperty().unbindBidirectional(repeat.repeatDayOfWeekProperty());
-        startDatePicker.valueProperty().unbind();
+//        startDatePicker.valueProperty().unbind();
+        startDatePicker.valueProperty().removeListener(startDateListener);
         endGroup.selectToggle(null);
         removeRepeatBindings();
     }

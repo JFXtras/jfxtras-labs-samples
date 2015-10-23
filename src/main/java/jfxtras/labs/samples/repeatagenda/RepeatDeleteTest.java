@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -39,13 +39,13 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
         Repeat repeat = getRepeatWeeklyFixed2();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        LocalDate startDate = LocalDate.of(2015, 11, 1);
-        LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
         assertEquals(3, appointments.size()); // check number of appointments
-
+        newAppointments.stream().forEach(a -> System.out.println(a.getEndLocalDateTime()));
         // select appointment and apply changes (should be undone with cancel)
         Appointment selectedAppointment = appointmentIterator.next();
         
@@ -65,9 +65,10 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed2");
         Repeat expectedRepeat = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 10, 5))
-                .withStartLocalTime(LocalTime.of(8, 45))
-                .withEndLocalTime(LocalTime.of(10, 15))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 5, 8, 45))
+                .withDurationInSeconds(5400)
+//                .withStartLocalTime(LocalTime.of(8, 45))
+//                .withEndLocalTime(LocalTime.of(10, 15))
                 .withIntervalUnit(IntervalUnit.WEEKLY)
                 .withDayOfWeek(DayOfWeek.MONDAY, true)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
@@ -75,7 +76,7 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
                 .withRepeatFrequency(2)
                 .withEndCriteria(EndCriteria.AFTER)
                 .withEndAfterEvents(50)
-                .withDeletedDates(new HashSet<LocalDate>(Arrays.asList(LocalDate.of(2015, 11, 2))))
+                .withExceptions(new HashSet<LocalDateTime>(Arrays.asList(LocalDateTime.of(2015, 11, 2, 8, 45))))
                 .withAppointmentData(a);
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         
@@ -113,8 +114,8 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
         Repeat repeat = getRepeatWeeklyFixed2();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        LocalDate startDate = LocalDate.of(2015, 11, 1);
-        LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();

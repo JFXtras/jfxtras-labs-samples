@@ -174,9 +174,9 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
     public boolean equals(Object obj) {
         RepeatableAppointmentImpl testObj = (RepeatableAppointmentImpl) obj;
         
-//        System.out.println( "myappointment equals " +          getStartLocalDateTime() + " " + (testObj.getStartLocalDateTime())
-//            + " " + getEndLocalDateTime().equals(testObj.getEndLocalDateTime())
-//            + " " + getStartLocalDateTime().equals(testObj.getStartLocalDateTime()));
+        System.out.println( "myappointment equals " +          getEndLocalDateTime() + " " + (testObj.getEndLocalDateTime())
+            + " " + getEndLocalDateTime().equals(testObj.getEndLocalDateTime())
+            + " " + getStartLocalDateTime().equals(testObj.getStartLocalDateTime()));
         
         return super.equals(obj)
             && getStartLocalDateTime().equals(testObj.getStartLocalDateTime())

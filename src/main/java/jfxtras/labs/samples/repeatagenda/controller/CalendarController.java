@@ -3,11 +3,11 @@ package jfxtras.labs.samples.repeatagenda.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -21,6 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
@@ -50,7 +51,12 @@ public class CalendarController {
 
     private MyData data;
 
-     public RepeatableAgenda<RepeatableAppointment, Repeat> agenda = new RepeatableAgenda<RepeatableAppointment, Repeat>();
+     public RepeatableAgenda<RepeatableAppointment> agenda = new RepeatableAgenda<RepeatableAppointment>();
+     private final Callback<Collection<Appointment>, Void> appointmentWriteCallback =
+             a -> { AppointmentFactory.writeToFile(a); return null; };
+     private final Callback<Collection<Repeat>, Void> repeatWriteCallback =
+             r -> { RepeatImpl.writeToFile(r); return null; };
+
      private LocalDateTimeRange dateTimeRange;
      private RepeatMenu repeatMenu;
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
@@ -82,6 +88,9 @@ public class CalendarController {
         agendaSkinButton.setToggleGroup(skinGroup);
         weekSkinButton.selectedProperty().set(true);
         
+        // Set I/O callbacks
+        agenda.setAppointmentWriteCallback(appointmentWriteCallback);
+        agenda.setRepeatWriteCallback(repeatWriteCallback);
 //        // setup appointment groups
 //        final Map<String, Agenda.AppointmentGroup> lAppointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
 //        for (Agenda.AppointmentGroup lAppointmentGroup : agenda.appointmentGroups()) {
@@ -99,14 +108,16 @@ public class CalendarController {
                 .withDescription("")
                 .withAppointmentGroup(agenda.appointmentGroups().get(0));
             
+            // TODO - POSITION MENU SO IT DOESN'T COVER UP APPOINTMENT
+            // Produce repeat edit popup on create new appointment
             repeatMenu = new RepeatMenu(
                     (RepeatableAppointment) appointment
                     , agenda.dateTimeRange()
                     , agenda.appointments()
                     , agenda.getRepeats()
                     , agenda.appointmentGroups()
-                    , a -> { AppointmentFactory.writeToFile(a); return null; }
-                    , r -> { RepeatImpl.writeToFile(r); return null; }); // make new object when closed (problem with passing pane - null for now)
+                    , appointmentWriteCallback
+                    , repeatWriteCallback);
             repeatMenu.show();
             
             return appointment;
@@ -120,19 +131,18 @@ public class CalendarController {
 //            return null;
 //        });
 
-        agenda.setEditAppointmentCallback((Appointment appointment) -> {
-            System.out.println("start edit callback");
-            repeatMenu = new RepeatMenu(
-                    (RepeatableAppointment) appointment
-                    , agenda.dateTimeRange()
-                    , agenda.appointments()
-                    , agenda.getRepeats()
-                    , agenda.appointmentGroups()
-                    , a -> { AppointmentFactory.writeToFile(a); return null; }
-                    , r -> { RepeatImpl.writeToFile(r); return null; }); // make new object when closed (problem with passing pane - null for now)
-            repeatMenu.show();
-            return null;
-        });
+//        agenda.setEditAppointmentCallback((Appointment appointment) -> {
+//            repeatMenu = new RepeatMenu(
+//                    (RepeatableAppointment) appointment
+//                    , agenda.dateTimeRange()
+//                    , agenda.appointments()
+//                    , agenda.getRepeats()
+//                    , agenda.appointmentGroups()
+//                    , a -> { AppointmentFactory.writeToFile(a); return null; }
+//                    , r -> { RepeatImpl.writeToFile(r); return null; }); // make new object when closed (problem with passing pane - null for now)
+//            repeatMenu.show();
+//            return null;
+//        });
         
 //        // manage repeat-made appointments when the range changes
 //        agenda.setLocalDateTimeRangeCallback(dateTimeRange -> {
@@ -226,9 +236,10 @@ public class CalendarController {
                     .withAppointmentGroup(agenda.appointmentGroups().get(5))
                     .withSummary("Weekly Appointment");
             data.getRepeats().add(RepeatFactory.newRepeat()
-                    .withStartLocalDate(LocalDate.now())
-                    .withStartLocalTime(LocalTime.now().plusHours(3))
-                    .withEndLocalTime(LocalTime.now().plusHours(5))
+                    .withStartLocalDate(LocalDateTime.now())
+                    .withDurationInSeconds(3600)
+//                    .withStartLocalTime(LocalTime.now().plusHours(3))
+//                    .withEndLocalTime(LocalTime.now().plusHours(5))
                     .withEndCriteria(EndCriteria.NEVER)
                     .withIntervalUnit(IntervalUnit.WEEKLY)
                     .withDayOfWeek(LocalDate.now().getDayOfWeek(), true)
@@ -238,11 +249,12 @@ public class CalendarController {
                     .withAppointmentGroup(agenda.appointmentGroups().get(9))
                     .withSummary("Monthly Appointment");
             data.getRepeats().add(RepeatFactory.newRepeat()
-                    .withStartLocalDate(LocalDate.now().minusDays(1))
-                    .withStartLocalTime(LocalTime.now().minusHours(5))
-                    .withEndLocalTime(LocalTime.now().minusHours(3))
+                    .withStartLocalDate(LocalDateTime.now().minusDays(1))
+                    .withDurationInSeconds(7200)
+//                    .withStartLocalTime(LocalTime.now().minusHours(5))
+//                    .withEndLocalTime(LocalTime.now().minusHours(3))
                     .withEndCriteria(EndCriteria.ON)
-                    .withEndOnDate(LocalDate.now().minusDays(1).plusMonths(3))
+                    .withEndOnDate(LocalDateTime.now().minusDays(1).plusMonths(3))
                     .withIntervalUnit(IntervalUnit.MONTHLY)
                     .withMonthlyRepeat(MonthlyRepeat.DAY_OF_MONTH)
                     .withAppointmentData(a2));
@@ -251,9 +263,10 @@ public class CalendarController {
                     .withSummary("Daily Appointment");
             data.getRepeats().add(RepeatFactory.newRepeat()
                     .withKey(0)
-                    .withStartLocalDate(LocalDate.now().minusDays(2))
-                    .withStartLocalTime(LocalTime.of(8, 00))
-                    .withEndLocalTime(LocalTime.of(9, 30))
+                    .withStartLocalDate(LocalDateTime.now().minusDays(2))
+                    .withDurationInSeconds(5400)
+//                    .withStartLocalTime(LocalTime.of(8, 00))
+//                    .withEndLocalTime(LocalTime.of(9, 30))
                     .withEndCriteria(EndCriteria.AFTER)
                     .withIntervalUnit(IntervalUnit.DAILY)
                     .withRepeatFrequency(2)

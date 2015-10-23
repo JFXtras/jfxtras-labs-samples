@@ -3,7 +3,6 @@ package jfxtras.labs.samples.repeatagenda.scene.control.agenda;
 import java.security.InvalidParameterException;
 import java.time.DayOfWeek;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.temporal.TemporalAdjuster;
@@ -160,7 +159,7 @@ public final class RepeatableUtilities {
 
             if (changeResponse == RepeatChange.CANCEL) return WindowCloseType.CLOSE_WITHOUT_CHANGE; // cancel selected
             final Predicate<? super Appointment> myFilter;
-            final LocalDate startDate = appointment.getStartLocalDateTime().toLocalDate();
+            final LocalDateTime startDate = appointment.getStartLocalDateTime();
             final String matchingAppointmentsString;
             final int matchingAppointments;
             int deletedAppointments = 0;
@@ -179,7 +178,7 @@ public final class RepeatableUtilities {
                             repeat.setEndAfterEvents(repeat.getEndAfterEvents()-1);
                         }
                     } else { // deleted appointment is not end date, add date to deleted dates list
-                        repeat.getDeletedDates().add(appointment.getStartLocalDateTime().toLocalDate());
+                        repeat.getExceptions().add(appointment.getStartLocalDateTime());
                     }
                     writeRepeats = true;
                 }
@@ -208,7 +207,7 @@ public final class RepeatableUtilities {
             case FUTURE:
                 myFilter = (a) ->
                 { // predicate to filter out all appointments with repeat and are equal or after startDate
-                    LocalDate myDate = a.getStartLocalDateTime().toLocalDate();
+                    LocalDateTime myDate = a.getStartLocalDateTime();
                     RepeatableAppointment a2 = (RepeatableAppointment) a;
                     return ((a2.getRepeat() == repeat) && (myDate.isAfter(startDate) || myDate.equals(startDate)));
                 };
@@ -299,9 +298,9 @@ public final class RepeatableUtilities {
         if (! appointmentChanged && ! repeatChanged) return WindowCloseType.CLOSE_WITHOUT_CHANGE;
 
         // Make temporal adjusters for time and/or day shift
-        final LocalDate startDate = appointment.getStartLocalDateTime().toLocalDate();
-        final LocalDate startDateOld = appointmentOld.getStartLocalDateTime().toLocalDate();
-        final int dayShift = Period.between(startDateOld, startDate).getDays();
+        final LocalDateTime startDate = appointment.getStartLocalDateTime();
+        final LocalDateTime startDateOld = appointmentOld.getStartLocalDateTime();
+        final int dayShift = Period.between(startDateOld.toLocalDate(), startDate.toLocalDate()).getDays();
         final int startMinuteShift = (int) Duration.between(appointmentOld.getStartLocalDateTime()
                                                , appointment.getStartLocalDateTime()).toMinutes();
         final int endMinuteShift = (int) Duration.between(appointmentOld.getEndLocalDateTime()
@@ -339,18 +338,18 @@ public final class RepeatableUtilities {
             switch (changeResponse)
             {
             case ONE: // remove repeatKey from appointment, add date to skip dates in repeat, write both
-                repeatOld.getDeletedDates().add(startDate);
+                repeatOld.getExceptions().add(startDate);
                 break;
             case ALL: // remove repeatKey from appointment, delete repeat
                 repeats.remove(repeat);
                 break;
             case FUTURE: // change end of repeat to appointment date (I'm not sure what the user expects in this case)
                 final Repeat repeatOriginal = appointmentOld.getRepeat();
-                final Set<LocalDate> dates = repeatOriginal.getDeletedDates()
+                final Set<LocalDateTime> dates = repeatOriginal.getExceptions()
                          .stream()
                          .filter(a -> a.isBefore(startDate))
                          .collect(Collectors.toSet());
-                repeatOriginal.setDeletedDates(dates);
+                repeatOriginal.setExceptions(dates);
                 repeatOriginal.setEndOnDate(startDate.minusDays(1));
                 switch (repeatOriginal.getEndCriteria())
                 {
@@ -403,7 +402,7 @@ public final class RepeatableUtilities {
                 if (startMinuteShift != 0 || endMinuteShift != 0)
                 { // if appointment has new day or time make it individual
                     appointment.setRepeat(null); // make appointment individual if time changes
-                    repeat.getDeletedDates().add(startDateOld);
+                    repeat.getExceptions().add(startDateOld);
                     editedRepeatsFlag = true;
                 }
 //                writeAppointments = true;
@@ -486,16 +485,16 @@ public final class RepeatableUtilities {
                 }
                 
                 // Split deleted dates between repeat and repeatOld
-                repeatOld.getDeletedDates().clear();
-                final Iterator<LocalDate> dateIterator = repeat.getDeletedDates().iterator();
+                repeatOld.getExceptions().clear();
+                final Iterator<LocalDateTime> dateIterator = repeat.getExceptions().iterator();
                 while (dateIterator.hasNext())
                 {
-                    LocalDate d = dateIterator.next();
+                    LocalDateTime d = dateIterator.next();
                     if (d.isBefore(startDate))
                     {
                         dateIterator.remove();
                     } else {
-                        repeatOld.getDeletedDates().add(d);
+                        repeatOld.getExceptions().add(d);
                     }
                 }
                 
@@ -506,7 +505,7 @@ public final class RepeatableUtilities {
                 while (appointmentIterator.hasNext())
                 {
                     RepeatableAppointment a = appointmentIterator.next();
-                    if (a.getStartLocalDateTime().toLocalDate().isBefore(startDate))
+                    if (a.getStartLocalDateTime().isBefore(startDate))
                     {
                         appointmentIterator.remove();
                         repeatOld.getAppointments().add(a);
@@ -531,7 +530,7 @@ public final class RepeatableUtilities {
                     repeat.adjustDateTime(false, startTemporalAdjuster, endTemporalAdjuster);
                     if (repeat.getEndCriteria() != EndCriteria.NEVER)
                     {
-                        LocalDate newEndOnDate = repeat.getEndOnDate().plusDays(dayShift);
+                        LocalDateTime newEndOnDate = repeat.getEndOnDate().plusDays(dayShift);
                         repeat.setEndOnDate(newEndOnDate);
                     }
                     if (repeat.getEndCriteria() == EndCriteria.AFTER) repeat.makeEndAfterEventsFromEndOnDate();

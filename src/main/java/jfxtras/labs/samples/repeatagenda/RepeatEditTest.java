@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,11 +38,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
         Repeat repeat = getRepeatDailyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        LocalDate startDate = LocalDate.of(2015, 11, 1);
-        LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
+        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         assertEquals(2, appointments.size()); // check if there are only two appointments
 //        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
 //        System.exit(0);
@@ -69,9 +70,10 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
         Repeat expectedRepeat =  RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 10, 7))
-                .withStartLocalTime(LocalTime.of(9, 45))
-                .withEndLocalTime(LocalTime.of(11, 0))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 9, 45))
+                .withDurationInSeconds(4500)
+//                .withStartLocalTime(LocalTime.of(9, 45))
+//                .withEndLocalTime(LocalTime.of(11, 0))
                 .withIntervalUnit(IntervalUnit.DAILY)
                 .withRepeatFrequency(3)
                 .withEndCriteria(EndCriteria.AFTER)
@@ -86,8 +88,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
 //        System.out.println("editedAppointment1 " + editedAppointment1.getStartLocalDateTime());
 
         RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment()
-            .withStartLocalDateTime(LocalDate.of(2015, 11, 3).atTime(9, 45))
-            .withEndLocalDateTime(LocalDate.of(2015, 11, 3).atTime(11, 0))
+            .withStartLocalDateTime(LocalDateTime.of(2015, 11, 3, 9, 45))
+            .withEndLocalDateTime(LocalDateTime.of(2015, 11, 3, 11, 0))
             .withAppointmentGroup(appointmentGroups.get(15))
             .withSummary("Daily Appointment Fixed")
             .withRepeatMade(true)
@@ -115,8 +117,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
         Repeat repeat = getRepeatDailyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        LocalDate startDate = LocalDate.of(2015, 11, 1);
-        LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
@@ -147,9 +149,10 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
         Repeat expectedRepeat = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 10, 7))
-                .withStartLocalTime(LocalTime.of(9, 45))
-                .withEndLocalTime(LocalTime.of(11, 0))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 9, 45))
+                .withDurationInSeconds(4500)
+//                .withStartLocalTime(LocalTime.of(9, 45))
+//                .withEndLocalTime(LocalTime.of(11, 0))
                 .withIntervalUnit(IntervalUnit.DAILY)
                 .withRepeatFrequency(3)
                 .withEndCriteria(EndCriteria.AFTER)
@@ -201,8 +204,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
         Repeat repeat = getRepeatWeeklyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        LocalDate startDate = LocalDate.of(2015, 11, 1);
-        LocalDate endDate = LocalDate.of(2015, 11, 14); // tests two week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 11, 15, 0, 0); // tests two week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
@@ -231,9 +234,10 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed");
         Repeat expectedRepeat = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 10, 8))
-                .withStartLocalTime(LocalTime.of(15, 45))
-                .withEndLocalTime(LocalTime.of(16, 30))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 8, 15, 45))
+                .withDurationInSeconds(2700)
+//                .withStartLocalTime(LocalTime.of(15, 45))
+//                .withEndLocalTime(LocalTime.of(16, 30))
                 .withEndCriteria(EndCriteria.NEVER)
                 .withIntervalUnit(IntervalUnit.WEEKLY)
                 .withDayOfWeek(DayOfWeek.THURSDAY, true)
@@ -246,8 +250,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
 
         RepeatableAppointment editedAppointment1 = (RepeatableAppointment) appointmentIteratorNew.next();
         RepeatableAppointment expectedAppointment1 = AppointmentFactory.newAppointment()
-            .withStartLocalDateTime(LocalDate.of(2015, 11, 5).atTime(15, 45))
-            .withEndLocalDateTime(LocalDate.of(2015, 11, 5).atTime(16, 30))
+            .withStartLocalDateTime(LocalDateTime.of(2015, 11, 5, 15, 45))
+            .withEndLocalDateTime(LocalDateTime.of(2015, 11, 5, 16, 30))
             .withAppointmentGroup(appointmentGroups.get(3))
             .withSummary("Weekly Appointment Fixed")
             .withRepeatMade(true)
@@ -294,8 +298,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
         Repeat repeat = getRepeatWeeklyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        LocalDate startDate = LocalDate.of(2015, 11, 1);
-        LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
@@ -325,9 +329,10 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed");
         Repeat expectedRepeat = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 10, 8))
-                .withStartLocalTime(LocalTime.of(18, 0))
-                .withEndLocalTime(LocalTime.of(18, 45))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 18, 0))
+                .withDurationInSeconds(2700)
+//                .withStartLocalTime(LocalTime.of(18, 0))
+//                .withEndLocalTime(LocalTime.of(18, 45))
                 .withEndCriteria(EndCriteria.NEVER)
                 .withIntervalUnit(IntervalUnit.WEEKLY)
                 .withDayOfWeek(DayOfWeek.SUNDAY, true)
@@ -379,8 +384,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
         Repeat repeat = getRepeatWeeklyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        LocalDate startDate = LocalDate.of(2015, 11, 1);
-        LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
@@ -413,9 +418,10 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed");
         Repeat expectedRepeat = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 10, 7))
-                .withStartLocalTime(LocalTime.of(18, 0))
-                .withEndLocalTime(LocalTime.of(18, 45))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 18, 0))
+                .withDurationInSeconds(2700)
+//                .withStartLocalTime(LocalTime.of(18, 0))
+//                .withEndLocalTime(LocalTime.of(18, 45))
                 .withEndCriteria(EndCriteria.NEVER)
                 .withIntervalUnit(IntervalUnit.WEEKLY)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
@@ -456,8 +462,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
         Repeat repeat = getRepeatWeeklyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        LocalDate startDate = LocalDate.of(2015, 11, 1);
-        LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
@@ -487,14 +493,15 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed");
         Repeat expectedRepeat = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 10, 7))
-                .withStartLocalTime(LocalTime.of(18, 0))
-                .withEndLocalTime(LocalTime.of(18, 45))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 18, 0))
+                .withDurationInSeconds(2700)
+//                .withStartLocalTime(LocalTime.of(18, 0))
+//                .withEndLocalTime(LocalTime.of(18, 45))
                 .withEndCriteria(EndCriteria.NEVER)
                 .withIntervalUnit(IntervalUnit.WEEKLY)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
                 .withDayOfWeek(DayOfWeek.FRIDAY, true)
-                .withDeletedDates(new HashSet<LocalDate>(Arrays.asList(LocalDate.of(2015, 11, 4))))
+                .withExceptions(new HashSet<LocalDateTime>(Arrays.asList(LocalDateTime.of(2015, 11, 4, 18, 0))))
                 .withAppointmentData(a);
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         
@@ -531,8 +538,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
         final Repeat repeat = getRepeatDailyFixed();
         final List<Repeat> repeats = new ArrayList<Repeat>(Arrays.asList(repeat));
         final Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        final LocalDate startDate = LocalDate.of(2015, 10, 25);
-        final LocalDate endDate = LocalDate.of(2015, 10, 31); // tests one week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 10, 25, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 11, 1, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         final Iterator<Appointment> appointmentIterator = appointments.iterator();
@@ -564,9 +571,10 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(10))
                 .withSummary("Changed summary");
         final Repeat expectedRepeat = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 10, 29))
-                .withStartLocalTime(LocalTime.of(15, 45))
-                .withEndLocalTime(LocalTime.of(16, 30))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 29, 15, 45))
+                .withDurationInSeconds(2700)
+//                .withStartLocalTime(LocalTime.of(15, 45))
+//                .withEndLocalTime(LocalTime.of(16, 30))
                 .withIntervalUnit(IntervalUnit.DAILY)
                 .withRepeatFrequency(3)
                 .withEndCriteria(EndCriteria.AFTER)
@@ -580,13 +588,14 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
         final Repeat expectedRepeat2 = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 10, 7))
-                .withStartLocalTime(LocalTime.of(8, 45))
-                .withEndLocalTime(LocalTime.of(10, 15))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 8, 45))
+                .withDurationInSeconds(5400)
+//                .withStartLocalTime(LocalTime.of(8, 45))
+//                .withEndLocalTime(LocalTime.of(10, 15))
                 .withIntervalUnit(IntervalUnit.DAILY)
                 .withRepeatFrequency(3)
                 .withEndCriteria(EndCriteria.ON)
-                .withEndOnDate(LocalDate.of(2015, 10, 25))
+                .withEndOnDate(LocalDateTime.of(2015, 10, 25, 10, 15))
                 .withAppointmentData(a2);
         final Repeat repeat2 = repeats.get(1);
         assertEquals(1, repeat2.getAppointments().size());
@@ -626,8 +635,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
         Repeat repeat = getRepeatWeeklyFixed2();
         final List<Repeat> repeats = new ArrayList<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        LocalDate startDate = LocalDate.of(2015, 11, 29);
-        LocalDate endDate = LocalDate.of(2015, 12, 5); // tests one week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 11, 29, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 12, 6, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
@@ -661,9 +670,10 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(12))
                 .withSummary("Changed summary");
         Repeat expectedRepeat = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 12, 5))
-                .withStartLocalTime(LocalTime.of(3, 45))
-                .withEndLocalTime(LocalTime.of(5, 10))
+                .withStartLocalDate(LocalDateTime.of(2015, 12, 5, 3, 45))
+                .withDurationInSeconds(5100)
+//                .withStartLocalTime(LocalTime.of(3, 45))
+//                .withEndLocalTime(LocalTime.of(5, 10))
                 .withIntervalUnit(IntervalUnit.WEEKLY)
                 .withDayOfWeek(DayOfWeek.MONDAY, true)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
@@ -680,16 +690,17 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(3))
                 .withSummary("Weekly Appointment Fixed2");
         Repeat expectedRepeat2 = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 10, 5))
-                .withStartLocalTime(LocalTime.of(8, 45))
-                .withEndLocalTime(LocalTime.of(10, 15))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 5, 8, 45))
+                .withDurationInSeconds(5400)
+//                .withStartLocalTime(LocalTime.of(8, 45))
+//                .withEndLocalTime(LocalTime.of(10, 15))
                 .withIntervalUnit(IntervalUnit.WEEKLY)
                 .withDayOfWeek(DayOfWeek.MONDAY, true)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
                 .withDayOfWeek(DayOfWeek.FRIDAY, true)
                 .withRepeatFrequency(2)
                 .withEndCriteria(EndCriteria.ON)
-                .withEndOnDate(LocalDate.of(2015, 12, 2))
+                .withEndOnDate(LocalDateTime.of(2015, 12, 2, 10, 15))
                 .withAppointmentData(a2);
         final Repeat repeat2 = repeats.get(1);
         assertEquals(2, repeat2.getAppointments().size());
@@ -738,8 +749,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
         Repeat repeat = getRepeatDailyFixed();
         Set<Repeat> repeats = new HashSet<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        LocalDate startDate = LocalDate.of(2015, 10, 25);
-        LocalDate endDate = LocalDate.of(2015, 10, 31); // tests one week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 10, 25, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 11, 1, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         Iterator<Appointment> appointmentIterator = appointments.iterator();
@@ -772,11 +783,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
         Repeat expectedRepeat = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 10, 7))
-                .withStartLocalTime(LocalTime.of(9, 45))
-                .withEndLocalTime(LocalTime.of(11, 0))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 8, 45))
+                .withDurationInSeconds(5400)
+//                .withStartLocalTime(LocalTime.of(9, 45))
+//                .withEndLocalTime(LocalTime.of(11, 0))
                 .withIntervalUnit(IntervalUnit.DAILY)
-                .withDeletedDates(new HashSet<LocalDate>(Arrays.asList(LocalDate.of(2015, 10, 28))))
+                .withExceptions(new HashSet<LocalDateTime>(Arrays.asList(LocalDateTime.of(2015, 10, 28, 8, 45))))
                 .withRepeatFrequency(3)
                 .withEndCriteria(EndCriteria.AFTER)
                 .withEndAfterEvents(11)
@@ -817,14 +829,14 @@ public class RepeatEditTest extends RepeatTestAbstract {
         assertEquals(expectedAppointment3, editedAppointment3); // Check to see if repeat-generated appointment changed correctly
 
         // Change week later and update
-        startDate = LocalDate.of(2015, 11, 1);
-        endDate = LocalDate.of(2015, 11, 7); // tests one week time range
+        startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
+        endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range
         Collection<RepeatableAppointment> newAppointments2 = repeat.makeAppointments(startDate, endDate);
         assertEquals(2, newAppointments2.size()); // check if there are only three appointments
 
         // Change week earlier and update
-        startDate = LocalDate.of(2015, 10, 25);
-        endDate = LocalDate.of(2015, 10, 31); // tests one week time range
+        startDate = LocalDateTime.of(2015, 10, 25, 0, 0);
+        endDate = LocalDateTime.of(2015, 11, 1, 0, 0); // tests one week time range
         repeat.getAppointments().clear();
         Collection<RepeatableAppointment> newAppointments3 = repeat.makeAppointments(startDate, endDate);
         assertEquals(2, newAppointments3.size()); // check if there are only three appointments
@@ -840,8 +852,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
         final Repeat repeat = getRepeatDaily2();
         final List<Repeat> repeats = new ArrayList<Repeat>(Arrays.asList(repeat));
         final Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
-        final LocalDate startDate = LocalDate.of(2015, 10, 18);
-        final LocalDate endDate = LocalDate.of(2015, 10, 24); // tests one week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 10, 18, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 10, 25, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         appointments.addAll(newAppointments);
         appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
@@ -871,9 +883,10 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed2");
         final Repeat expectedRepeat = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDate.of(2015, 10, 18))
-                .withStartLocalTime(LocalTime.of(8, 0))
-                .withEndLocalTime(LocalTime.of(9, 30))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 18, 8, 0))
+                .withDurationInSeconds(5400)
+//                .withStartLocalTime(LocalTime.of(8, 0))
+//                .withEndLocalTime(LocalTime.of(9, 30))
                 .withEndCriteria(EndCriteria.AFTER)
                 .withIntervalUnit(IntervalUnit.DAILY)
                 .withRepeatFrequency(1)
@@ -980,8 +993,8 @@ public class RepeatEditTest extends RepeatTestAbstract {
         assertEquals(expectedAppointment, appointment); // Check to see if repeat-generated appointment changed correctly        
 
         // Advance one month later and update, test to see if new repeatable appointment exists
-        LocalDate startDate = LocalDate.of(2015, 11, 1);
-        LocalDate endDate = LocalDate.of(2015, 11, 7); // tests one week time range
+        LocalDateTime startDate = LocalDateTime.of(2015, 11, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2015, 11, 8, 0, 0); // tests one week time range (inclusive of startDate, exclusive of endDate)
         Collection<RepeatableAppointment> newAppointments = repeat.makeAppointments(startDate, endDate);
         assertEquals(1, newAppointments.size()); // check if there are only three appointments
         RepeatableAppointment appointment2 = newAppointments.iterator().next();
