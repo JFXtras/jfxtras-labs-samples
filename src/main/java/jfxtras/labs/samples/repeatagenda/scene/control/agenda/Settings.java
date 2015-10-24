@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.Frequency;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities.RepeatChange;
 
 public final class Settings {
@@ -27,9 +27,9 @@ public final class Settings {
     public static DateTimeFormatter TIME_FORMAT_AGENDA;
     public static final boolean PRETTY_XML = true;  // true for readable indented XML output, false for small files
 
-    public static final Map<IntervalUnit, String> REPEAT_INTERVALS = new HashMap<IntervalUnit, String>();
-    public static final Map<IntervalUnit, String> REPEAT_INTERVALS_PLURAL = new HashMap<IntervalUnit, String>();
-    public static final Map<IntervalUnit, String> REPEAT_INTERVALS_SINGULAR = new HashMap<IntervalUnit, String>();
+    public static final Map<Frequency, String> REPEAT_FREQUENCIES = new HashMap<Frequency, String>();
+    public static final Map<Frequency, String> REPEAT_FREQUENCIES_PLURAL = new HashMap<Frequency, String>();
+    public static final Map<Frequency, String> REPEAT_FREQUENCIES_SINGULAR = new HashMap<Frequency, String>();
     public static final Map<RepeatChange, String> REPEAT_CHANGE_CHOICES = new LinkedHashMap<RepeatChange, String>();
 
     public static ResourceBundle resources;
@@ -45,20 +45,20 @@ public final class Settings {
         DATE_FORMAT_AGENDA_END = DateTimeFormatter.ofPattern(resourcesIn.getString("date.format.agenda.end"));
         TIME_FORMAT_AGENDA = DateTimeFormatter.ofPattern(resourcesIn.getString("time.format.agenda"));
         
-        REPEAT_INTERVALS.put(IntervalUnit.DAILY, resourcesIn.getString("daily"));
-        REPEAT_INTERVALS.put(IntervalUnit.WEEKLY, resourcesIn.getString("weekly"));
-        REPEAT_INTERVALS.put(IntervalUnit.MONTHLY, resourcesIn.getString("monthly"));
-        REPEAT_INTERVALS.put(IntervalUnit.YEARLY, resourcesIn.getString("yearly"));
+        REPEAT_FREQUENCIES.put(Frequency.DAILY, resourcesIn.getString("daily"));
+        REPEAT_FREQUENCIES.put(Frequency.WEEKLY, resourcesIn.getString("weekly"));
+        REPEAT_FREQUENCIES.put(Frequency.MONTHLY, resourcesIn.getString("monthly"));
+        REPEAT_FREQUENCIES.put(Frequency.YEARLY, resourcesIn.getString("yearly"));
         
-        REPEAT_INTERVALS_PLURAL.put(IntervalUnit.DAILY, resourcesIn.getString("days"));
-        REPEAT_INTERVALS_PLURAL.put(IntervalUnit.WEEKLY, resourcesIn.getString("weeks"));
-        REPEAT_INTERVALS_PLURAL.put(IntervalUnit.MONTHLY, resourcesIn.getString("months"));
-        REPEAT_INTERVALS_PLURAL.put(IntervalUnit.YEARLY, resourcesIn.getString("years"));
+        REPEAT_FREQUENCIES_PLURAL.put(Frequency.DAILY, resourcesIn.getString("days"));
+        REPEAT_FREQUENCIES_PLURAL.put(Frequency.WEEKLY, resourcesIn.getString("weeks"));
+        REPEAT_FREQUENCIES_PLURAL.put(Frequency.MONTHLY, resourcesIn.getString("months"));
+        REPEAT_FREQUENCIES_PLURAL.put(Frequency.YEARLY, resourcesIn.getString("years"));
         
-        REPEAT_INTERVALS_SINGULAR.put(IntervalUnit.DAILY, resourcesIn.getString("day"));
-        REPEAT_INTERVALS_SINGULAR.put(IntervalUnit.WEEKLY, resourcesIn.getString("week"));
-        REPEAT_INTERVALS_SINGULAR.put(IntervalUnit.MONTHLY, resourcesIn.getString("month"));
-        REPEAT_INTERVALS_SINGULAR.put(IntervalUnit.YEARLY, resourcesIn.getString("year"));
+        REPEAT_FREQUENCIES_SINGULAR.put(Frequency.DAILY, resourcesIn.getString("day"));
+        REPEAT_FREQUENCIES_SINGULAR.put(Frequency.WEEKLY, resourcesIn.getString("week"));
+        REPEAT_FREQUENCIES_SINGULAR.put(Frequency.MONTHLY, resourcesIn.getString("month"));
+        REPEAT_FREQUENCIES_SINGULAR.put(Frequency.YEARLY, resourcesIn.getString("year"));
 
         REPEAT_CHANGE_CHOICES.put(RepeatableUtilities.RepeatChange.ONE, resources.getString("dialog.repeat.change.one"));
         REPEAT_CHANGE_CHOICES.put(RepeatableUtilities.RepeatChange.ALL, resources.getString("dialog.repeat.change.all"));

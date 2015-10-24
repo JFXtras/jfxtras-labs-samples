@@ -19,7 +19,7 @@ import org.junit.Test;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.Frequency;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
@@ -74,10 +74,10 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withDurationInSeconds(4500)
 //                .withStartLocalTime(LocalTime.of(9, 45))
 //                .withEndLocalTime(LocalTime.of(11, 0))
-                .withIntervalUnit(IntervalUnit.DAILY)
-                .withRepeatFrequency(3)
+                .withFrequency(Frequency.DAILY)
+                .withInterval(3)
                 .withEndCriteria(EndCriteria.AFTER)
-                .withEndAfterEvents(11)
+                .withCount(11)
                 .withAppointmentData(a);
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         assertEquals(2, appointments.size()); // check if there are only two appointments
@@ -149,14 +149,14 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withAppointmentGroup(appointmentGroups.get(15))
                 .withSummary("Daily Appointment Fixed");
         Repeat expectedRepeat = RepeatFactory.newRepeat()
-                .withStartLocalDate(LocalDateTime.of(2015, 10, 7, 9, 45))
+                .withStartLocalDate(LocalDateTime.of(2015, 10, 8, 9, 45))
                 .withDurationInSeconds(4500)
 //                .withStartLocalTime(LocalTime.of(9, 45))
 //                .withEndLocalTime(LocalTime.of(11, 0))
-                .withIntervalUnit(IntervalUnit.DAILY)
-                .withRepeatFrequency(3)
+                .withFrequency(Frequency.DAILY)
+                .withInterval(3)
                 .withEndCriteria(EndCriteria.AFTER)
-                .withEndAfterEvents(11)
+                .withCount(11)
                 .withAppointmentData(a);
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         
@@ -239,7 +239,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.of(15, 45))
 //                .withEndLocalTime(LocalTime.of(16, 30))
                 .withEndCriteria(EndCriteria.NEVER)
-                .withIntervalUnit(IntervalUnit.WEEKLY)
+                .withFrequency(Frequency.WEEKLY)
                 .withDayOfWeek(DayOfWeek.THURSDAY, true)
                 .withDayOfWeek(DayOfWeek.FRIDAY, true)
                 .withAppointmentData(a);
@@ -334,7 +334,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.of(18, 0))
 //                .withEndLocalTime(LocalTime.of(18, 45))
                 .withEndCriteria(EndCriteria.NEVER)
-                .withIntervalUnit(IntervalUnit.WEEKLY)
+                .withFrequency(Frequency.WEEKLY)
                 .withDayOfWeek(DayOfWeek.SUNDAY, true)
                 .withDayOfWeek(DayOfWeek.MONDAY, true)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
@@ -423,7 +423,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.of(18, 0))
 //                .withEndLocalTime(LocalTime.of(18, 45))
                 .withEndCriteria(EndCriteria.NEVER)
-                .withIntervalUnit(IntervalUnit.WEEKLY)
+                .withFrequency(Frequency.WEEKLY)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
                 .withDayOfWeek(DayOfWeek.FRIDAY, true)
                 .withAppointmentData(a);
@@ -498,7 +498,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.of(18, 0))
 //                .withEndLocalTime(LocalTime.of(18, 45))
                 .withEndCriteria(EndCriteria.NEVER)
-                .withIntervalUnit(IntervalUnit.WEEKLY)
+                .withFrequency(Frequency.WEEKLY)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
                 .withDayOfWeek(DayOfWeek.FRIDAY, true)
                 .withExceptions(new HashSet<LocalDateTime>(Arrays.asList(LocalDateTime.of(2015, 11, 4, 18, 0))))
@@ -575,10 +575,10 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withDurationInSeconds(2700)
 //                .withStartLocalTime(LocalTime.of(15, 45))
 //                .withEndLocalTime(LocalTime.of(16, 30))
-                .withIntervalUnit(IntervalUnit.DAILY)
-                .withRepeatFrequency(3)
+                .withFrequency(Frequency.DAILY)
+                .withInterval(3)
                 .withEndCriteria(EndCriteria.AFTER)
-                .withEndAfterEvents(4)
+                .withCount(4)
                 .withAppointmentData(a1);
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         assertEquals(1, repeat.getAppointments().size());
@@ -592,10 +592,10 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(8, 45))
 //                .withEndLocalTime(LocalTime.of(10, 15))
-                .withIntervalUnit(IntervalUnit.DAILY)
-                .withRepeatFrequency(3)
-                .withEndCriteria(EndCriteria.ON)
-                .withEndOnDate(LocalDateTime.of(2015, 10, 25, 10, 15))
+                .withFrequency(Frequency.DAILY)
+                .withInterval(3)
+                .withEndCriteria(EndCriteria.UNTIL)
+                .withUntil(LocalDateTime.of(2015, 10, 25, 10, 15))
                 .withAppointmentData(a2);
         final Repeat repeat2 = repeats.get(1);
         assertEquals(1, repeat2.getAppointments().size());
@@ -631,7 +631,6 @@ public class RepeatEditTest extends RepeatTestAbstract {
     @Test
     public void editFutureWeeklyTimeAndDate()
     {
-        
         Repeat repeat = getRepeatWeeklyFixed2();
         final List<Repeat> repeats = new ArrayList<Repeat>(Arrays.asList(repeat));
         Set<Appointment> appointments = new TreeSet<Appointment>(getAppointmentComparator());
@@ -661,9 +660,12 @@ public class RepeatEditTest extends RepeatTestAbstract {
               , a -> RepeatChange.FUTURE
               , null
               , null);
-
+        System.out.println("after edit endOnDate " + repeat.getUntil());
         assertEquals(WindowCloseType.CLOSE_WITH_CHANGE, windowCloseType); // check to see if close type is correct
+//        appointments.stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
         assertEquals(3, appointments.size()); // check number of appointments
+        repeat.getAppointments().stream().forEach(a -> System.out.println(a.getStartLocalDateTime()));
+        assertEquals(1, repeat.getAppointments().size());
 
         // Check Repeat (with changes)
         RepeatableAppointment a1 = AppointmentFactory.newAppointment()
@@ -674,16 +676,15 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withDurationInSeconds(5100)
 //                .withStartLocalTime(LocalTime.of(3, 45))
 //                .withEndLocalTime(LocalTime.of(5, 10))
-                .withIntervalUnit(IntervalUnit.WEEKLY)
+                .withFrequency(Frequency.WEEKLY)
                 .withDayOfWeek(DayOfWeek.MONDAY, true)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
                 .withDayOfWeek(DayOfWeek.SATURDAY, true)
-                .withRepeatFrequency(2)
+                .withInterval(2)
                 .withEndCriteria(EndCriteria.AFTER)
-                .withEndAfterEvents(36)
+                .withCount(36)
                 .withAppointmentData(a1);
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
-        assertEquals(1, repeat.getAppointments().size());
 
         // Check Repeat (original settings, but ends earlier)
         RepeatableAppointment a2 = AppointmentFactory.newAppointment()
@@ -694,13 +695,13 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(8, 45))
 //                .withEndLocalTime(LocalTime.of(10, 15))
-                .withIntervalUnit(IntervalUnit.WEEKLY)
+                .withFrequency(Frequency.WEEKLY)
                 .withDayOfWeek(DayOfWeek.MONDAY, true)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
                 .withDayOfWeek(DayOfWeek.FRIDAY, true)
-                .withRepeatFrequency(2)
-                .withEndCriteria(EndCriteria.ON)
-                .withEndOnDate(LocalDateTime.of(2015, 12, 2, 10, 15))
+                .withInterval(2)
+                .withEndCriteria(EndCriteria.UNTIL)
+                .withUntil(LocalDateTime.of(2015, 12, 2, 10, 15))
                 .withAppointmentData(a2);
         final Repeat repeat2 = repeats.get(1);
         assertEquals(2, repeat2.getAppointments().size());
@@ -787,11 +788,11 @@ public class RepeatEditTest extends RepeatTestAbstract {
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(9, 45))
 //                .withEndLocalTime(LocalTime.of(11, 0))
-                .withIntervalUnit(IntervalUnit.DAILY)
+                .withFrequency(Frequency.DAILY)
                 .withExceptions(new HashSet<LocalDateTime>(Arrays.asList(LocalDateTime.of(2015, 10, 28, 8, 45))))
-                .withRepeatFrequency(3)
+                .withInterval(3)
                 .withEndCriteria(EndCriteria.AFTER)
-                .withEndAfterEvents(11)
+                .withCount(11)
                 .withAppointmentData(a);
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         
@@ -864,7 +865,7 @@ public class RepeatEditTest extends RepeatTestAbstract {
         appointmentIterator.next();
         final RepeatableAppointment selectedAppointment = (RepeatableAppointment) appointmentIterator.next(); // select second appointment
         final RepeatableAppointment appointmentOld = AppointmentFactory.newAppointment(selectedAppointment);
-        repeat.setRepeatFrequency(1);
+        repeat.setInterval(1);
 
         WindowCloseType windowCloseType = RepeatableUtilities.editAppointments(
                 selectedAppointment
@@ -888,9 +889,9 @@ public class RepeatEditTest extends RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.of(8, 0))
 //                .withEndLocalTime(LocalTime.of(9, 30))
                 .withEndCriteria(EndCriteria.AFTER)
-                .withIntervalUnit(IntervalUnit.DAILY)
-                .withRepeatFrequency(1)
-                .withEndAfterEvents(5)
+                .withFrequency(Frequency.DAILY)
+                .withInterval(1)
+                .withCount(5)
                 .withAppointmentData(a);
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly
         

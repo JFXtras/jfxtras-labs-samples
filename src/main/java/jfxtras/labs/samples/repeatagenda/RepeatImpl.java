@@ -152,9 +152,9 @@ public class RepeatImpl extends Repeat {
 //                    + " Expected repeat key = " + expectedKey + ". Using expected repeat key.", new IllegalArgumentException());
         }
         String intervalUnitString = DataUtilities.myGet(repeatAttributes, "intervalUnit", "");
-        IntervalUnit myIntervalUnit = IntervalUnit.valueOf(intervalUnitString);
-        setIntervalUnit(myIntervalUnit);
-        setRepeatFrequency(DataUtilities.myParseInt(DataUtilities.myGet(repeatAttributes, "repeatFrequency", "")));
+        Frequency myIntervalUnit = Frequency.valueOf(intervalUnitString);
+        setFrequency(myIntervalUnit);
+        setInterval(DataUtilities.myParseInt(DataUtilities.myGet(repeatAttributes, "repeatFrequency", "")));
         String endCriteriaString = DataUtilities.myGet(repeatAttributes, "endCriteria", "");
         EndCriteria myEndCriteria = EndCriteria.valueOf(endCriteriaString);
         setEndCriteria(myEndCriteria);
@@ -190,10 +190,10 @@ public class RepeatImpl extends Repeat {
             case NEVER:
                 break;
             case AFTER:
-                setEndAfterEvents(DataUtilities.myParseInt(DataUtilities.myGet(repeatAttributes, "endAfterEvents", "")));
+                setCount(DataUtilities.myParseInt(DataUtilities.myGet(repeatAttributes, "endAfterEvents", "")));
                 // fall through
-            case ON:
-                setEndOnDate(LocalDateTime.parse(DataUtilities.myGet(repeatAttributes, "endOnDate", ""), formatter));
+            case UNTIL:
+                setUntil(LocalDateTime.parse(DataUtilities.myGet(repeatAttributes, "endOnDate", ""), formatter));
                 break;
             default:
                 break;
@@ -280,10 +280,10 @@ public class RepeatImpl extends Repeat {
     {
         Element myElement = doc.createElement("repeat");
         myElement.setAttribute("endCriteria", getEndCriteria().toString());
-        myElement.setAttribute("intervalUnit", getIntervalUnit().toString());
+        myElement.setAttribute("intervalUnit", getFrequency().toString());
         if (getKey() == null) setKey(nextKey++); // if it has no key (meaning its new) give it the next one
         myElement.setAttribute("key", Integer.toString(getKey()));
-        myElement.setAttribute("repeatFrequency", Integer.toString(getRepeatFrequency()));
+        myElement.setAttribute("repeatFrequency", Integer.toString(getInterval()));
         myElement.setAttribute("startDate", getStartLocalDate().format(formatter));
         myElement.setAttribute("duration", Integer.toString(getDurationInSeconds()));
 
@@ -294,7 +294,7 @@ public class RepeatImpl extends Repeat {
                                     .collect(Collectors.joining(" "));
         myElement.setAttribute("deletedDates", d);
 
-        switch (getIntervalUnit())
+        switch (getFrequency())
         {
             case DAILY:
                 break;
@@ -321,11 +321,11 @@ public class RepeatImpl extends Repeat {
             case NEVER:
                 break;
             case AFTER:
-                myElement.setAttribute("endAfterEvents", getEndAfterEvents().toString());
+                myElement.setAttribute("endAfterEvents", getCount().toString());
 //                if (getEndOnDate() == null) makeEndOnDateFromEndAfterEvents();  // new AFTER repeat rules need end dates calculated.
                 // fall through
-            case ON:
-                myElement.setAttribute("endOnDate", getEndOnDate().toString());
+            case UNTIL:
+                myElement.setAttribute("endOnDate", getUntil().toString());
                 break;
             default:
                 break;

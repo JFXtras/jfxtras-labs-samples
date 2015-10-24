@@ -31,7 +31,7 @@ import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.Frequency;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda;
@@ -241,7 +241,7 @@ public class CalendarController {
 //                    .withStartLocalTime(LocalTime.now().plusHours(3))
 //                    .withEndLocalTime(LocalTime.now().plusHours(5))
                     .withEndCriteria(EndCriteria.NEVER)
-                    .withIntervalUnit(IntervalUnit.WEEKLY)
+                    .withFrequency(Frequency.WEEKLY)
                     .withDayOfWeek(LocalDate.now().getDayOfWeek(), true)
                     .withDayOfWeek(LocalDate.now().plusDays(2).getDayOfWeek(), true)
                     .withAppointmentData(a1));
@@ -253,9 +253,9 @@ public class CalendarController {
                     .withDurationInSeconds(7200)
 //                    .withStartLocalTime(LocalTime.now().minusHours(5))
 //                    .withEndLocalTime(LocalTime.now().minusHours(3))
-                    .withEndCriteria(EndCriteria.ON)
-                    .withEndOnDate(LocalDateTime.now().minusDays(1).plusMonths(3))
-                    .withIntervalUnit(IntervalUnit.MONTHLY)
+                    .withEndCriteria(EndCriteria.UNTIL)
+                    .withUntil(LocalDateTime.now().minusDays(1).plusMonths(3))
+                    .withFrequency(Frequency.MONTHLY)
                     .withMonthlyRepeat(MonthlyRepeat.DAY_OF_MONTH)
                     .withAppointmentData(a2));
             RepeatableAppointment a3 = AppointmentFactory.newAppointment()
@@ -268,10 +268,10 @@ public class CalendarController {
 //                    .withStartLocalTime(LocalTime.of(8, 00))
 //                    .withEndLocalTime(LocalTime.of(9, 30))
                     .withEndCriteria(EndCriteria.AFTER)
-                    .withIntervalUnit(IntervalUnit.DAILY)
-                    .withRepeatFrequency(2)
+                    .withFrequency(Frequency.DAILY)
+                    .withInterval(2)
                     .withAppointmentData(a3)
-                    .withEndAfterEvents(5));
+                    .withCount(5));
             
 //            Repeat r = data.getRepeats().iterator().next();
 //          System.out.println(r.getAppointmentData().getAppointmentGroup());

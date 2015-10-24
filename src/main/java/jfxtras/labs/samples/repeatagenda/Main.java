@@ -58,7 +58,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
 	   
 	    RepeatEditTest r = new RepeatEditTest();
-	    r.editOneDailyTimeAndDate();
+	    r.editAllDailyTimeAndDate();
 	    System.exit(0);
 	    
         Locale myLocale = Locale.getDefault();

@@ -70,7 +70,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     {
         Repeat r = getRepeatDailyFixed();
         LocalDateTime firstMatchDate = r
-                .validDateStreamEndless()
+                .streamOfDatesEndless()
                 .findFirst().get();
         assertEquals(LocalDateTime.of(2015, 10, 7, 8, 45), firstMatchDate);
     }
@@ -219,7 +219,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     public void canListDailyFixed()
     {
         Repeat r = getRepeatDailyFixed();
-        List<LocalDateTime> madeDates = r.validDateStreamWithEnd()
+        List<LocalDateTime> madeDates = r.streamOfDates()
             .collect(Collectors.toList());
         List<LocalDate> expectedDates1 = new ArrayList<LocalDate>(Arrays.asList(
                 LocalDate.of(2015, 10, 7)
@@ -243,7 +243,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     public void canListWeeklyFixed()
     {
         Repeat r = getRepeatWeeklyFixed();
-        List<LocalDateTime> madeDates = r.validDateStreamEndless()
+        List<LocalDateTime> madeDates = r.streamOfDatesEndless()
             .limit(10)
             .collect(Collectors.toList());
         List<LocalDate> expectedDates1 = new ArrayList<LocalDate>(Arrays.asList(
@@ -268,8 +268,8 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     public void canListWeeklyFixed2()
     {
         Repeat r = getRepeatWeeklyFixed2();
-        List<LocalDateTime> madeDates = r.validDateStreamEndless()
-            .limit(r.getEndAfterEvents())
+        List<LocalDateTime> madeDates = r.streamOfDatesEndless()
+            .limit(r.getCount())
             .collect(Collectors.toList());
 //        madeDates.stream().forEach(System.out::println);
         List<LocalDate> expectedDates1 = new ArrayList<LocalDate>(Arrays.asList(
@@ -333,7 +333,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     public void canListMonthlyFixed()
     {
         Repeat r = getRepeatMonthlyFixed();
-        List<LocalDateTime> madeDates = r.validDateStreamWithEnd()
+        List<LocalDateTime> madeDates = r.streamOfDates()
             .collect(Collectors.toList());
         List<LocalDate> expectedDates1 = new ArrayList<LocalDate>(Arrays.asList(
                 LocalDate.of(2015, 10, 7)
@@ -359,7 +359,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     public void canListMonthlyFixed2()
     {
         Repeat r = getRepeatMonthlyFixed2();
-        List<LocalDateTime> madeDates = r.validDateStreamWithEnd()
+        List<LocalDateTime> madeDates = r.streamOfDates()
             .collect(Collectors.toList());
         List<LocalDate> expectedDates1 = new ArrayList<LocalDate>(Arrays.asList(
                 LocalDate.of(2015, 10, 15)
@@ -385,7 +385,7 @@ public class RepeatDatesTest extends RepeatTestAbstract {
     public void canListYearlyFixed()
     {
         Repeat r = getRepeatYearlyFixed();
-        List<LocalDateTime> madeDates = r.validDateStreamEndless()
+        List<LocalDateTime> madeDates = r.streamOfDatesEndless()
             .limit(10)
             .collect(Collectors.toList());
         List<LocalDate> expectedDates1 = new ArrayList<LocalDate>(Arrays.asList(

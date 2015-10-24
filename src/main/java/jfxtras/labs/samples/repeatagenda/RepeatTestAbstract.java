@@ -12,7 +12,7 @@ import javafx.collections.ObservableList;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.Frequency;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda;
@@ -24,9 +24,9 @@ import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 public abstract class RepeatTestAbstract {
     
     // Comparator for tree sort
-    private final Comparator<Appointment> appointmentComparator = (a1, a2)
+    private static final Comparator<Appointment> APPOINTMENT_COMPARATOR = (a1, a2)
             -> a1.getStartLocalDateTime().compareTo(a2.getStartLocalDateTime());
-    public final Comparator<Appointment> getAppointmentComparator() { return appointmentComparator; }
+    public final Comparator<Appointment> getAppointmentComparator() { return APPOINTMENT_COMPARATOR; }
     
     public final static ObservableList<AppointmentGroup> DEFAULT_APPOINTMENT_GROUPS
     = javafx.collections.FXCollections.observableArrayList(
@@ -54,7 +54,7 @@ public abstract class RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.now().plusHours(3))
 //                .withEndLocalTime(LocalTime.now().plusHours(5))
                 .withEndCriteria(EndCriteria.NEVER)
-                .withIntervalUnit(IntervalUnit.WEEKLY)
+                .withFrequency(Frequency.WEEKLY)
                 .withDayOfWeek(LocalDate.now().getDayOfWeek(), true)
                 .withDayOfWeek(LocalDate.now().plusDays(2).getDayOfWeek(), true)
                 .withAppointmentData(a1);
@@ -74,9 +74,9 @@ public abstract class RepeatTestAbstract {
                 .withDurationInSeconds(9000)
 //                .withStartLocalTime(LocalTime.now().minusHours(5))
 //                .withEndLocalTime(LocalTime.now().minusHours(3))
-                .withEndCriteria(EndCriteria.ON)
-                .withEndOnDate(LocalDateTime.of(LocalDate.now().minusDays(1).plusMonths(3),LocalTime.of(hour, minute).plusSeconds(9000)))
-                .withIntervalUnit(IntervalUnit.MONTHLY)
+                .withEndCriteria(EndCriteria.UNTIL)
+                .withUntil(LocalDateTime.of(LocalDate.now().minusDays(1).plusMonths(3),LocalTime.of(hour, minute).plusSeconds(9000)))
+                .withFrequency(Frequency.MONTHLY)
                 .withMonthlyRepeat(MonthlyRepeat.DAY_OF_MONTH)
                 .withAppointmentData(a2);
     }
@@ -97,9 +97,9 @@ public abstract class RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.now().plusHours(4))
 //                .withEndLocalTime(LocalTime.now().plusHours(7))
                 .withEndCriteria(EndCriteria.AFTER)
-                .withIntervalUnit(IntervalUnit.DAILY)
-                .withRepeatFrequency(2)
-                .withEndAfterEvents(5)
+                .withFrequency(Frequency.DAILY)
+                .withInterval(2)
+                .withCount(5)
                 .withAppointmentData(a3);
     }
 
@@ -113,10 +113,10 @@ public abstract class RepeatTestAbstract {
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(8, 45))
 //                .withEndLocalTime(LocalTime.of(10, 15))
-                .withIntervalUnit(IntervalUnit.DAILY)
-                .withRepeatFrequency(3)
+                .withFrequency(Frequency.DAILY)
+                .withInterval(3)
                 .withEndCriteria(EndCriteria.AFTER)
-                .withEndAfterEvents(11)
+                .withCount(11)
                 .withAppointmentData(a);
     }
     
@@ -131,7 +131,7 @@ public abstract class RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.of(18, 0))
 //                .withEndLocalTime(LocalTime.of(18, 45))
                 .withEndCriteria(EndCriteria.NEVER)
-                .withIntervalUnit(IntervalUnit.WEEKLY)
+                .withFrequency(Frequency.WEEKLY)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
                 .withDayOfWeek(DayOfWeek.FRIDAY, true)
                 .withAppointmentData(a1);
@@ -147,13 +147,13 @@ public abstract class RepeatTestAbstract {
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(8, 45))
 //                .withEndLocalTime(LocalTime.of(10, 15))
-                .withIntervalUnit(IntervalUnit.WEEKLY)
+                .withFrequency(Frequency.WEEKLY)
                 .withDayOfWeek(DayOfWeek.MONDAY, true)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
                 .withDayOfWeek(DayOfWeek.FRIDAY, true)
-                .withRepeatFrequency(2)
+                .withInterval(2)
                 .withEndCriteria(EndCriteria.AFTER)
-                .withEndAfterEvents(50)
+                .withCount(50)
                 .withAppointmentData(a1);
     }
     
@@ -168,9 +168,9 @@ public abstract class RepeatTestAbstract {
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(8, 45))
 //                .withEndLocalTime(LocalTime.of(10, 15))
-                .withEndCriteria(EndCriteria.ON)
-                .withEndOnDate(LocalDateTime.of(2016, 10, 7, 10, 15))
-                .withIntervalUnit(IntervalUnit.MONTHLY)
+                .withEndCriteria(EndCriteria.UNTIL)
+                .withUntil(LocalDateTime.of(2016, 10, 7, 10, 15))
+                .withFrequency(Frequency.MONTHLY)
                 .withMonthlyRepeat(MonthlyRepeat.DAY_OF_MONTH)
                 .withAppointmentData(a2);
     }
@@ -185,9 +185,9 @@ public abstract class RepeatTestAbstract {
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(8, 45))
 //                .withEndLocalTime(LocalTime.of(10, 15))
-                .withEndCriteria(EndCriteria.ON)
-                .withEndOnDate(LocalDateTime.of(2016, 10, 20, 10, 15))
-                .withIntervalUnit(IntervalUnit.MONTHLY)
+                .withEndCriteria(EndCriteria.UNTIL)
+                .withUntil(LocalDateTime.of(2016, 10, 20, 10, 15))
+                .withFrequency(Frequency.MONTHLY)
                 .withMonthlyRepeat(MonthlyRepeat.DAY_OF_WEEK)
                 .withAppointmentData(a2);
     }
@@ -203,7 +203,7 @@ public abstract class RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.of(8, 45))
 //                .withEndLocalTime(LocalTime.of(10, 15))
                 .withEndCriteria(EndCriteria.NEVER)
-                .withIntervalUnit(IntervalUnit.YEARLY)
+                .withFrequency(Frequency.YEARLY)
                 .withAppointmentData(a2);
     }
     
@@ -218,9 +218,9 @@ public abstract class RepeatTestAbstract {
 //                .withStartLocalTime(LocalTime.of(8, 0))
 //                .withEndLocalTime(LocalTime.of(9, 30))
                 .withEndCriteria(EndCriteria.AFTER)
-                .withIntervalUnit(IntervalUnit.DAILY)
-                .withRepeatFrequency(2)
-                .withEndAfterEvents(5)
+                .withFrequency(Frequency.DAILY)
+                .withInterval(2)
+                .withCount(5)
                 .withAppointmentData(a);
     }
 }

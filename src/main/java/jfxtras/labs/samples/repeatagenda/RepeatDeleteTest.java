@@ -19,7 +19,7 @@ import org.junit.Test;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.IntervalUnit;
+import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.Frequency;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableUtilities;
@@ -69,13 +69,13 @@ public class RepeatDeleteTest extends RepeatTestAbstract {
                 .withDurationInSeconds(5400)
 //                .withStartLocalTime(LocalTime.of(8, 45))
 //                .withEndLocalTime(LocalTime.of(10, 15))
-                .withIntervalUnit(IntervalUnit.WEEKLY)
+                .withFrequency(Frequency.WEEKLY)
                 .withDayOfWeek(DayOfWeek.MONDAY, true)
                 .withDayOfWeek(DayOfWeek.WEDNESDAY, true)
                 .withDayOfWeek(DayOfWeek.FRIDAY, true)
-                .withRepeatFrequency(2)
+                .withInterval(2)
                 .withEndCriteria(EndCriteria.AFTER)
-                .withEndAfterEvents(50)
+                .withCount(50)
                 .withExceptions(new HashSet<LocalDateTime>(Arrays.asList(LocalDateTime.of(2015, 11, 2, 8, 45))))
                 .withAppointmentData(a);
         assertEquals(expectedRepeat, repeat); // check to see if repeat rule changed correctly

@@ -43,7 +43,7 @@ private Repeat repeat;
 
 @FXML private CheckBox repeatableCheckBox;
 @FXML private GridPane repeatableGridPane;
-@FXML private ComboBox<Repeat.IntervalUnit> intervalComboBox;
+@FXML private ComboBox<Repeat.Frequency> intervalComboBox;
 @FXML private Spinner<Integer> frequencySpinner;
 @FXML private Label unitLabel;
 @FXML private Label eventLabel;
@@ -72,14 +72,14 @@ private ToggleGroup endGroup;
 @FXML private Button closeButton;
 @FXML private Button cancelButton;
 
-final private InvalidationListener makeEndOnDateListener = (obs) -> repeat.makeEndOnDateFromEndAfterEvents();
+final private InvalidationListener makeEndOnDateListener = (obs) -> repeat.makeUntilFromCount();
 
 final private ChangeListener<? super Integer> frequencyListener = (observable, oldValue, newValue) ->
 {
     if (newValue == 1) {
-        unitLabel.setText(repeat.getIntervalUnit().toStringSingular());
+        unitLabel.setText(repeat.getFrequency().toStringSingular());
     } else {
-        unitLabel.setText(repeat.getIntervalUnit().toStringPlural());
+        unitLabel.setText(repeat.getFrequency().toStringPlural());
     }
 };
 
@@ -93,42 +93,42 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
 {
     
     // *********INTERVAL COMBOBOX**************
-    final ObservableList<Repeat.IntervalUnit> intervalList = FXCollections.observableArrayList();
-    intervalList.add(Repeat.IntervalUnit.DAILY);
-    intervalList.add(Repeat.IntervalUnit.WEEKLY);
-    intervalList.add(Repeat.IntervalUnit.MONTHLY);
-    intervalList.add(Repeat.IntervalUnit.YEARLY);
+    final ObservableList<Repeat.Frequency> intervalList = FXCollections.observableArrayList();
+    intervalList.add(Repeat.Frequency.DAILY);
+    intervalList.add(Repeat.Frequency.WEEKLY);
+    intervalList.add(Repeat.Frequency.MONTHLY);
+    intervalList.add(Repeat.Frequency.YEARLY);
     intervalComboBox.setItems(intervalList);
     
     intervalComboBox.getSelectionModel().selectedItemProperty().addListener((change) -> {
-        Repeat.IntervalUnit selected = intervalComboBox.getSelectionModel().getSelectedItem();
-        if (selected == Repeat.IntervalUnit.DAILY || selected == Repeat.IntervalUnit.YEARLY) {
+        Repeat.Frequency selected = intervalComboBox.getSelectionModel().getSelectedItem();
+        if (selected == Repeat.Frequency.DAILY || selected == Repeat.Frequency.YEARLY) {
             monthlyVBox.setVisible(false);
             monthlyLabel.setVisible(false);
             weeklyHBox.setVisible(false);
             weeklyLabel.setVisible(false);
-        } else if (selected == Repeat.IntervalUnit.WEEKLY) {
+        } else if (selected == Repeat.Frequency.WEEKLY) {
             monthlyVBox.setVisible(false);
             monthlyLabel.setVisible(false);
             weeklyHBox.setVisible(true);
             weeklyLabel.setVisible(true);
-        } else if (selected == Repeat.IntervalUnit.MONTHLY) {
+        } else if (selected == Repeat.Frequency.MONTHLY) {
             monthlyVBox.setVisible(true);
             monthlyLabel.setVisible(true);
             weeklyHBox.setVisible(false);
             weeklyLabel.setVisible(false);
         }
     });
-    intervalComboBox.setConverter(Repeat.IntervalUnit.stringConverter);
+    intervalComboBox.setConverter(Repeat.Frequency.stringConverter);
 
     frequencySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1));
 
     frequencySpinner.valueProperty().addListener((observable, oldValue, newValue) ->
     {
         if (newValue == 1) {
-            unitLabel.setText(repeat.getIntervalUnit().toStringSingular());
+            unitLabel.setText(repeat.getFrequency().toStringSingular());
         } else {
-            unitLabel.setText(repeat.getIntervalUnit().toStringPlural());
+            unitLabel.setText(repeat.getFrequency().toStringPlural());
         }
     });
     
@@ -154,8 +154,8 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
             boolean isNumber = s.matches("[0-9]+");
             if (isNumber) {
                 value = Integer.parseInt(s);
-                repeat.repeatFrequencyProperty().unbind();
-                repeat.setRepeatFrequency(value);
+                repeat.intervalProperty().unbind();
+                repeat.setInterval(value);
             } else {
                 String lastValue = frequencySpinner.getValue().toString();
                 frequencySpinner.getEditor().textProperty().set(lastValue);
@@ -167,11 +167,11 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     // Listeners to change unitLabel
     intervalComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
     {
-        if (repeat.getEndCriteria() == EndCriteria.AFTER) repeat.makeEndOnDateFromEndAfterEvents();
+        if (repeat.getEndCriteria() == EndCriteria.AFTER) repeat.makeUntilFromCount();
         if (frequencySpinner.getValue() == 1) {
-            unitLabel.setText(repeat.getIntervalUnit().toStringSingular());
+            unitLabel.setText(repeat.getFrequency().toStringSingular());
         } else {
-            unitLabel.setText(repeat.getIntervalUnit().toStringPlural());
+            unitLabel.setText(repeat.getFrequency().toStringPlural());
         }
     });
     
@@ -199,9 +199,9 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
 
     endAfterEventsSpinner.valueProperty().addListener((observable, oldSelection, newSelection) ->
     {
-        if (! repeat.endAfterEventsProperty().isBound()) {
-            endAfterEventsSpinner.getValueFactory().setValue(repeat.getEndAfterEvents());
-            repeat.endAfterEventsProperty().bind(endAfterEventsSpinner.valueProperty());   
+        if (! repeat.countProperty().isBound()) {
+            endAfterEventsSpinner.getValueFactory().setValue(repeat.getCount());
+            repeat.countProperty().bind(endAfterEventsSpinner.valueProperty());   
         }
         if (newSelection == 1) {
             eventLabel.setText(resources.getString("event"));
@@ -216,10 +216,10 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
             endAfterEventsSpinner.setDisable(false);
             eventLabel.setDisable(false);
             repeat.setEndCriteria(EndCriteria.AFTER);
-            endAfterEventsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, repeat.getEndAfterEvents()));
-            repeat.endAfterEventsProperty().bind(endAfterEventsSpinner.valueProperty());
-            repeat.repeatFrequencyProperty().removeListener(makeEndOnDateListener); // in case listener was previously added remove it to ensure only 1 is attached
-            repeat.repeatFrequencyProperty().addListener(makeEndOnDateListener);
+            endAfterEventsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, repeat.getCount()));
+            repeat.countProperty().bind(endAfterEventsSpinner.valueProperty());
+            repeat.intervalProperty().removeListener(makeEndOnDateListener); // in case listener was previously added remove it to ensure only 1 is attached
+            repeat.intervalProperty().addListener(makeEndOnDateListener);
         } else  {
             endAfterEventsSpinner.setValueFactory(null);
             endAfterEventsSpinner.setDisable(true);
@@ -249,8 +249,8 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
             boolean isNumber = s.matches("[0-9]+");
             if (isNumber) {
                 value = Integer.parseInt(s);
-                repeat.endAfterEventsProperty().unbind();
-                repeat.setEndAfterEvents(value);
+                repeat.countProperty().unbind();
+                repeat.setCount(value);
             } else {
                 String lastValue = endAfterEventsSpinner.getValue().toString();
                 endAfterEventsSpinner.getEditor().textProperty().set(lastValue);
@@ -263,16 +263,16 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     final ChangeListener<? super LocalDate> endOnDateListener = ((observable, oldSelection, newSelection) ->
     {
         LocalTime endTime = repeat.getStartLocalDate().plusSeconds(repeat.getDurationInSeconds()).toLocalTime();
-        repeat.setEndOnDate(newSelection.atTime(endTime));
+        repeat.setUntil(newSelection.atTime(endTime));
     });
     endOnRadioButton.selectedProperty().addListener((observable, oldSelection, newSelection) ->
     {
         if (newSelection) {
-            if (repeat.getEndCriteria() == EndCriteria.ON)
+            if (repeat.getEndCriteria() == EndCriteria.UNTIL)
             { // if Repeat is ON already (initial condition) then set date in picker
-                endOnDatePicker.setValue(repeat.getEndOnDate().toLocalDate());
+                endOnDatePicker.setValue(repeat.getUntil().toLocalDate());
             }
-            repeat.setEndCriteria(EndCriteria.ON); 
+            repeat.setEndCriteria(EndCriteria.UNTIL); 
             endOnDatePicker.setDisable(false);
             endOnDatePicker.valueProperty().addListener(endOnDateListener);
 //            repeat.endOnDateProperty().bind(endOnDatePicker.valueProperty());
@@ -352,9 +352,9 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     }
     
     private void setupBindings() {
-        intervalComboBox.valueProperty().bindBidirectional(repeat.intervalUnitProperty());
-        frequencySpinner.getValueFactory().setValue(repeat.getRepeatFrequency());
-        repeat.repeatFrequencyProperty().bind(frequencySpinner.valueProperty());
+        intervalComboBox.valueProperty().bindBidirectional(repeat.frequencyProperty());
+        frequencySpinner.getValueFactory().setValue(repeat.getInterval());
+        repeat.intervalProperty().bind(frequencySpinner.valueProperty());
         sundayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.SUNDAY));
         mondayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.MONDAY));
         tuesdayCheckBox.selectedProperty().bindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.TUESDAY));
@@ -367,7 +367,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
 //        startDatePicker.valueProperty().bind(repeat.startLocalDateProperty());
         startDatePicker.valueProperty().addListener(startDateListener);
         setEndGroup(repeat.getEndCriteria());
-        repeat.endAfterEventsProperty().addListener(makeEndOnDateListener);
+        repeat.countProperty().addListener(makeEndOnDateListener);
     }
     
     private void setupAppointmentBindings() {
@@ -385,7 +385,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     
     private void removeBindings() {
         // Establish bindings to Repeat object
-        intervalComboBox.valueProperty().unbindBidirectional(repeat.intervalUnitProperty());
+        intervalComboBox.valueProperty().unbindBidirectional(repeat.frequencyProperty());
         intervalComboBox.valueProperty().set(null);
         sundayCheckBox.selectedProperty().unbindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.SUNDAY));
         mondayCheckBox.selectedProperty().unbindBidirectional(repeat.getDayOfWeekProperty(DayOfWeek.MONDAY));
@@ -403,10 +403,10 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
     }
     
     public void removeRepeatBindings() {
-        repeat.repeatFrequencyProperty().unbind();
-        repeat.endAfterEventsProperty().unbind();
-        repeat.endAfterEventsProperty().removeListener(makeEndOnDateListener);
-        repeat.repeatFrequencyProperty().removeListener(makeEndOnDateListener);
+        repeat.intervalProperty().unbind();
+        repeat.countProperty().unbind();
+        repeat.countProperty().removeListener(makeEndOnDateListener);
+        repeat.intervalProperty().removeListener(makeEndOnDateListener);
     }
         
     private void setEndGroup(EndCriteria endCriteria) {
@@ -417,7 +417,7 @@ final private ChangeListener<? super LocalDate> startDateListener = ((observable
         case AFTER:
             endGroup.selectToggle(endAfterRadioButton);
             break;
-        case ON:
+        case UNTIL:
             endGroup.selectToggle(endOnRadioButton);
             break;
         default:
