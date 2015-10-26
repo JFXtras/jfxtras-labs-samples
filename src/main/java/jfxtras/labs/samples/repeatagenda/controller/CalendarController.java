@@ -25,17 +25,18 @@ import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.RepeatMenu;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.EndCriteria;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.Frequency;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat.MonthlyRepeat;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
+import jfxtras.labs.samples.repeatagenda.Main;
 import jfxtras.labs.samples.repeatagenda.MyData;
-import jfxtras.labs.samples.repeatagenda.RepeatImpl;
-import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.RepeatMenu;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.EndCriteria;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.Frequency;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Repeat.MonthlyRepeat;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatFactory;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.scene.control.LocalDatePicker;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
@@ -53,7 +54,7 @@ public class CalendarController {
 
      public RepeatableAgenda<RepeatableAppointment> agenda = new RepeatableAgenda<RepeatableAppointment>();
      private final Callback<Collection<Appointment>, Void> appointmentWriteCallback =
-             a -> { AppointmentFactory.writeToFile(a); return null; };
+             a -> { RepeatableAppointmentImpl.writeToFile(a, Settings.APPOINTMENTS_FILE); return null; };
      private final Callback<Collection<Repeat>, Void> repeatWriteCallback =
              r -> { RepeatImpl.writeToFile(r); return null; };
 
@@ -101,7 +102,8 @@ public class CalendarController {
         agenda.newAppointmentCallbackProperty().set((LocalDateTimeRange dateTimeRange) -> 
         {
 //            System.out.println("new appointment calllback");
-            RepeatableAppointment appointment = AppointmentFactory.newAppointment()
+//            RepeatableAppointment appointment = AppointmentFactory.newAppointment(RepeatableAppointmentImpl.class)
+            RepeatableAppointment appointment = new RepeatableAppointmentImpl()
                 .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime())
                 .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
                 .withSummary("New")
@@ -116,6 +118,7 @@ public class CalendarController {
                     , agenda.appointments()
                     , agenda.getRepeats()
                     , agenda.appointmentGroups()
+                    , agenda.getNewAppointmentCallback()
                     , appointmentWriteCallback
                     , repeatWriteCallback);
             repeatMenu.show();
@@ -232,10 +235,10 @@ public class CalendarController {
 
         if (data.getRepeats().isEmpty())
         { // add Repeats if none read in from file
-            RepeatableAppointment a1 = AppointmentFactory.newAppointment()
+            RepeatableAppointment a1 = new RepeatableAppointmentImpl() //AppointmentFactory.newAppointment()
                     .withAppointmentGroup(agenda.appointmentGroups().get(5))
                     .withSummary("Weekly Appointment");
-            data.getRepeats().add(RepeatFactory.newRepeat()
+            data.getRepeats().add(new RepeatImpl(Main.NEW_APPOINTMENT_CALLBACK)
                     .withStartLocalDate(LocalDateTime.now())
                     .withDurationInSeconds(3600)
 //                    .withStartLocalTime(LocalTime.now().plusHours(3))
@@ -245,23 +248,23 @@ public class CalendarController {
                     .withDayOfWeek(LocalDate.now().getDayOfWeek(), true)
                     .withDayOfWeek(LocalDate.now().plusDays(2).getDayOfWeek(), true)
                     .withAppointmentData(a1));
-            RepeatableAppointment a2 = AppointmentFactory.newAppointment()
+            RepeatableAppointment a2 = new RepeatableAppointmentImpl()
                     .withAppointmentGroup(agenda.appointmentGroups().get(9))
                     .withSummary("Monthly Appointment");
-            data.getRepeats().add(RepeatFactory.newRepeat()
+            data.getRepeats().add(new RepeatImpl(Main.NEW_APPOINTMENT_CALLBACK)
                     .withStartLocalDate(LocalDateTime.now().minusDays(1))
                     .withDurationInSeconds(7200)
 //                    .withStartLocalTime(LocalTime.now().minusHours(5))
 //                    .withEndLocalTime(LocalTime.now().minusHours(3))
                     .withEndCriteria(EndCriteria.UNTIL)
-                    .withUntil(LocalDateTime.now().minusDays(1).plusMonths(3))
+                    .withUntilLocalDateTime(LocalDateTime.now().minusDays(1).plusMonths(3))
                     .withFrequency(Frequency.MONTHLY)
                     .withMonthlyRepeat(MonthlyRepeat.DAY_OF_MONTH)
                     .withAppointmentData(a2));
-            RepeatableAppointment a3 = AppointmentFactory.newAppointment()
+            RepeatableAppointment a3 = new RepeatableAppointmentImpl()
                     .withAppointmentGroup(agenda.appointmentGroups().get(15))
                     .withSummary("Daily Appointment");
-            data.getRepeats().add(RepeatFactory.newRepeat()
+            data.getRepeats().add(new RepeatImpl(Main.NEW_APPOINTMENT_CALLBACK)
                     .withKey(0)
                     .withStartLocalDate(LocalDateTime.now().minusDays(2))
                     .withDurationInSeconds(5400)

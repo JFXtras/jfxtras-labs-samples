@@ -19,15 +19,27 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import jfxtras.labs.repeatagenda.RepeatEditTest;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentIO;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.samples.repeatagenda.controller.CalendarController;
-import jfxtras.labs.samples.repeatagenda.internal.scene.control.skin.agenda.base24hour.AppointmentIO;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.AppointmentFactory;
-import jfxtras.labs.samples.repeatagenda.scene.control.agenda.Settings;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
+import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 public class Main extends Application {
 	
 //    private static ObservableList<AppointmentGroup> appointmentGroups = RepeatableAgenda.DEFAULT_APPOINTMENT_GROUPS;
+    
+    public final static Callback<LocalDateTimeRange, Appointment> NEW_APPOINTMENT_CALLBACK = range -> 
+    {
+        return new RepeatableAppointmentImpl()
+                .withStartLocalDateTime(range.getStartLocalDateTime())
+                .withEndLocalDateTime(range.getEndLocalDateTime());        
+    };
     
     private static LocalDate firstDayOfWeekLocalDate = getFirstDayOfWeekLocalDate();
     private static LocalDate getFirstDayOfWeekLocalDate()
@@ -82,7 +94,7 @@ public class Main extends Application {
 //        { // add hard-coded repeats
 //            data.getRepeats().add(e)
 //        }
-        RepeatImpl.readFromFile(appointmentRepeatsPath, data.getAppointmentGroups(), data.getRepeats());
+        RepeatImpl.readFromFile(appointmentRepeatsPath, data.getAppointmentGroups(), data.getRepeats(), null);
         RepeatableAppointmentImpl.setupRepeats(data.getRepeats()); // must be done before appointments are read
         Path appointmentsPath = Paths.get(Main.class.getResource("").getPath() + "appointments.xml");
 //        boolean isAppointmentsNew = (appointmentsPath.toFile().exists() && ! appointmentsPath.toFile().isDirectory());
@@ -91,7 +103,8 @@ public class Main extends Application {
 //            
 //        }
 
-        AppointmentFactory.readFromFile(appointmentsPath, data.getAppointmentGroups(), data.getAppointments());
+///        AppointmentFactory.readFromFile(appointmentsPath, data.getAppointmentGroups(), data.getAppointments());
+        RepeatableAppointmentImpl.readFromFile(appointmentsPath.toFile(), data.getAppointmentGroups(), data.getAppointments());
 //        MyAppointment.readFromFile(appointmentsPath.toFile(), appointmentGroups, data.getAppointments());
         data.getRepeats().stream().forEach(a -> a.collectAppointments(data.getAppointments())); // add individual appointments that have repeat rules to their Repeat objects
         // ADD APPOINTMENTS WHEN AGENDA TIME UPDATES
