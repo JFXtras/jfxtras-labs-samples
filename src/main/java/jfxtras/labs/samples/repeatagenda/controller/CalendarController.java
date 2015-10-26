@@ -110,18 +110,18 @@ public class CalendarController {
                 .withDescription("")
                 .withAppointmentGroup(agenda.appointmentGroups().get(0));
             
-            // TODO - POSITION MENU SO IT DOESN'T COVER UP APPOINTMENT
-            // Produce repeat edit popup on create new appointment
-            repeatMenu = new RepeatMenu(
-                    (RepeatableAppointment) appointment
-                    , agenda.dateTimeRange()
-                    , agenda.appointments()
-                    , agenda.getRepeats()
-                    , agenda.appointmentGroups()
-                    , agenda.getNewAppointmentCallback()
-                    , appointmentWriteCallback
-                    , repeatWriteCallback);
-            repeatMenu.show();
+//            // TODO - POSITION MENU SO IT DOESN'T COVER UP APPOINTMENT
+//            // Produce repeat edit popup on create new appointment
+//            repeatMenu = new RepeatMenu(
+//                    (RepeatableAppointment) appointment
+//                    , agenda.dateTimeRange()
+//                    , agenda.appointments()
+//                    , agenda.getRepeats()
+//                    , agenda.appointmentGroups()
+//                    , agenda.getNewAppointmentCallback()
+//                    , appointmentWriteCallback
+//                    , repeatWriteCallback);
+//            repeatMenu.show();
             
             return appointment;
         });
