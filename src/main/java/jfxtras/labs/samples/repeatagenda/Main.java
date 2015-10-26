@@ -20,7 +20,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.RepeatEditTest;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentIO;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
@@ -69,9 +68,9 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
 	   
-	    RepeatEditTest r = new RepeatEditTest();
-	    r.editAllDailyTimeAndDate();
-	    System.exit(0);
+//	    RepeatEditTest r = new RepeatEditTest();
+//	    r.editAllDailyTimeAndDate();
+//	    System.exit(0);
 	    
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);
@@ -94,7 +93,7 @@ public class Main extends Application {
 //        { // add hard-coded repeats
 //            data.getRepeats().add(e)
 //        }
-        RepeatImpl.readFromFile(appointmentRepeatsPath, data.getAppointmentGroups(), data.getRepeats(), null);
+        RepeatImpl.readFromFile(appointmentRepeatsPath, data.getAppointmentGroups(), data.getRepeats());
         RepeatableAppointmentImpl.setupRepeats(data.getRepeats()); // must be done before appointments are read
         Path appointmentsPath = Paths.get(Main.class.getResource("").getPath() + "appointments.xml");
 //        boolean isAppointmentsNew = (appointmentsPath.toFile().exists() && ! appointmentsPath.toFile().isDirectory());
