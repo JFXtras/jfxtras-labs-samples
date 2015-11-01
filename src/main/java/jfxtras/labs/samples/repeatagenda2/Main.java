@@ -1,4 +1,4 @@
-package jfxtras.labs.samples.repeatagenda;
+package jfxtras.labs.samples.repeatagenda2;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -24,7 +24,7 @@ import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
-import jfxtras.labs.samples.repeatagenda.controller.CalendarController;
+import jfxtras.labs.samples.repeatagenda2.controller.CalendarController;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
