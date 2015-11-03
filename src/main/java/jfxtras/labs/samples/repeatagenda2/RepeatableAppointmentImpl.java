@@ -197,15 +197,15 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
         return super.equals(obj) && startEquals && endEquals;
     }
     
-    @Override
-    public RepeatableAppointment copyNonDateFieldsInto(RepeatableAppointment appointment) {
-//        System.out.println("appointment 5" + appointment);
-        RepeatableAppointmentImpl appointment2 = (RepeatableAppointmentImpl) appointment;
-        appointment2.setCustom(getCustom());
-//        List<String> s = ((RepeatableAppointmentImpl) appointment2).getCustomList();
-//        this.getCustomList().addAll(s);
-        return RepeatableAppointment.super.copyNonDateFieldsInto(appointment);
-    }
+//    @Override
+//    public RepeatableAppointment copyNonDateFieldsInto(RepeatableAppointment appointment) {
+////        System.out.println("appointment 5" + appointment);
+//        RepeatableAppointmentImpl appointment2 = (RepeatableAppointmentImpl) appointment;
+//        appointment2.setCustom(getCustom());
+////        List<String> s = ((RepeatableAppointmentImpl) appointment2).getCustomList();
+////        this.getCustomList().addAll(s);
+//        return RepeatableAppointment.super.copyNonDateFieldsInto(appointment);
+//    }
 
     
     
@@ -408,6 +408,36 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
       setEndLocalDateTime(LocalDateTime.parse(IOUtilities.myGet(appointmentAttributes,endLocalDateTime.getName(), errorMessage), DATE_FORMAT_AGENDA));
       setStartLocalDateTime(LocalDateTime.parse( IOUtilities.myGet(appointmentAttributes, startLocalDateTime.getName(), errorMessage), DATE_FORMAT_AGENDA));
       return this;
+    }
+    @Override
+    public String getUID() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public void setUID(String uid) {
+        // TODO Auto-generated method stub
+        
+    }
+    @Override
+    public LocalDateTime getDTStamp() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public void setDTStamp(LocalDateTime dtStamp) {
+        // TODO Auto-generated method stub
+        
+    }
+    @Override
+    public LocalDateTime getCreated() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public void setCreated(LocalDateTime created) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

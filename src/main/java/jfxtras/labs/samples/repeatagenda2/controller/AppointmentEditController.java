@@ -126,12 +126,14 @@ public class AppointmentEditController {
 //        repeats = layoutHelp.skinnable.repeats();
 //        appointments = layoutHelp.skinnable.appointments();
 
-        appointmentOld = (RepeatableAppointmentImpl) AppointmentFactory.newAppointment(appointmentClass);
+        appointmentOld = (RepeatableAppointmentImpl) AppointmentFactory.newRepeatableAppointment(appointmentClass);
         System.out.println("appointmentOld new " + appointmentOld);
 //        appointmentOld = (RepeatableAppointment) newAppointmentCallback
 //                .call(new LocalDateTimeRange(appointment.getStartLocalDateTime(), appointment.getEndLocalDateTime()));
         appointment.copyInto(appointmentOld);
 //        appointmentOld = newAppointmentCallback.call(param)// AppointmentFactory.newAppointment(appointment);
+
+        // Get repeat pane and add to repeatable AnchorPane (not needed if using default popup)
         FXMLLoader repeatPaneLoader = RepeatPaneLoader.newInstance();
         Pane repeatPane = null;
         try {
@@ -141,7 +143,6 @@ public class AppointmentEditController {
         }
         repeatable.getChildren().add(repeatPane);
         repeatableController = repeatPaneLoader.getController();
-        
         repeatableController.setupData(appointment, dateTimeRange, appointmentClass, repeatClass);
 
         nameTextField.setText(appointment.getSummary());
