@@ -37,7 +37,6 @@ import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
-
 public class AppointmentEditController {
     
     private RepeatableAppointmentImpl appointment;
@@ -126,11 +125,11 @@ public class AppointmentEditController {
 //        repeats = layoutHelp.skinnable.repeats();
 //        appointments = layoutHelp.skinnable.appointments();
 
-        appointmentOld = (RepeatableAppointmentImpl) AppointmentFactory.newRepeatableAppointment(appointmentClass);
+        appointmentOld = (RepeatableAppointmentImpl) AppointmentFactory.newAppointment(appointmentClass);
         System.out.println("appointmentOld new " + appointmentOld);
 //        appointmentOld = (RepeatableAppointment) newAppointmentCallback
 //                .call(new LocalDateTimeRange(appointment.getStartLocalDateTime(), appointment.getEndLocalDateTime()));
-        appointment.copyInto(appointmentOld);
+        appointment.copyFieldsTo(appointmentOld);
 //        appointmentOld = newAppointmentCallback.call(param)// AppointmentFactory.newAppointment(appointment);
 
         // Get repeat pane and add to repeatable AnchorPane (not needed if using default popup)

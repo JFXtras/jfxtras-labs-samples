@@ -49,7 +49,7 @@ public class CalendarController {
 
     private MyData data;
 
-     public RepeatableAgenda<RepeatableAppointment> agenda = new RepeatableAgenda<RepeatableAppointment>();
+     public RepeatableAgenda agenda = new RepeatableAgenda();
      private final Callback<Collection<Appointment>, Void> appointmentWriteCallback =
              a -> { RepeatableAppointmentImpl.writeToFile(a, Settings.APPOINTMENTS_FILE); return null; };
      private final Callback<Collection<Repeat>, Void> repeatWriteCallback = null;

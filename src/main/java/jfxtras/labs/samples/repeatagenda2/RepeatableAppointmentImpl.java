@@ -35,7 +35,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.IOUtilities;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentGroupImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointmentImplBase;
@@ -171,17 +170,39 @@ public class RepeatableAppointmentImpl extends RepeatableAppointmentImplBase<Rep
      */
     public RepeatableAppointmentImpl(RepeatableAppointment appointment)
     {
+        super(appointment);
+        RepeatableAppointmentImpl appointment2 = (RepeatableAppointmentImpl) appointment;
+        setCustom(appointment2.getCustom());
 //        setRepeat(RepeatFactory.newRepeat(appointment.getRepeat()));
 //        System.out.println("Repeat7 " + repeat);
 //        Repeat repeat = repeatMap.get(appointment);
 //        Repeat newRepeat = new RepeatImpl(repeat, RepeatableAppointmentImpl.class);
 //        repeatMap.put(this, newRepeat);
-        Repeat repeat = appointment.getRepeat();
-        setRepeat(new RepeatImpl(repeat, RepeatableAppointmentImpl.class));
+//        Repeat repeat = appointment.getRepeat();
+//        setRepeat(new RepeatImpl(repeat, RepeatableAppointmentImpl.class));
 //        MyRepeat newRepeat = RepeatFactory.newRepeat(repeatMap.get(appointment));
 //        repeatMap.put(this, newRepeat);
-        appointment.copyInto(this);
+//        appointment.copyInto(this);
     }
+    
+//    /**
+//     * Copy constructor
+//     * 
+//     * @param appointment
+//     */
+//    public RepeatableAppointmentImpl(RepeatableAppointment appointment)
+//    {
+////        setRepeat(RepeatFactory.newRepeat(appointment.getRepeat()));
+////        System.out.println("Repeat7 " + repeat);
+////        Repeat repeat = repeatMap.get(appointment);
+////        Repeat newRepeat = new RepeatImpl(repeat, RepeatableAppointmentImpl.class);
+////        repeatMap.put(this, newRepeat);
+//        Repeat repeat = appointment.getRepeat();
+//        setRepeat(new RepeatImpl(repeat, RepeatableAppointmentImpl.class));
+////        MyRepeat newRepeat = RepeatFactory.newRepeat(repeatMap.get(appointment));
+////        repeatMap.put(this, newRepeat);
+//        appointment.copyInto(this);
+//    }
     
     @Override
     public boolean equals(Object obj) {
