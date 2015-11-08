@@ -20,7 +20,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.RepeatEditTest;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentIO;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
@@ -70,9 +69,9 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
 	   
 //	    Map<Appointment, Repeat> repeatMap = new HashMap<Appointment, Repeat>();
-	    RepeatEditTest r = new RepeatEditTest();
-	    r.editRepeatDailyToIndividual();
-	    System.exit(0);
+//	    RepeatEditTest r = new RepeatEditTest();
+//	    r.editRepeatDailyToIndividual();
+//	    System.exit(0);
 	    
         Locale myLocale = Locale.getDefault();
         ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);

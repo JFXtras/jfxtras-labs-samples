@@ -6,7 +6,6 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -20,11 +19,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.RepeatCopyTest;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentIO;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.samples.repeatagenda.controller.CalendarController;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -69,14 +66,23 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
 	   
-	    RepeatCopyTest r = new RepeatCopyTest();
-	    r.canCopyRepeatableAppointment();
-	    System.exit(0);
+//	    RepeatEditTest r = new RepeatEditTest();
+//	    r.editAllDailyWithExceptions();
+//	    System.exit(0);
+	            
+        // ROOT PANE
+        FXMLLoader mainLoader = new FXMLLoader();
+        mainLoader.setLocation(Main.class.getResource("view/Calendar.fxml"));
+        BorderPane root = mainLoader.load();
+        CalendarController controller = mainLoader.getController();
+        controller.setupData(data, firstDayOfWeekLocalDate, firstDayOfWeekLocalDate.plusDays(7));
+
+        Scene scene = new Scene(root, 1366, 768);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Repeatable Agenda Demo");
+        primaryStage.show();
 	    
-        Locale myLocale = Locale.getDefault();
-        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);
-        Settings.setup(resources);
-        
+        // TODO - I/O AFTER SETUP
         // I/O and setup
         ObservableList<AppointmentGroup> appointmentGroups = null;
         Path appointmentGroupsPath = Paths.get(Main.class.getResource("").getPath() + "appointmentGroups.xml");
@@ -114,17 +120,7 @@ public class Main extends Application {
 //            data.getAppointments().addAll(appointments);
 //        });
 
-        // ROOT PANE
-        FXMLLoader mainLoader = new FXMLLoader();
-        mainLoader.setLocation(Main.class.getResource("view/Calendar.fxml"));
-        BorderPane root = mainLoader.load();
-        CalendarController controller = mainLoader.getController();
-        controller.setupData(data, firstDayOfWeekLocalDate, firstDayOfWeekLocalDate.plusDays(6));
 
-        Scene scene = new Scene(root, 1366, 768);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Repeatable Agenda Demo");
-        primaryStage.show();
         
     }
 	

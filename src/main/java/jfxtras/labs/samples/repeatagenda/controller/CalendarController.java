@@ -78,6 +78,12 @@ public class CalendarController {
     
     @FXML public void initialize() {
        
+        // ResouceBundle
+        Locale myLocale = Locale.getDefault();
+        ResourceBundle resources = ResourceBundle.getBundle("jfxtras.labs.samples.repeatagenda.Bundle", myLocale);
+//        agenda.setResourceBundle(resources);
+//        Settings.setup(resources);
+        
         daySkinButton.setToggleGroup(skinGroup);
         weekSkinButton.setToggleGroup(skinGroup);
         monthSkinButton.setToggleGroup(skinGroup);
