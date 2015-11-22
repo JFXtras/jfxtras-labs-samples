@@ -19,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import jfxtras.labs.repeatagenda.ICalendarEditTest;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentIO;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
@@ -67,15 +68,15 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
 	   
-//	    ICalendarEditTest r = new ICalendarEditTest();
+	    ICalendarEditTest r = new ICalendarEditTest();
 //	    long s1 = System.currentTimeMillis();
 //	    for (int i=0; i<1000; i++) {
-//	    r.editAllDailyTime();
+	    r.editAllDailyTime();
 //	    }
 //        long s2 = System.currentTimeMillis();
 //        System.out.println("time " + (s2-s1));
 //        
-//	    System.exit(0);
+	    System.exit(0);
 	            
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
