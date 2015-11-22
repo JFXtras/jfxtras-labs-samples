@@ -41,6 +41,7 @@ public class Main extends Application {
     private static LocalDate firstDayOfWeekLocalDate = getFirstDayOfWeekLocalDate();
     private static LocalDate getFirstDayOfWeekLocalDate()
     { // copied from AgendaWeekSkin
+        Locale.setDefault(Locale.US);
         Locale myLocale = Locale.getDefault();
         WeekFields lWeekFields = WeekFields.of(myLocale);
         int lFirstDayOfWeek = lWeekFields.getFirstDayOfWeek().getValue();
@@ -66,8 +67,14 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
 	   
-//	    RepeatEditTest r = new RepeatEditTest();
-//	    r.editAllDailyWithExceptions();
+//	    ICalendarEditTest r = new ICalendarEditTest();
+//	    long s1 = System.currentTimeMillis();
+//	    for (int i=0; i<1000; i++) {
+//	    r.editAllDailyTime();
+//	    }
+//        long s2 = System.currentTimeMillis();
+//        System.out.println("time " + (s2-s1));
+//        
 //	    System.exit(0);
 	            
         // ROOT PANE
@@ -101,7 +108,7 @@ public class Main extends Application {
 //            data.getRepeats().add(e)
 //        }
         RepeatImpl.readFromFile(appointmentRepeatsPath, data.getAppointmentGroups(), data.getRepeats());
-        RepeatableAppointmentImpl.setupRepeats(data.getRepeats()); // must be done before appointments are read
+//        RepeatableAppointmentImpl.setupRepeats(data.getRepeats()); // must be done before appointments are read
         Path appointmentsPath = Paths.get(Main.class.getResource("").getPath() + "appointments.xml");
 //        boolean isAppointmentsNew = (appointmentsPath.toFile().exists() && ! appointmentsPath.toFile().isDirectory());
 //        if (isAppointmentsNew)
