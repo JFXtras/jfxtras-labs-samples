@@ -26,7 +26,7 @@ import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.RepeatMenu;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.RepeatMenuOld;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
@@ -57,11 +57,11 @@ public class CalendarController {
      public RepeatableAgenda agenda = new RepeatableAgenda();
      private final Callback<Collection<Appointment>, Void> appointmentWriteCallback =
              a -> { RepeatableAppointmentImpl.writeToFile(a, Settings.APPOINTMENTS_FILE); return null; };
-     private final Callback<Collection<VComponent>, Void> repeatWriteCallback = null;
+     private final Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback = null;
 //             r -> { RepeatImpl.writeToFile(r); return null; };
 
      private LocalDateTimeRange dateTimeRange;
-     private RepeatMenu repeatMenu;
+     private RepeatMenuOld repeatMenu;
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private BorderPane agendaBorderPane;
 
@@ -222,6 +222,8 @@ public class CalendarController {
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
         vEvent.setAppointmentClass(clazz);
+        vEvent.setDateTimeStamp(LocalDateTime.of(2015, 11, 9, 8, 30));
+        vEvent.setUniqueIdentifier("20151109T082900-0@jfxtras.org");
 //        RRule rule = new RRule();
 //        vEvent.setRRule(rule);
 //        Frequency daily = new Daily();

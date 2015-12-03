@@ -62,10 +62,10 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
         
 	    
-//	    ICalendarDateTest r = new ICalendarDateTest();
+//	    ICalendarCopyTest r = new ICalendarCopyTest();
 //	    long s1 = System.currentTimeMillis();
 //	    for (int i=0; i<1000; i++) {
-//	    r.getWeekly2TestTwice();
+//	    r.canCopyVEvent1();
 //	    }
 //        long s2 = System.currentTimeMillis();
 //        System.out.println("time " + (s2-s1));
