@@ -217,7 +217,7 @@ public class CalendarController {
         
         VEventImpl vEvent = new VEventImpl();
         vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
-        vEvent.setAppointmentGroup(data.appointmentGroups().get(3));
+        vEvent.setCategories(data.appointmentGroups().get(3).getDescription());
         vEvent.setDurationInSeconds(2700L);
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
