@@ -61,11 +61,25 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
         
-	    
-//	    ICalendarToStringTest r = new ICalendarToStringTest();
+	    //	    
+//	    System.out.println ("123423T1232".matches(".+T.+"));
+//	    if ("DTSTART;VALUE=DATE:20070628".matches(".+VALUE=DATE.+"))
+//	    {
+//	        System.out.println("match");
+//	    }
+//	    
+//        Pattern p = Pattern.compile("T");
+//        Matcher m = p.matcher("12345T321");
+//        while (m.find())
+//        {
+//            String token = m.group(0);
+//            System.out.println("got" + token);
+//        }
+
+//	    ICalendarDateTest r = new ICalendarDateTest();
 //	    long s1 = System.currentTimeMillis();
 //	    for (int i=0; i<1000; i++) {
-//	    r.monthly5ToString();
+//	    r.recurrenceTest1();
 //	    }
 //        long s2 = System.currentTimeMillis();
 //        System.out.println("time " + (s2-s1));

@@ -33,6 +33,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmen
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
@@ -216,7 +217,7 @@ public class CalendarController {
         Class<RepeatableAppointmentImpl> clazz = RepeatableAppointmentImpl.class;
         
         VEventImpl vEvent = new VEventImpl();
-        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
+        vEvent.setDateTimeStart(new VDateTime(LocalDateTime.of(2015, 11, 7, 10, 0)));
         vEvent.setCategories(data.appointmentGroups().get(3).getDescription());
         vEvent.setDurationInSeconds(2700L);
         vEvent.setDescription("Weekly1 Description");
