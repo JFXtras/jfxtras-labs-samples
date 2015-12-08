@@ -23,9 +23,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPane;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentGroupGridPaneOld;
 import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.RepeatPaneLoader;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.RepeatableController;
+import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.controller.RepeatableControllerOld;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.AppointmentFactory;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
@@ -67,16 +67,16 @@ public class AppointmentEditController {
     
 //    @FXML private LocalDateTimeTextField startTextField;
 //    @FXML private LocalDateTimeTextField endTextField;
-    @FXML private LocalDateTimeTextField startTextField;
-    @FXML private LocalDateTimeTextField endTextField;
-    @FXML private AppointmentGroupGridPane appointmentGroupGridPane;
+    @FXML private LocalDateTimeTextField startTextField; // DTSTART
+    @FXML private LocalDateTimeTextField endTextField; // DTEND
+    @FXML private AppointmentGroupGridPaneOld appointmentGroupGridPane;
     
     @FXML private TextField customTextField;
-    @FXML private TextField locationTextField;
-    @FXML private TextField nameTextField;
-    @FXML private TextArea descriptionTextArea;
+    @FXML private TextField locationTextField; // LOCATION
+    @FXML private TextField summaryTextField; // SUMMARY
+    @FXML private TextArea descriptionTextArea; // DESCRIPTION
     @FXML private CheckBox wholeDayCheckBox;
-    @FXML private TextField groupTextField;
+    @FXML private TextField groupTextField; // TODO - Should this be an X-PROP or in CATEGORIES - I'm think CATEGORIES
     @FXML private Button closeAppointmentButton;
     @FXML private Button cancelAppointmentButton;
     @FXML private Button closeRepeatButton;
@@ -86,8 +86,8 @@ public class AppointmentEditController {
     @FXML private AnchorPane repeatable; // repeat rule options
 
     // Controller for repeat rules
-    private RepeatableController repeatableController;
-    public RepeatableController getRepeatableController() { return repeatableController; }    
+    private RepeatableControllerOld repeatableController;
+    public RepeatableControllerOld getRepeatableController() { return repeatableController; }    
 
     @FXML public void initialize() {
         
@@ -144,8 +144,8 @@ public class AppointmentEditController {
         repeatableController = repeatPaneLoader.getController();
         repeatableController.setupData(appointment, dateTimeRange, appointmentClass, repeatClass);
 
-        nameTextField.setText(appointment.getSummary());
-        nameTextField.textProperty().addListener((observable, oldValue, newValue) ->  {
+        summaryTextField.setText(appointment.getSummary());
+        summaryTextField.textProperty().addListener((observable, oldValue, newValue) ->  {
             appointment.setSummary(newValue);
         });
 
@@ -253,7 +253,7 @@ public class AppointmentEditController {
         setCloseType(WindowCloseType.CANCEL);
     }
     
-    public AppointmentGroupGridPane getAppointmentGroupGridPane() {
+    public AppointmentGroupGridPaneOld getAppointmentGroupGridPane() {
         return appointmentGroupGridPane;
     }
     

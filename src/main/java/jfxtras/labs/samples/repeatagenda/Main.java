@@ -1,8 +1,6 @@
 package jfxtras.labs.samples.repeatagenda;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
@@ -13,18 +11,14 @@ import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.AppointmentIO;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
 import jfxtras.labs.samples.repeatagenda.controller.CalendarController;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
-import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 public class Main extends Application {
@@ -66,11 +60,26 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException {
-	   
-//	    ICalendarEditTest r = new ICalendarEditTest();
+        
+	    //	    
+//	    System.out.println ("123423T1232".matches(".+T.+"));
+//	    if ("DTSTART;VALUE=DATE:20070628".matches(".+VALUE=DATE.+"))
+//	    {
+//	        System.out.println("match");
+//	    }
+//	    
+//        Pattern p = Pattern.compile("T");
+//        Matcher m = p.matcher("12345T321");
+//        while (m.find())
+//        {
+//            String token = m.group(0);
+//            System.out.println("got" + token);
+//        }
+
+//	    ICalendarDateTest r = new ICalendarDateTest();
 //	    long s1 = System.currentTimeMillis();
 //	    for (int i=0; i<1000; i++) {
-//	    r.editAllDailyTime();
+//	    r.recurrenceTest1();
 //	    }
 //        long s2 = System.currentTimeMillis();
 //        System.out.println("time " + (s2-s1));
@@ -90,45 +99,44 @@ public class Main extends Application {
         primaryStage.show();
 	    
         // TODO - I/O AFTER SETUP
-        // I/O and setup
-        ObservableList<AppointmentGroup> appointmentGroups = null;
-        Path appointmentGroupsPath = Paths.get(Main.class.getResource("").getPath() + "appointmentGroups.xml");
-        boolean isAppointmentGroupsNew = (appointmentGroupsPath.toFile().exists() && ! appointmentGroupsPath.toFile().isDirectory());
-        if (! isAppointmentGroupsNew)
-        { // add saved appointment groups
-            appointmentGroups = AppointmentIO.readAppointmentGroups(appointmentGroupsPath.toFile());
-            data.setAppointmentGroups(appointmentGroups);
-        } else {
-            // else leave defaults from Agenda
-        }
-        Path appointmentRepeatsPath = Paths.get(Main.class.getResource("").getPath() + "appointmentRepeats.xml");
-//        boolean isAppointmentRepeatsNew = (appointmentRepeatsPath.toFile().exists() && ! appointmentRepeatsPath.toFile().isDirectory());
-//        if (isAppointmentRepeatsNew)
-//        { // add hard-coded repeats
-//            data.getRepeats().add(e)
+//        // I/O and setup
+//        ObservableList<AppointmentGroup> appointmentGroups = null;
+//        Path appointmentGroupsPath = Paths.get(Main.class.getResource("").getPath() + "appointmentGroups.xml");
+//        boolean isAppointmentGroupsNew = (appointmentGroupsPath.toFile().exists() && ! appointmentGroupsPath.toFile().isDirectory());
+//        if (! isAppointmentGroupsNew)
+//        { // add saved appointment groups
+//            appointmentGroups = AppointmentIO.readAppointmentGroups(appointmentGroupsPath.toFile());
+//            data.setAppointmentGroups(appointmentGroups);
+//        } else {
+//            // else leave defaults from Agenda
 //        }
-        RepeatImpl.readFromFile(appointmentRepeatsPath, data.getAppointmentGroups(), data.getRepeats());
-//        RepeatableAppointmentImpl.setupRepeats(data.getRepeats()); // must be done before appointments are read
-        Path appointmentsPath = Paths.get(Main.class.getResource("").getPath() + "appointments.xml");
-//        boolean isAppointmentsNew = (appointmentsPath.toFile().exists() && ! appointmentsPath.toFile().isDirectory());
-//        if (isAppointmentsNew)
-//        { // add hard-coded appointments
-//            
-//        }
-
-///        AppointmentFactory.readFromFile(appointmentsPath, data.getAppointmentGroups(), data.getAppointments());
-        RepeatableAppointmentImpl.readFromFile(appointmentsPath.toFile(), data.getAppointmentGroups(), data.getAppointments());
-//        MyAppointment.readFromFile(appointmentsPath.toFile(), appointmentGroups, data.getAppointments());
-        data.getRepeats().stream().forEach(a -> a.collectAppointments(data.getAppointments())); // add individual appointments that have repeat rules to their Repeat objects
-        // ADD APPOINTMENTS WHEN AGENDA TIME UPDATES
-//        data.getRepeats().stream().forEach(a ->
-//        {
-//            Collection<RepeatableAppointment> appointments = a.makeAppointments(LocalDate.now().minusWeeks(1), LocalDate.now().plusWeeks(1)); // Make repeat appointments (using default of one week before and one week after today - TODO - get dates from Agenda and make exact initial appointments)
-//            data.getAppointments().addAll(appointments);
-//        });
+//        Path appointmentRepeatsPath = Paths.get(Main.class.getResource("").getPath() + "appointmentRepeats.xml");
+////        boolean isAppointmentRepeatsNew = (appointmentRepeatsPath.toFile().exists() && ! appointmentRepeatsPath.toFile().isDirectory());
+////        if (isAppointmentRepeatsNew)
+////        { // add hard-coded repeats
+////            data.getRepeats().add(e)
+////        }
+//        RepeatImpl.readFromFile(appointmentRepeatsPath, data.appointmentGroups(), data.getVComponents());
+////        RepeatableAppointmentImpl.setupRepeats(data.getRepeats()); // must be done before appointments are read
+//        Path appointmentsPath = Paths.get(Main.class.getResource("").getPath() + "appointments.xml");
+////        boolean isAppointmentsNew = (appointmentsPath.toFile().exists() && ! appointmentsPath.toFile().isDirectory());
+////        if (isAppointmentsNew)
+////        { // add hard-coded appointments
+////            
+////        }
+//
+/////        AppointmentFactory.readFromFile(appointmentsPath, data.getAppointmentGroups(), data.getAppointments());
+//        RepeatableAppointmentImpl.readFromFile(appointmentsPath.toFile(), data.appointmentGroups(), data.getAppointments());
+////        MyAppointment.readFromFile(appointmentsPath.toFile(), appointmentGroups, data.getAppointments());
+//        data.getVComponents().stream().forEach(a -> a.collectAppointments(data.getAppointments())); // add individual appointments that have repeat rules to their Repeat objects
+//        // ADD APPOINTMENTS WHEN AGENDA TIME UPDATES
+////        data.getRepeats().stream().forEach(a ->
+////        {
+////            Collection<RepeatableAppointment> appointments = a.makeAppointments(LocalDate.now().minusWeeks(1), LocalDate.now().plusWeeks(1)); // Make repeat appointments (using default of one week before and one week after today - TODO - get dates from Agenda and make exact initial appointments)
+////            data.getAppointments().addAll(appointments);
+////        });
 
 
         
     }
-	
 }

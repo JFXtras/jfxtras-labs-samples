@@ -21,13 +21,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
@@ -87,11 +85,11 @@ public class CalendarController {
         weekSkinButton.selectedProperty().set(true);
         
         // Set I/O callbacks
-        agenda.setAppointmentWriteCallback(appointmentWriteCallback);
-        agenda.setRepeatWriteCallback(repeatWriteCallback);
+//        agenda.setAppointmentWriteCallback(appointmentWriteCallback);
+//        agenda.setRepeatWriteCallback(repeatWriteCallback);
         
         // Set classes for factories
-        agenda.setRepeatClass(RepeatImpl.class);
+//        agenda.setRepeatClass(RepeatImpl.class);
         agenda.setAppointmentClass(RepeatableAppointmentImpl.class);
 //        // setup appointment groups
 //        final Map<String, Agenda.AppointmentGroup> lAppointmentGroupMap = new TreeMap<String, Agenda.AppointmentGroup>();
@@ -129,19 +127,19 @@ public class CalendarController {
 
         agenda.setEditAppointmentCallback((Appointment appointment) ->
         {
-            Stage repeatMenu = new RepeatMenu(
-                    (RepeatableAppointment) appointment
-                    , agenda.getDateTimeRange()
-                    , agenda.appointments()
-                    , agenda.repeats()
-//                    , repeatMap
-                    , agenda.appointmentGroups()
-                    , RepeatableAppointmentImpl.class
-                    , RepeatImpl.class
-                    , appointmentWriteCallback   // write appointment callback initialized to null
-                    , null // agenda.appointmentGroupWriteCallback
-                    , repeatWriteCallback // write repeat callback initialized to null
-                    , a -> { agenda.refresh(); return null; }); // refresh agenda
+//            Stage repeatMenu = new RepeatMenu(
+//                    (RepeatableAppointment) appointment
+//                    , agenda.getDateTimeRange()
+//                    , agenda.appointments()
+//                    , agenda.vComponents()
+////                    , repeatMap
+//                    , agenda.appointmentGroups()
+//                    , RepeatableAppointmentImpl.class
+//                    , RepeatImpl.class
+//                    , appointmentWriteCallback   // write appointment callback initialized to null
+//                    , null // agenda.appointmentGroupWriteCallback
+//                    , repeatWriteCallback // write repeat callback initialized to null
+//                    , a -> { agenda.refresh(); return null; }); // refresh agenda
             repeatMenu.show();
             return null;
         });
@@ -223,8 +221,8 @@ public class CalendarController {
         this.data = data;
         this.startDate = startDate;
         this.endDate = endDate;
-        agenda.setIndividualAppointments(data.getAppointments());
-        agenda.setRepeats(data.getRepeats());
+//        agenda.setIndividualAppointments(data.getAppointments());
+//        agenda.setVComponents(data.getRepeats());
 //        agenda.setWriteAppointmentsCallback(a -> { AppointmentFactory.writeToFile(a); return null; });
 //        agenda.setWriteRepeatsCallback(r -> { RepeatImpl.writeToFile(r); return null; });
 

@@ -5,9 +5,10 @@ import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Repeat;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
+import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
 
 public final class MyData {
@@ -19,11 +20,11 @@ public final class MyData {
     
 //    private final ObservableList<AppointmentGroup> appointmentGroups = FXCollections.observableArrayList();
     private final ObservableList<AppointmentGroup> appointmentGroups = RepeatableAgenda.DEFAULT_APPOINTMENT_GROUPS;
-    public ObservableList<AppointmentGroup> getAppointmentGroups() { return appointmentGroups; }
-    public void setAppointmentGroups( ObservableList<AppointmentGroup> list) { appointmentGroups.addAll(list); }
+    public ObservableList<AppointmentGroup> appointmentGroups() { return appointmentGroups; }
+//    public void setAppointmentGroups( ObservableList<AppointmentGroup> list) { appointmentGroups.addAll(list); }
 
     /** All appointment repeat rules */
-    private final Set<Repeat> repeats = new HashSet<Repeat>();
-    public Set<Repeat> getRepeats() { return repeats; }
+    private final Set<VComponent<Appointment>> repeats = new HashSet<VComponent<Appointment>>();
+    public Set<VComponent<Appointment>> getVComponents() { return repeats; }
     
 }
