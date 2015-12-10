@@ -216,7 +216,7 @@ public class CalendarController {
         
         Class<RepeatableAppointmentImpl> clazz = RepeatableAppointmentImpl.class;
         
-        VEventImpl vEvent = new VEventImpl();
+        VEventImpl vEvent = new VEventImpl(agenda.appointmentGroups());
         vEvent.setDateTimeStart(new VDateTime(LocalDateTime.of(2015, 11, 7, 10, 0)));
         vEvent.setCategories(data.appointmentGroups().get(3).getDescription());
         vEvent.setDurationInSeconds(2700L);
