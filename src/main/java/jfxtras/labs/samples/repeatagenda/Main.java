@@ -15,22 +15,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
+import jfxtras.labs.repeatagenda.ICalendarParseTest;
 import jfxtras.labs.samples.repeatagenda.controller.CalendarController;
-import jfxtras.scene.control.agenda.Agenda.Appointment;
-import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
 public class Main extends Application {
 	
 //    private static ObservableList<AppointmentGroup> appointmentGroups = RepeatableAgenda.DEFAULT_APPOINTMENT_GROUPS;
     
-    public final static Callback<LocalDateTimeRange, Appointment> NEW_APPOINTMENT_CALLBACK = range -> 
-    {
-        return new RepeatableAppointmentImpl()
-                .withStartLocalDateTime(range.getStartLocalDateTime())
-                .withEndLocalDateTime(range.getEndLocalDateTime());        
-    };
+//    public final static Callback<LocalDateTimeRange, Appointment> NEW_APPOINTMENT_CALLBACK = range -> 
+//    {
+//        return new RepeatableAppointmentImpl()
+//                .withStartLocalDateTime(range.getStartLocalDateTime())
+//                .withEndLocalDateTime(range.getEndLocalDateTime());        
+//    };
     
     private static LocalDate firstDayOfWeekLocalDate = getFirstDayOfWeekLocalDate();
     private static LocalDate getFirstDayOfWeekLocalDate()
@@ -62,15 +59,15 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
 
-//	    ICalendarEditTest r = new ICalendarEditTest();
+	    ICalendarParseTest r = new ICalendarParseTest();
 //	    long s1 = System.currentTimeMillis();
 //	    for (int i=0; i<1000; i++) {
-//	    r.editFutureTimeAndDateDaily2();
+	    r.canParseYearly1();
 //	    }
 //        long s2 = System.currentTimeMillis();
 //        System.out.println("time " + (s2-s1));
 //        
-//	    System.exit(0);
+	    System.exit(0);
 	            
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();

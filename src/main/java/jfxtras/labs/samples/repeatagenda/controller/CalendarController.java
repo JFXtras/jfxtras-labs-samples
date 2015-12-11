@@ -26,11 +26,7 @@ import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
-import jfxtras.labs.repeatagenda.internal.scene.control.skin.repeatagenda.base24hour.RepeatMenuOld;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAppointmentImpl;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.Settings;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
@@ -41,6 +37,7 @@ import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.freq.Weekly;
 import jfxtras.labs.samples.repeatagenda.MyData;
 import jfxtras.scene.control.LocalDatePicker;
+import jfxtras.scene.control.agenda.Agenda;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.LocalDateTimeRange;
 
@@ -56,13 +53,13 @@ public class CalendarController {
     private MyData data;
 
      public RepeatableAgenda agenda = new RepeatableAgenda();
-     private final Callback<Collection<Appointment>, Void> appointmentWriteCallback =
-             a -> { RepeatableAppointmentImpl.writeToFile(a, Settings.APPOINTMENTS_FILE); return null; };
+//     private final Callback<Collection<Appointment>, Void> appointmentWriteCallback =
+//             a -> { RepeatableAppointmentImpl.writeToFile(a, Settings.APPOINTMENTS_FILE); return null; };
      private final Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback = null;
 //             r -> { RepeatImpl.writeToFile(r); return null; };
 
      private LocalDateTimeRange dateTimeRange;
-     private RepeatMenuOld repeatMenu;
+//     private RepeatMenuOld repeatMenu;
     @FXML private ResourceBundle resources; // ResourceBundle that was given to the FXMLLoader
     @FXML private BorderPane agendaBorderPane;
 
@@ -113,7 +110,7 @@ public class CalendarController {
         {
 //            System.out.println("new appointment calllback");
 //            RepeatableAppointment appointment = AppointmentFactory.newAppointment(RepeatableAppointmentImpl.class)
-            RepeatableAppointment appointment = new RepeatableAppointmentImpl()
+            Appointment appointment = new Agenda.AppointmentImplLocal()
                 .withStartLocalDateTime( dateTimeRange.getStartLocalDateTime())
                 .withEndLocalDateTime( dateTimeRange.getEndLocalDateTime())
                 .withSummary("New")
@@ -214,7 +211,7 @@ public class CalendarController {
         this.startDate = startDate;
         this.endDate = endDate;
         
-        Class<RepeatableAppointmentImpl> clazz = RepeatableAppointmentImpl.class;
+        Class<Agenda.AppointmentImplLocal> clazz = Agenda.AppointmentImplLocal.class;
         
         VEventImpl vEvent = new VEventImpl(agenda.appointmentGroups());
         vEvent.setDateTimeStart(new VDateTime(LocalDateTime.of(2015, 11, 7, 10, 0)));
@@ -238,16 +235,13 @@ public class CalendarController {
         weekly.addByRule(byRule);
         
         data.getVComponents().add(vEvent);
-        
-        agenda.setVComponents(data.getVComponents());
 
         if (! data.appointmentGroups().isEmpty()) 
         { // overwrite default appointmentGroups with ones read from file if not empty
             agenda.appointmentGroups().clear();
             agenda.appointmentGroups().addAll(data.appointmentGroups());
-        }
-        
-        agenda.setVComponents(data.getVComponents());
+        }        
+        agenda.vComponents().addAll(data.getVComponents());
     }
     
     @FXML private void handleDateIncrement() {
