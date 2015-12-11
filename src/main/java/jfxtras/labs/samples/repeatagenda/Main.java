@@ -15,7 +15,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import jfxtras.labs.repeatagenda.ICalendarParseTest;
 import jfxtras.labs.samples.repeatagenda.controller.CalendarController;
 
 public class Main extends Application {
@@ -59,15 +58,15 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws IOException, TransformerException, ParserConfigurationException, SAXException
 	{
 
-	    ICalendarParseTest r = new ICalendarParseTest();
+//	    ICalendarParseTest r = new ICalendarParseTest();
 //	    long s1 = System.currentTimeMillis();
 //	    for (int i=0; i<1000; i++) {
-	    r.canParseYearly1();
+//	    r.canParseYearly1();
 //	    }
 //        long s2 = System.currentTimeMillis();
 //        System.out.println("time " + (s2-s1));
 //        
-	    System.exit(0);
+//	    System.exit(0);
 	            
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();
