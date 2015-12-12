@@ -5,8 +5,8 @@ import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda.RepeatableAppointment;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda.RepeatableAppointment;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.scene.control.agenda.Agenda.Appointment;
 import jfxtras.scene.control.agenda.Agenda.AppointmentGroup;
@@ -19,7 +19,7 @@ public final class MyData {
 //    public ObservableList<T> getAppointments() { return appointments; }
     
 //    private final ObservableList<AppointmentGroup> appointmentGroups = FXCollections.observableArrayList();
-    private final ObservableList<AppointmentGroup> appointmentGroups = RepeatableAgenda.DEFAULT_APPOINTMENT_GROUPS;
+    private final ObservableList<AppointmentGroup> appointmentGroups = ICalendarAgenda.DEFAULT_APPOINTMENT_GROUPS;
     public ObservableList<AppointmentGroup> appointmentGroups() { return appointmentGroups; }
 //    public void setAppointmentGroups( ObservableList<AppointmentGroup> list) { appointmentGroups.addAll(list); }
 

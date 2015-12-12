@@ -26,7 +26,7 @@ import javafx.util.Callback;
 import jfxtras.internal.scene.control.skin.agenda.AgendaDaySkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaSkin;
 import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.RepeatableAgenda;
+import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
@@ -52,7 +52,7 @@ public class CalendarController {
 
     private MyData data;
 
-     public RepeatableAgenda agenda = new RepeatableAgenda();
+     public ICalendarAgenda agenda = new ICalendarAgenda();
 //     private final Callback<Collection<Appointment>, Void> appointmentWriteCallback =
 //             a -> { RepeatableAppointmentImpl.writeToFile(a, Settings.APPOINTMENTS_FILE); return null; };
      private final Callback<Collection<VComponent<Appointment>>, Void> repeatWriteCallback = null;
