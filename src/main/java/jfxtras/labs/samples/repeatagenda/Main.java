@@ -61,12 +61,12 @@ public class Main extends Application {
 //	    ICalendarParseTest r = new ICalendarParseTest();
 //	    long s1 = System.currentTimeMillis();
 //	    for (int i=0; i<1000; i++) {
-//	    r.canParseYearly1();
+//	    r.canParseDurationString();
 //	    }
 //        long s2 = System.currentTimeMillis();
 //        System.out.println("time " + (s2-s1));
 //        
-//	    System.exit(0);
+	    System.exit(0);
 	            
         // ROOT PANE
         FXMLLoader mainLoader = new FXMLLoader();

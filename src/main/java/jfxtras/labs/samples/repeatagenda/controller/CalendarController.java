@@ -29,7 +29,6 @@ import jfxtras.internal.scene.control.skin.agenda.AgendaWeekSkin;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.ICalendarAgenda;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.VEventImpl;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VComponent;
-import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.VDateTime;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.RRule;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.ByDay;
 import jfxtras.labs.repeatagenda.scene.control.repeatagenda.icalendar.rrule.byxxx.Rule;
@@ -214,9 +213,9 @@ public class CalendarController {
         Class<Agenda.AppointmentImplLocal> clazz = Agenda.AppointmentImplLocal.class;
         
         VEventImpl vEvent = new VEventImpl(agenda.appointmentGroups());
-        vEvent.setDateTimeStart(new VDateTime(LocalDateTime.of(2015, 11, 7, 10, 0)));
+        vEvent.setDateTimeStart(LocalDateTime.of(2015, 11, 7, 10, 0));
         vEvent.setCategories(data.appointmentGroups().get(3).getDescription());
-        vEvent.setDurationInSeconds(2700L);
+        vEvent.setDurationInNanos(2700L);
         vEvent.setDescription("Weekly1 Description");
         vEvent.setSummary("Weekly1 Summary");
         vEvent.setAppointmentClass(clazz);
