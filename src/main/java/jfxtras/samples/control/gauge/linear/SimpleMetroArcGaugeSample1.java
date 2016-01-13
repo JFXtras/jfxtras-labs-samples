@@ -1,10 +1,10 @@
-package jfxtras.labs.samples.control.gauge.linear;
+package jfxtras.samples.control.gauge.linear;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.control.gauge.linear.SimpleMetroArcGauge;
+import jfxtras.scene.control.gauge.linear.SimpleMetroArcGauge;
 import jfxtras.scene.layout.GridPane;
 
 public class SimpleMetroArcGaugeSample1 extends AbstractLinearGaugeSample1<SimpleMetroArcGauge>

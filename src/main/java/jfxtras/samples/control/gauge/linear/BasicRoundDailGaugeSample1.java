@@ -1,4 +1,4 @@
-package jfxtras.labs.samples.control.gauge.linear;
+package jfxtras.samples.control.gauge.linear;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
@@ -8,7 +8,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import jfxtras.labs.scene.control.gauge.linear.BasicRoundDailGauge;
+import jfxtras.scene.control.gauge.linear.BasicRoundDailGauge;
 import jfxtras.scene.layout.GridPane;
 
 public class BasicRoundDailGaugeSample1 extends AbstractLinearGaugeSample1<BasicRoundDailGauge>
