@@ -12,15 +12,20 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import jfxtras.scene.control.agenda.Agenda;
@@ -270,6 +275,50 @@ public class AgendaSample1 extends JFXtrasSampleBase
             LocalDateTimeTextField lLocalDateTimeTextField = new LocalDateTimeTextField();
             lGridPane.add(lLocalDateTimeTextField, new GridPane.C().row(lRowIdx).col(1));
             lLocalDateTimeTextField.localDateTimeProperty().bindBidirectional(agenda.displayedLocalDateTime());
+        }
+        lRowIdx++;
+
+        // AllowDragging
+        {
+            lGridPane.add(new Label("Allow dragging"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            CheckBox lCheckBox = new CheckBox();
+            lCheckBox.setSelected(true);
+            lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
+            agenda.allowDraggingProperty().bind(lCheckBox.selectedProperty());
+        }
+        lRowIdx++;
+
+        // AllowResize
+        {
+            lGridPane.add(new Label("Allow resize"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            CheckBox lCheckBox = new CheckBox();
+            lCheckBox.setSelected(true);
+            lGridPane.add(lCheckBox, new GridPane.C().row(lRowIdx).col(1));
+            agenda.allowResizeProperty().bind(lCheckBox.selectedProperty());
+        }
+        lRowIdx++;
+
+        // Locale
+        {
+            lGridPane.add(new Label("Locale"), new GridPane.C().row(lRowIdx).col(0).halignment(HPos.RIGHT));
+            ObservableList<Locale> lLocales = FXCollections.observableArrayList(Locale.getAvailableLocales());
+            FXCollections.sort(lLocales,  (o1, o2) -> { return o1.toString().compareTo(o2.toString()); } );
+            ComboBox<Locale> lComboBox = new ComboBox<>( lLocales );
+            lComboBox.converterProperty().set(new StringConverter<Locale>() {
+                @Override
+                public String toString(Locale locale) {
+                    return locale == null ? "-"  : locale.toString();
+                }
+
+                @Override
+                public Locale fromString(String s) {
+                    if ("-".equals(s)) return null;
+                    return new Locale(s);
+                }
+            });
+            lComboBox.setEditable(true);
+            lGridPane.add(lComboBox, new GridPane.C().row(lRowIdx).col(1));
+            lComboBox.valueProperty().bindBidirectional(agenda.localeProperty());
         }
         lRowIdx++;
 
