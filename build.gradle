@@ -36,6 +36,7 @@ dependencies {
     compile group: 'org.jfxtras', name: 'jfxtras-controls', version: '8.0-r5-SNAPSHOT'
     compile group: 'org.jfxtras', name: 'jfxtras-agenda', version: '8.0-r5-SNAPSHOT'
     compile group: 'org.jfxtras', name: 'jfxtras-menu', version: '8.0-r5-SNAPSHOT'
+    compile group: 'org.jfxtras', name: 'jfxtras-gauge-linear', version: '8.0-r5-SNAPSHOT'
 }
 
 // setup the generated jar

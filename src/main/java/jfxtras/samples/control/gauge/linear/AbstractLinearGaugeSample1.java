@@ -1,4 +1,4 @@
-package jfxtras.labs.samples.control.gauge.linear;
+package jfxtras.samples.control.gauge.linear;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,12 +14,12 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-import jfxtras.labs.internal.scene.control.gauge.linear.skin.SimpleMetroArcGaugeSkin;
+import jfxtras.internal.scene.control.gauge.linear.skin.SimpleMetroArcGaugeSkin;
 import jfxtras.labs.scene.control.BigDecimalField;
-import jfxtras.labs.scene.control.gauge.linear.AbstractLinearGauge;
-import jfxtras.labs.scene.control.gauge.linear.elements.Indicator;
-import jfxtras.labs.scene.control.gauge.linear.elements.PercentSegment;
-import jfxtras.labs.scene.control.gauge.linear.elements.Segment;
+import jfxtras.scene.control.gauge.linear.AbstractLinearGauge;
+import jfxtras.scene.control.gauge.linear.elements.Indicator;
+import jfxtras.scene.control.gauge.linear.elements.PercentSegment;
+import jfxtras.scene.control.gauge.linear.elements.Segment;
 import jfxtras.samples.JFXtrasSampleBase;
 import jfxtras.scene.layout.GridPane;
 
