@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<appointments keys="0 1 2">
-    <appointment custom="" description="" endDateTime="2015-09-28 04:20" groupIndex="0" key="0" repeatKey="" startDateTime="2015-09-28 02:30" studentKeys="" summary="New" wholeDay="false"/>
-    <appointment custom="" description="" endDateTime="2015-10-01 12:10" groupIndex="0" key="1" repeatKey="" startDateTime="2015-10-01 09:25" studentKeys="" summary="New" wholeDay="false"/>
-    <appointment custom="" description="" endDateTime="2015-09-30 10:55" groupIndex="0" key="2" repeatKey="" startDateTime="2015-09-30 09:05" studentKeys="" summary="New" wholeDay="false"/>
-</appointments>
