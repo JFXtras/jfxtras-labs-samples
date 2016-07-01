@@ -32,11 +32,11 @@ apply plugin: 'idea'
 
 dependencies {
 	compile group: 'org.controlsfx', name: 'fxsampler', version: '1.0.8'
-    compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r5-SNAPSHOT'
-    compile group: 'org.jfxtras', name: 'jfxtras-controls', version: '8.0-r5-SNAPSHOT'
-    compile group: 'org.jfxtras', name: 'jfxtras-agenda', version: '8.0-r5-SNAPSHOT'
-    compile group: 'org.jfxtras', name: 'jfxtras-menu', version: '8.0-r5-SNAPSHOT'
-    compile group: 'org.jfxtras', name: 'jfxtras-gauge-linear', version: '8.0-r5-SNAPSHOT'
+    compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r6-SNAPSHOT'
+    compile group: 'org.jfxtras', name: 'jfxtras-controls', version: '8.0-r6-SNAPSHOT'
+    compile group: 'org.jfxtras', name: 'jfxtras-agenda', version: '8.0-r6-SNAPSHOT'
+    compile group: 'org.jfxtras', name: 'jfxtras-menu', version: '8.0-r6-SNAPSHOT'
+    compile group: 'org.jfxtras', name: 'jfxtras-gauge-linear', version: '8.0-r6-SNAPSHOT'
 }
 
 // setup the generated jar
