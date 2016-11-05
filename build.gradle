@@ -31,7 +31,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 dependencies {
-	compile group: 'org.controlsfx', name: 'fxsampler', version: '1.0.8'
+	compile group: 'org.controlsfx', name: 'fxsampler', version: '1.0.9-SNAPSHOT'
     compile group: 'org.jfxtras', name: 'jfxtras-labs', version: '8.0-r6-SNAPSHOT'
     compile group: 'org.jfxtras', name: 'jfxtras-controls', version: '8.0-r6-SNAPSHOT'
     compile group: 'org.jfxtras', name: 'jfxtras-agenda', version: '8.0-r6-SNAPSHOT'
